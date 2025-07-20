@@ -45,7 +45,7 @@ function PilihKami() {
                     const isActive = activeIndex ===index;
                     return(
                         <Link key={index} href="#" onClick={()=>setActiveIndex(index)} className="flex flex-col items-center group cursor-pointer">
-                            <div className={`p-4 rounded-lg transition-all duration-300 ${isActive ? "bg-blue-500 text-white":" text-blue-500"}`}>
+                            <div className={`p-4 rounded-lg transition-all duration-300 ${isActive ? "bg-blue-500 text-white":" text-blue-500"} hover:scale-125 hover:-translate-y-2`}>
                                 {feature.icon}
                             </div>
                             <h3 className="text-lg font-semibold mt-4">{feature.title}</h3>
