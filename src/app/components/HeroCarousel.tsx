@@ -38,13 +38,13 @@ function HeroCarousel() {
                             (current - 1 + images.length) % images.length
                         )
                     }
-                    className="text-white cursor-pointer rounded-full p-2 bg-opacity-50 bg-gray-400 pointer-events-auto"
+                    className="text-white cursor-pointer rounded-full p-2 bg-opacity-50 bg-transparent hover:bg-black hover:opacity-65 pointer-events-auto"
                 >
                     <ChevronLeftIcon className="w-6 h-6 " />
                 </button>
                 <button
                     onClick={() => setCurrent((current + 1) % images.length)}
-                    className="text-white cursor-pointer rounded-full p-2 bg-opacity-50 bg-gray-400 pointer-events-auto"
+                    className="text-white cursor-pointer rounded-full p-2 bg-opacity-50 hover:bg-black hover:opacity-65 pointer-events-auto"
                 >
                     <ChevronRightIcon className="w-6 h-6" />
                 </button>
@@ -71,7 +71,8 @@ function HeroCarousel() {
                     />
                     <input
                         type="date"
-                        className="px-4 py-2 rounded  text-black border border-gray-300 shadow cursor-pointer"
+                        placeholder="mm/dd/yyyy"
+                        className="px-4 py-2 rounded w-full  text-black border border-gray-300 shadow cursor-pointer"
                     />
                     <input
                         type="text"

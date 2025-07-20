@@ -1,5 +1,6 @@
 import HeroCarousel from "./components/HeroCarousel";
 import Navbar from "./components/Navbar";
+import PopularDestinasi from "./components/PopularDestinasi";
 
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
     <>
       <Navbar />
       <HeroCarousel />
+      <PopularDestinasi />
     </>
   );
 }
