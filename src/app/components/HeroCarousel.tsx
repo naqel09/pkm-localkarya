@@ -67,7 +67,7 @@ function HeroCarousel() {
                     <input
                         type="text"
                         placeholder="Destinasi"
-                        className="px-4 py-2 rounded border border-gray-300 text-black shadow"
+                        className="px-4 py-2 rounded border border-gray-300 shadow"
                     />
                     <input
                         type="date"
