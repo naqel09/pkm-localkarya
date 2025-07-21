@@ -1,25 +1,29 @@
 "use client";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "@/app/assets/mclaren.svg"
+import logo from "@/app/assets/mclaren.svg";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 function Navbar() {
     const [open, setOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarTourOpen, setSidebarTourOpen] = useState(false); // <- for sidebar dropdown
+
     return (
-        <nav className="flex items-center justify-between px-8 py-4 absolute bg-transparent text-white top-0 left-0 w-full z-20">
-            <div className="text-2xl font-bold">
-                <Link href="/Destinasi">
-                    <Image
-                        src={logo}
-                        alt="Logo"
-                        className="w-10 h-10"
-                        />
-                </Link>
-            </div>
-            <ul className="hidden md:flex space-x-8 text-sm font-medium">
+        <>
+            {/* Navbar */}
+            <nav className="flex items-center justify-between px-6 py-4 absolute bg-transparent text-white top-0 left-0 w-full z-20">
+                <div className="text-2xl font-bold">
+                    <Link href="/">
+                        <Image src={logo} alt="Logo" className="w-10 h-10" />
+                    </Link>
+                </div>
+
+                {/* Desktop Navigation */}
+                <ul className="hidden md:flex space-x-8 text-sm font-medium">
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
-                    <Link href="/Destinasi">Destination</Link>
+                    <Link href="/">Destination</Link>
                 </li>
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
                     <Link href="#" onClick={() => setOpen(!open)}>
@@ -33,7 +37,7 @@ function Navbar() {
                                 </h3>
                                 <ul className="space-y-1 text-sm text-black font-light">
                                     <li>
-                                        <Link href="#">Open Personal Tour</Link>
+                                        <Link href="/Tours">Open Personal Tour</Link>
                                     </li>
                                     <li>
                                         <Link href="#">
@@ -144,13 +148,116 @@ function Navbar() {
                     <Link href="#">Kontak</Link>
                 </li>
             </ul>
-            <Link
-                href="/Signin"
-                className="px-4 py-2 font-bold rounded-md border-black bg-blue-600 hover:bg-blue-700 transition"
-            >
-                Sign In
-            </Link>
-        </nav>
+                {/* Desktop Sign In */}
+                <Link
+                    href="/Signin"
+                    className="hidden md:block px-4 py-2 font-bold rounded-md border-black bg-blue-600 hover:bg-blue-700 transition"
+                >
+                    Sign In
+                </Link>
+
+                {/* Hamburger for mobile/tablet */}
+                <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="block md:hidden"
+                >
+                    <Menu size={28} />
+                </button>
+            </nav>
+
+            {/* SIDEBAR dari KANAN */}
+            {sidebarOpen && (
+                <div className="fixed inset-0 z-40 flex justify-end bg-black/30 bg-opacity-60">
+                    <div className="fixed right-0 top-0 w-64 bg-white text-black p-6 space-y-4 h-full overflow-y-auto transition duration-300">
+                        {/* Header */}
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">Menu</h2>
+                            <button onClick={() => setSidebarOpen(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        {/* Menu Items */}
+                        <ul className="space-y-4 text-sm">
+                            <li>
+                                <Link href="/" onClick={() => setSidebarOpen(false)}>
+                                    Destination
+                                </Link>
+                            </li>
+
+                            {/* Tour with dropdown inside sidebar */}
+                            <li>
+                                <button
+                                    onClick={() => setSidebarTourOpen(!sidebarTourOpen)}
+                                    className="flex justify-between w-full items-center"
+                                >
+                                    <span>Tour</span>
+                                    <ChevronDown
+                                        size={18}
+                                        className={`transition-transform ${
+                                            sidebarTourOpen ? "rotate-180" : ""
+                                        }`}
+                                    />
+                                </button>
+                                {sidebarTourOpen && (
+                                    <ul className="pl-4 mt-2 space-y-2 text-sm text-gray-700">
+                                        <li>
+                                            <Link href="/Tours">Open Personal Tour</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="#">Private Personal Tour</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="#">Family Tour</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="#">Open Group Tour</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="#">Private Group Tour</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="#">Business Tour</Link>
+                                        </li>
+                                    </ul>
+                                )}
+                            </li>
+
+                            <li>
+                                <Link href="#" onClick={() => setSidebarOpen(false)}>
+                                    About
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="#" onClick={() => setSidebarOpen(false)}>
+                                    Blog
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="#" onClick={() => setSidebarOpen(false)}>
+                                    Kontak
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/Signin"
+                                    className="block w-full bg-blue-600 text-white text-center py-2 rounded"
+                                    onClick={() => setSidebarOpen(false)}
+                                >
+                                    Sign In
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* klik luar untuk tutup */}
+                    <div
+                        className="flex-1"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                </div>
+            )}
+        </>
     );
 }
 
