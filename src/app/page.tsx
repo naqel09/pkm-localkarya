@@ -1,10 +1,8 @@
-import Footer from "./components/Footer";
-import HeroCarousel from "./components/HeroCarousel";
-import Kebutuhan from "./components/Kebutuhan";
-import Navbar from "./components/Navbar";
-import Newsletter from "./components/Newsletter";
+import Carousel from "./components/hero/Carousel";
+import Kebutuhan from "./components/kebutuhan/Kebutuhan";
+import Newsletter from "./components/newsletter/Newsletter";
 import PilihKami from "./components/PilihKami";
-import PopularDestinasi from "./components/PopularDestinasi";
+import PopularDestinasi from "./components/populardestinasi/PopularDestinasi";
 import QualitySection from "./components/QualitySection";
 import SpecialPackages from "./components/SpecialPackages";
 import Testimonials from "./components/Testimonials";
@@ -13,8 +11,7 @@ import Testimonials from "./components/Testimonials";
 export default function Home() {
   return (
     <>
-      <Navbar />
-      <HeroCarousel />
+      <Carousel />
       <PopularDestinasi />
       <PilihKami />
       <SpecialPackages />
@@ -22,7 +19,6 @@ export default function Home() {
       <Testimonials />
       <Kebutuhan />
       <Newsletter />
-      <Footer />
     </>
   );
 }

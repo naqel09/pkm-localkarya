@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 import bgImage from "@/app/assets/bgImage.jpg"; // Ganti dengan path gambar kamu

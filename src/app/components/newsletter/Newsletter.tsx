@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 import carousel2 from "@/app/assets/mountaincarousel1.jpg";
@@ -25,19 +24,7 @@ function Newsletter() {
                     , insider tips, and destination inspiration. Don’t miss out
                     on the adventure – join our mailing list today!
                 </p>
-                <form className="flex items-center justify-center gap-4">
-                    <input
-                        type="email"
-                        placeholder="Enter your email address here ..."
-                        className="px-4 py-3 w-full sm:w-[400px] border-b-2 border-black outline-none focus:border-black bg-transparent placeholder-black text-sm"
-                    />
-                    <button
-                        type="submit"
-                        className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
-                    >
-                        Subscribe
-                    </button>
-                </form>
+                
             </div>
         </section>
     );

@@ -61,8 +61,8 @@ function SpecialPackages() {
 
                 {/* Judul bawah */}
                 <div className="lg:col-span-3 lg:col-start-4 lg:row-start-4 ">
-                    <h2 className="text-5xl lg:text-7xl xl:text-7xl font-bold mt-4 lg:mt-0">
-                        ESCAPE <br/>TO PARADISE
+                    <h2 className="text-5xl lg:text-7xl xl:text-8xl font-bold mt-4 lg:mt-0">
+                        ESCAPE TO PARADISE
                     </h2>
                 </div>
 
@@ -73,9 +73,7 @@ function SpecialPackages() {
                         Tropical Escape Package. This 7-day trip takes you to
                         the most stunning tropical islands.
                     </p>
-                    <button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 cursor-pointer transition mt-4 lg:w-1/3">
-                        Book Now
-                    </button>
+                    <Link href="/Booking" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer transition mt-4 text-center md:w-1/3">Pesan</Link>
                 </div>
             </div>
         </section>

@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 import Testimonial from "@/app/assets/testimonials.jpg";

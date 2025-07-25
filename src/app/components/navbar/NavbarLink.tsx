@@ -1,27 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Link from "next/link";
-import Image from "next/image";
-import logo from "@/app/assets/mclaren.svg";
 import { Menu, X, ChevronDown } from "lucide-react";
 
-function Navbar() {
+function NavbarLink() {
     const [open, setOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [sidebarTourOpen, setSidebarTourOpen] = useState(false); // <- for sidebar dropdown
-
     return (
         <>
-            {/* Navbar */}
-            <nav className="flex items-center justify-between px-6 py-4 absolute bg-transparent text-white top-0 left-0 w-full z-20">
-                <div className="text-2xl font-bold">
-                    <Link href="/">
-                        <Image src={logo} alt="Logo" className="w-10 h-10" />
-                    </Link>
-                </div>
-
-                {/* Desktop Navigation */}
-                <ul className="hidden md:flex space-x-8 text-sm font-medium">
+            {/* Desktop Navigation */}
+            <ul className="hidden md:flex space-x-8 text-sm font-medium">
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
                     <Link href="/">Destination</Link>
                 </li>
@@ -37,7 +26,9 @@ function Navbar() {
                                 </h3>
                                 <ul className="space-y-1 text-sm text-black font-light">
                                     <li>
-                                        <Link href="/Tours">Open Personal Tour</Link>
+                                        <Link href="/Tours">
+                                            Open Personal Tour
+                                        </Link>
                                     </li>
                                     <li>
                                         <Link href="#">
@@ -148,22 +139,21 @@ function Navbar() {
                     <Link href="#">Kontak</Link>
                 </li>
             </ul>
-                {/* Desktop Sign In */}
-                <Link
-                    href="/Signin"
-                    className="hidden md:block px-4 py-2 font-bold rounded-md border-black bg-blue-600 hover:bg-blue-700 transition"
-                >
-                    Sign In
-                </Link>
+            {/* Desktop Sign In */}
+            <Link
+                href="/Signin"
+                className="hidden md:block px-4 py-2 font-bold rounded-md border-black bg-blue-600 hover:bg-blue-700 transition"
+            >
+                Sign In
+            </Link>
 
-                {/* Hamburger for mobile/tablet */}
-                <button
-                    onClick={() => setSidebarOpen(true)}
-                    className="block md:hidden"
-                >
-                    <Menu size={28} />
-                </button>
-            </nav>
+            {/* Hamburger for mobile/tablet */}
+            <button
+                onClick={() => setSidebarOpen(true)}
+                className="block md:hidden"
+            >
+                <Menu size={28} />
+            </button>
 
             {/* SIDEBAR dari KANAN */}
             {sidebarOpen && (
@@ -180,7 +170,10 @@ function Navbar() {
                         {/* Menu Items */}
                         <ul className="space-y-4 text-sm">
                             <li>
-                                <Link href="/" onClick={() => setSidebarOpen(false)}>
+                                <Link
+                                    href="/"
+                                    onClick={() => setSidebarOpen(false)}
+                                >
                                     Destination
                                 </Link>
                             </li>
@@ -188,7 +181,9 @@ function Navbar() {
                             {/* Tour with dropdown inside sidebar */}
                             <li>
                                 <button
-                                    onClick={() => setSidebarTourOpen(!sidebarTourOpen)}
+                                    onClick={() =>
+                                        setSidebarTourOpen(!sidebarTourOpen)
+                                    }
                                     className="flex justify-between w-full items-center"
                                 >
                                     <span>Tour</span>
@@ -202,19 +197,27 @@ function Navbar() {
                                 {sidebarTourOpen && (
                                     <ul className="pl-4 mt-2 space-y-2 text-sm text-gray-700">
                                         <li>
-                                            <Link href="/Tours">Open Personal Tour</Link>
+                                            <Link href="/Tours">
+                                                Open Personal Tour
+                                            </Link>
                                         </li>
                                         <li>
-                                            <Link href="#">Private Personal Tour</Link>
+                                            <Link href="#">
+                                                Private Personal Tour
+                                            </Link>
                                         </li>
                                         <li>
                                             <Link href="#">Family Tour</Link>
                                         </li>
                                         <li>
-                                            <Link href="#">Open Group Tour</Link>
+                                            <Link href="#">
+                                                Open Group Tour
+                                            </Link>
                                         </li>
                                         <li>
-                                            <Link href="#">Private Group Tour</Link>
+                                            <Link href="#">
+                                                Private Group Tour
+                                            </Link>
                                         </li>
                                         <li>
                                             <Link href="#">Business Tour</Link>
@@ -224,17 +227,26 @@ function Navbar() {
                             </li>
 
                             <li>
-                                <Link href="#" onClick={() => setSidebarOpen(false)}>
+                                <Link
+                                    href="#"
+                                    onClick={() => setSidebarOpen(false)}
+                                >
                                     About
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" onClick={() => setSidebarOpen(false)}>
+                                <Link
+                                    href="#"
+                                    onClick={() => setSidebarOpen(false)}
+                                >
                                     Blog
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" onClick={() => setSidebarOpen(false)}>
+                                <Link
+                                    href="#"
+                                    onClick={() => setSidebarOpen(false)}
+                                >
                                     Kontak
                                 </Link>
                             </li>
@@ -261,4 +273,4 @@ function Navbar() {
     );
 }
 
-export default Navbar;
+export default NavbarLink;
