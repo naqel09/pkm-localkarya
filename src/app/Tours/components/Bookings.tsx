@@ -208,8 +208,8 @@ function Bookings() {
                                 </div>
 
                                 <div className="flex gap-3">
-                                    <button className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium">
-                                        Book Now
+                                    <button className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-medium cursor-pointer hover:bg-green-600">
+                                        WhatsApp
                                     </button>
                                     <button className="px-4 py-2 rounded-md border text-sm font-medium">
                                         Learn More
