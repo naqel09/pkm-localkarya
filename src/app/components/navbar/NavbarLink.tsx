@@ -130,7 +130,7 @@ function NavbarLink() {
                     )}
                 </li>
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
-                    <Link href="#">About</Link>
+                    <Link href="/About">About</Link>
                 </li>
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
                     <Link href="#">Blog</Link>
