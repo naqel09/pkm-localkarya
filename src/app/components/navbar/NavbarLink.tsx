@@ -12,7 +12,7 @@ function NavbarLink() {
             {/* Desktop Navigation */}
             <ul className="hidden md:flex space-x-8 text-sm font-medium">
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
-                    <Link href="/">Destination</Link>
+                    <Link href="/">Homepage</Link>
                 </li>
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
                     <Link href="#" onClick={() => setOpen(!open)}>
@@ -22,7 +22,7 @@ function NavbarLink() {
                         <div className="absolute top-15 left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-md p-6 w-4xl grid grid-cols-5 gap-4">
                             <div>
                                 <h3 className="font-semibold text-black text-lg mb-2">
-                                    Personal Tours
+                                    Destinasi
                                 </h3>
                                 <ul className="space-y-1 text-sm text-black font-light">
                                     <li>
@@ -42,17 +42,20 @@ function NavbarLink() {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-black text-lg mb-2">
-                                    Group Tours
+                                    Restaurant
                                 </h3>
                                 <ul className="space-y-1 text-sm text-black font-light">
                                     <li>
-                                        <Link href="#">Open Group Tour</Link>
+                                        <Link href="#">Seafood</Link>
                                     </li>
                                     <li>
-                                        <Link href="#">Private Group Tour</Link>
+                                        <Link href="#">Cepat Saji</Link>
                                     </li>
                                     <li>
-                                        <Link href="#">Business Tour</Link>
+                                        <Link href="#">Makanan China</Link>
+                                    </li>
+                                    <li>
+                                        <Link href="#">Makanan Barat</Link>
                                     </li>
                                 </ul>
                             </div>
@@ -62,13 +65,13 @@ function NavbarLink() {
                                 </h3>
                                 <ul className="space-y-1 text-sm text-black font-light">
                                     <li>
-                                        <Link href="#">Best Seller Tours</Link>
+                                        <Link href="#">Tour Terbaik</Link>
                                     </li>
                                     <li>
-                                        <Link href="#">Tour Testimonial</Link>
+                                        <Link href="#">Restaurant Terbaik </Link>
                                     </li>
                                     <li>
-                                        <Link href="#">Tour Destinations</Link>
+                                        <Link href="#">Cafe Terbaik</Link>
                                     </li>
                                 </ul>
                             </div>
@@ -130,13 +133,13 @@ function NavbarLink() {
                     )}
                 </li>
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
+                    <Link href="#">Hotel</Link>
+                </li>
+                <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
                     <Link href="/About">About</Link>
                 </li>
                 <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
                     <Link href="#">Blog</Link>
-                </li>
-                <li className="active:border-b-2 border-blue-800 hover:text-blue-400 active:text-blue-800">
-                    <Link href="#">Kontak</Link>
                 </li>
             </ul>
             {/* Desktop Sign In */}

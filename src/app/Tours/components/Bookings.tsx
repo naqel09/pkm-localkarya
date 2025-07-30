@@ -9,103 +9,103 @@ import australia from "@/app/assets/river.jpg";
 const packages = [
     {
         id: 1,
-        country: "Italy",
-        title: "Classic Italy Tour Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey to visit Rome, Florence, and Venice, with guided tours of famous landmarks like the Colosseum, Vatican City, and the Leaning Tower of Pisa and activities like wine tasting and a ride.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: italy,
         duration: "10 Days",
         price: "Rp.100.000",
     },
     {
         id: 2,
-        country: "Japan",
-        title: "Discover Japan Tour Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "Visit Tokyo, Kyoto, Hiroshima, and the Japanese Alps, with activities like a sushi-making class, a visit to traditional onsen (hot spring), and a ride on the famous bullet train Shinkansen.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: japan,
         duration: "14 Days",
-        price: "$3,500",
+        price: "Rp.100.000",
     },
     {
         id: 3,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
     {
         id: 4,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
     {
         id: 5,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
     {
         id: 6,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
     {
         id: 7,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
     {
         id: 8,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
     {
         id: 9,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
     {
         id: 10,
-        country: "Australia",
-        title: "Great Barrier Reef & Sydney Package",
+        country: "Bandung",
+        title: "Paket Tour Keluarga di Bandung",
         description:
-            "A journey that includes a visit to the Great Barrier Reef, a tour of the Sydney Opera House, and a day trip to the Blue Mountains. Enjoy the natural wildlife and the hustle bustle of the city.",
+            "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
         image: australia,
         duration: "9 Days",
-        price: "$2,400",
+        price: "Rp.100.000",
     },
 ];
 const categories = ["All", "Best Seller", "Nature", "City", "Seasonal"]
@@ -211,7 +211,7 @@ function Bookings() {
                                     <button className="px-4 py-2 rounded-md bg-green-500 text-white text-sm font-medium cursor-pointer hover:bg-green-600">
                                         WhatsApp
                                     </button>
-                                    <button className="px-4 py-2 rounded-md border text-sm font-medium">
+                                    <button className="px-4 py-2 rounded-md border text-sm font-medium cursor-pointer">
                                         Learn More
                                     </button>
                                 </div>

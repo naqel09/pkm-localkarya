@@ -3,6 +3,7 @@ import React from "react";
 import TourHeader from "../components/TourHeader";
 import Bookings from "./components/Bookings";
 import PaginationClient from "./components/pagination/PaginationClient";
+import River from "@/app/assets/river.jpg"
 
 export const metadata: Metadata ={
     title:"Tours",
@@ -12,7 +13,7 @@ export const metadata: Metadata ={
 function page() {
     return (
         <>
-        <TourHeader title="Tour Packages" halaman="Home" bagian="Tours"/>
+        <TourHeader title="Tour Packages" halaman="Home" bagian="Tours" image={River}/>
         <Bookings/>
         <PaginationClient/>
         </>

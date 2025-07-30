@@ -39,7 +39,7 @@ const features = [
 function PilihKami() {
     const [activeIndex,setActiveIndex]=useState<number | null>(null)
     return (
-        <section className="py-16 bg-blue-100/100 my-20">
+        <section className="py-16 bg-blue-100/100 my-20 rounded-2xl">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-20 text-center">
                 {features.map((feature,index)=>{
                     const isActive = activeIndex ===index;
