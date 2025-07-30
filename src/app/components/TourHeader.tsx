@@ -1,21 +1,19 @@
 import React from "react";
-import Image from "next/image";
-import tourHeader from "@/app/assets/river.jpg";
+import Image,{StaticImageData} from "next/image";
 
-function TourHeader({
-    title,
-    halaman,
-    bagian
-}:{
+interface TourHeaderProps{
     title: string;
     halaman: string;
     bagian: string;
-}) {
+    image: StaticImageData | string;
+}
+
+function TourHeader({title,halaman,bagian,image}:TourHeaderProps) {
     return (
         <section className="relative h-screen w-full flex items-center justify-center text-white">
             {/* Background image full screen */}
             <Image
-                src={tourHeader}
+                src={image}
                 alt="Tour Packages Background"
                 fill
                 className="object-cover object-center absolute z-0"

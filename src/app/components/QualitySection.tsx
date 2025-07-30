@@ -1,13 +1,12 @@
 import React from "react";
-import Image from "next/image";
-import bgImage from "@/app/assets/bgImage.jpg"; // Ganti dengan path gambar kamu
+import Image from "next/image"; // Ganti dengan path gambar kamu
 
 function QualitySection() {
     return (
         <section className="relative max-w-8-xl h-[35rem] rounded-2xl overflow-hidden text-white md:mx-20 mx-10 my-20 ">
             {/* Background Image */}
             <Image
-                src={bgImage}
+                src="/bgImage.jpg"
                 alt="Quality Background"
                 fill
                 priority

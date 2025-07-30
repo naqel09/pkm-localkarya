@@ -1,6 +1,8 @@
-"use client"
-import React,{useState} from 'react' 
-import {ChevronDown, ChevronUp} from "lucide-react";
+"use client";
+
+import React from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useFaqToggle } from "@/app/hooks/useFaqToggle";
 
 const faqs = [
     {
@@ -20,15 +22,19 @@ const faqs = [
         answer: "To cancel your booking, please contact our customer service. Cancellation policies may apply depending on the timing and type of booking.",
     },
 ];
-function ButtonKebutuhan() {
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-    const toggleIndex = (index: number) => {
-        setActiveIndex(index === activeIndex ? null : index);
-    };
+export default function KebutuhanClient() {
+    const { activeIndex, toggleIndex } = useFaqToggle();
 
-  return (
-    <div className="space-y-4 text-left max-w-4xl mx-auto">
+    return (
+        <section className="bg-gray-300 py-20 px-6 w-full text-center mb-20">
+            <h2 className="text-4xl font-bold uppercase mb-2">
+                apa saja yang ada di wisata kami?
+            </h2>
+            <p className="text-white mb-10">
+                Apa Yang Klien Kami Tanyakan Ketika Berkunjung Di Wisata Kami.
+            </p>
+            <div className="space-y-4 text-left max-w-4xl mx-auto">
                 {faqs.map((faq, index) => (
                     <div
                         key={index}
@@ -53,7 +59,6 @@ function ButtonKebutuhan() {
                     </div>
                 ))}
             </div>
-  )
+        </section>
+    );
 }
-
-export default ButtonKebutuhan

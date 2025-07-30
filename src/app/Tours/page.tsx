@@ -12,7 +12,7 @@ export const metadata: Metadata ={
 function page() {
     return (
         <>
-        <TourHeader title="Tour Packages" halaman="Home" bagian="Tours"/>
+        <TourHeader title="Tour Packages" halaman="Home" bagian="Tours" image="/river.jpg"/>
         <Bookings/>
         <PaginationClient/>
         </>
