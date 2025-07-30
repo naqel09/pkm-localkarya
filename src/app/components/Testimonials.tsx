@@ -38,10 +38,11 @@ function Testimonials() {
                     </p>
                     <div className="flex items-center gap-4">
                         <Image
-                            src={Testimonial} // Ganti sesuai lokasi gambarmu
+                            src="/testimonials.jpg" // Ganti sesuai lokasi gambarmu
                             alt="Sarah Johnson"
                             width={40}
-                            className="rounded-"
+                            height={100}
+                            className="rounded-full"
                         />
                         <div>
                             <p className="font-semibold text-gray-900">

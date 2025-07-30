@@ -2,7 +2,6 @@ import React from 'react'
 import { Metadata } from 'next'
 import TourHeader from '../components/TourHeader'
 import PilihKami from '../components/PilihKami'
-import Mountain from "@/app/assets/mountain2.jpg"
 import { PiAirplaneTiltFill } from "react-icons/pi";
 import ContactInfo from './components/ContactInfo'
 
@@ -14,7 +13,7 @@ export const metadata:Metadata={
 const page = () => {
   return (
     <>
-    <TourHeader title="Tentang Kami" halaman='Home' bagian='Tentang' image={Mountain}/>
+    <TourHeader title="Tentang Kami" halaman='Home' bagian='Tentang' image="/bgImage.jpg"/>
     <div className='py-16 px-4 text-center'>
         <div className="flex justify-center mb-6">
         <span className="text-3xl"><PiAirplaneTiltFill /></span>

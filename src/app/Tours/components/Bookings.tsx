@@ -2,9 +2,6 @@
 import React, {useState} from "react";
 import Image from "next/image";
 import {MapPin, Search, LayoutGrid, List} from "lucide-react";
-import italy from "@/app/assets/cultural.jpg";
-import japan from "@/app/assets/mountain2.jpg";
-import australia from "@/app/assets/river.jpg";
 
 const packages = [
     {
@@ -13,7 +10,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: italy,
+        image: "/cultural.jpg",
         duration: "10 Days",
         price: "Rp.100.000",
     },
@@ -23,7 +20,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: japan,
+        image: "/mountain2.jpg",
         duration: "14 Days",
         price: "Rp.100.000",
     },
@@ -33,7 +30,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },
@@ -43,7 +40,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },
@@ -53,7 +50,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },
@@ -63,7 +60,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },
@@ -73,7 +70,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },
@@ -83,7 +80,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },
@@ -93,7 +90,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },
@@ -103,7 +100,7 @@ const packages = [
         title: "Paket Tour Keluarga di Bandung",
         description:
             "Tour disini sangat menyenangkan dimana ada beberapa hiburan yang kami sedikan untuk anda yang dimana anda bisa bersantai dengan semua yang ada di hadapan anda dan tidak hanya itu kami kadang menyediakan event tertentu di waktu yang sudah kami sediakan.",
-        image: australia,
+        image: "/river.jpg",
         duration: "9 Days",
         price: "Rp.100.000",
     },

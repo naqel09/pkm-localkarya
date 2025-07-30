@@ -1,8 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import culturalImg from "@/app/assets/cultural.jpg";
-import riverImg from "@/app/assets/river.jpg";
+
 
 function SpecialPackages() {
     return (
@@ -31,7 +30,7 @@ function SpecialPackages() {
                 {/* Gambar kiri panjang */}
                 <div className="relative h-[300px] lg:h-full lg:col-span-3 lg:row-span-4 lg:col-start-1 rounded-lg">
                     <Image
-                        src={riverImg}
+                        src="/river.jpg"
                         alt="Cultural"
                         fill
                         className="object-cover rounded-2xl"
@@ -49,7 +48,7 @@ function SpecialPackages() {
                 {/* Gambar kanan atas */}
                 <div className="relative h-[300px] lg:h-full lg:col-span-6 lg:row-span-3 lg:col-start-4">
                     <Image
-                        src={culturalImg}
+                        src="/cultural.jpg"
                         alt="Cultural"
                         fill
                         className="object-cover rounded-lg"
