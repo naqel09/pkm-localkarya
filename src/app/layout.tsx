@@ -3,6 +3,7 @@ import { Geist, Geist_Mono,Oswald } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/navbar/Footer";
+import Newsletter from "./components/Newsletter";
 const oswald =Oswald({
   variable: "--font-oswald",
   subsets:["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
       >
         <Navbar></Navbar>
         {children}
+        <Newsletter></Newsletter>
         <Footer></Footer>
       </body>
     </html>
