@@ -36,7 +36,7 @@ function Navbar() {
                     </Link>
                 </li>
                 <li className="hover:text-blue-400">
-                    <Link href="#">Hotel</Link>
+                    <Link href="/Hotel">Hotel</Link>
                 </li>
                 <li className="hover:text-blue-400">
                     <Link href="/Restaurant">Restaurant</Link>
@@ -118,7 +118,7 @@ function Navbar() {
                                 <Link href="/Restaurant" onClick={closeSidebar}>Restaurant</Link>
                             </li>
                             <li>
-                                <Link href="/hOtel" onClick={closeSidebar}>Hotel</Link>
+                                <Link href="/Hotel" onClick={closeSidebar}>Hotel</Link>
                             </li>
                             <li>
                                 <Link href="/About" onClick={closeSidebar}>About</Link>
