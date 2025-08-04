@@ -21,7 +21,7 @@ const HotelCard = ({
     return (
         <div className="rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:scale-105 transition duration-300 bg-white">
             <div className="relative w-full h-80 ">
-                <Image src={image} alt={title} fill className="object-cover" />
+                <Image src={image} alt={title} fill className="object-cover pointer-events-none" />
                 <div className="absolute top-3 right-3 flex gap-1 bg-transparent  px-2 py-1 rounded-full">
                     {[...Array(5)].map((_, i) => (
                         <FaStar

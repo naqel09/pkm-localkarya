@@ -111,7 +111,7 @@ function Bookings() {
     const [view, setView] = useState("list");
     const[selected,setSelected]=useState("All");
     return (
-        <section className="max-w-7xl mx-auto px-6 py-12 space-y-10">
+        <section className="max-w-8xl mx-auto px-6 py-12 space-y-10 ">
             {/* Heading and Filter */}
             <div className="flex flex-col gap-6">
                 <h2 className="text-3xl font-bold uppercase">Our Tour Packages</h2>
@@ -173,7 +173,7 @@ function Bookings() {
                 {packages.map((item) => (
                     <div
                         key={item.id}
-                        className="flex flex-col md:flex-row bg-white shadow-md rounded-xl overflow-hidden"
+                        className="flex flex-col md:flex-row bg-white shadow-md rounded-xl overflow-hidden border border-black"
                     >
                         <div className="relative h-52 md:h-auto md:w-60 w-full">
                             <Image
