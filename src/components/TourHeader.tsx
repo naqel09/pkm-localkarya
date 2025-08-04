@@ -24,11 +24,11 @@ function TourHeader({title,halaman,bagian,image}:TourHeaderProps) {
             <div className="absolute inset-0 bg-black/30 z-10" />
 
             {/* Text Content */}
-            <div className="relative z-20 text-center">
+            <div className="relative z-10 text-center">
                 <p className="text-xl md:text-3xl mb-2 tracking-wider">
                     {halaman} &nbsp; | &nbsp; {bagian}
                 </p>
-                <h1 className="text-4xl lg:text-9xl md:text-7xl font-extrabold uppercase tracking-wide">
+                <h1 className="text-4xl md:text-7xl font-extrabold uppercase tracking-wide">
                     {title}
                 </h1>
             </div>

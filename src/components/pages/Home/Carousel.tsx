@@ -1,13 +1,28 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { useCarousel } from "@/app/hooks/useCarousel";
 
 const images = ["/mountaincarousel1.jpg", "/mountain2.jpg"];
 
 export default function Carousel() {
-    const { current, handleNext, handlePrev } = useCarousel(images.length);
+    const [current, setCurrent] = useState(0);
+    const interval = 10000; // default 10 detik
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrent((prev) => (prev + 1) % images.length);
+        }, interval);
+        return () => clearInterval(timer);
+    }, []);
+
+    const handleNext = () => {
+        setCurrent((prev) => (prev + 1) % images.length);
+    };
+
+    const handlePrev = () => {
+        setCurrent((prev) => (prev - 1 + images.length) % images.length);
+    };
 
     return (
         <section className="relative h-screen w-full overflow-hidden z-0">
@@ -49,7 +64,9 @@ export default function Carousel() {
                     ADVENTURE
                 </h1>
                 <p className="text-center text-white max-w-xl mt-4 text-xl">
-                    mari menciptakan perjalanan yang indah dan dapat dilakukan di saat anda memiliki waktu luang yang sedang langka terjadwal dan sedang dinanti-nanti.
+                    mari menciptakan perjalanan yang indah dan dapat dilakukan
+                    di saat anda memiliki waktu luang yang sedang langka
+                    terjadwal dan sedang dinanti-nanti.
                 </p>
 
                 <div className="mt-10 bg-white shadow-md rounded-lg grid grid-cols-1 md:grid-cols-4 gap-4 w-full max-w-3xl p-4">

@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useFaqToggle } from "@/app/hooks/useFaqToggle";
 
+// Data pertanyaan & jawaban
 const faqs = [
     {
         question: "What type of travel packages does Vacasky offer?",
@@ -24,7 +24,12 @@ const faqs = [
 ];
 
 export default function KebutuhanClient() {
-    const { activeIndex, toggleIndex } = useFaqToggle();
+    // ✅ Langsung menggunakan useState di dalam komponen (tanpa hook terpisah)
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+    const toggleIndex = (index: number) => {
+        setActiveIndex((prev) => (prev === index ? null : index));
+    };
 
     return (
         <section className="bg-gray-300 py-20 px-6 w-full text-center mb-20">
