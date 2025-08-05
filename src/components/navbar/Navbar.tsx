@@ -49,12 +49,12 @@ function Navbar() {
                     <Link href="/About">About</Link>
                 </li>
                 <li className="hover:text-blue-400">
-                    <Link href="#">Blog</Link>
+                    <Link href="/Blog">Blog</Link>
                 </li>
             </ul>
 
             <Link
-                href="/Signin"
+                href="/Login"
                 className="hidden md:block px-4 py-2 font-bold rounded-md bg-blue-600 hover:bg-blue-700 transition"
             >
                 Sign In
@@ -103,13 +103,13 @@ function Navbar() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" onClick={closeSidebar}>
+                                <Link href="/Blog" onClick={closeSidebar}>
                                     Blog
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    href="/Signin"
+                                    href="/Login"
                                     className="block w-full bg-blue-600 text-white text-center py-2 rounded"
                                     onClick={closeSidebar}
                                 >
