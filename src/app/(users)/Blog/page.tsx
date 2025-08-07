@@ -1,5 +1,5 @@
-import BlogList from "@/components/pages/blog/BlogList";
-import PaginationClient from "@/components/pagination/PaginationClient";
+import BlogList from "@/components/users/pages/blog/BlogList";
+import PaginationClient from "@/components/users/pagination/PaginationClient";
 import TourHeader from "@/components/TourHeader";
 import React from "react";
 
@@ -13,7 +13,7 @@ const page = () => {
                 image="/images/artikel/headerblog.jpg"
             />
             <BlogList />
-            <PaginationClient/>
+            <PaginationClient />
         </>
     );
 };

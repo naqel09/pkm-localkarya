@@ -14,8 +14,8 @@ import {
     PackageCheck,
 } from "lucide-react";
 import TourHeader from "@/components/TourHeader";
-import RoomTypes from "@/components/pages/Hotel/RoomTypes";
-import Reviews from "@/components/pages/Hotel/Reviews";
+import RoomTypes from "@/components/users/pages/Hotel/RoomTypes";
+import Reviews from "@/components/users/pages/Hotel/Reviews";
 
 export default function HotelDetailPage({params}: {params: {slug: string}}) {
     const hotel = hotels.find((hotel) => hotel.slug === params.slug);

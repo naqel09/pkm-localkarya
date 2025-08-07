@@ -1,7 +1,7 @@
 import React from "react";
 import {Metadata} from "next";
-import TourHeader from "../../components/TourHeader";
-import PilihKami from "../../components/pages/Home/PilihKami";
+import TourHeader from "../../../components/TourHeader";
+import PilihKami from "../../../components/users/pages/Home/PilihKami";
 import {PiAirplaneTiltFill} from "react-icons/pi";
 
 export const metadata: Metadata = {

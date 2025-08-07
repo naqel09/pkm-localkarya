@@ -1,8 +1,8 @@
 import {Metadata} from "next";
 import React from "react";
-import TourHeader from "../../components/TourHeader";
-import Bookings from "../../components/pages/Destinasi/Bookings";
-import PaginationClient from "@/components/pagination/PaginationClient";
+import TourHeader from "../../../components/TourHeader";
+import Bookings from "../../../components/users/pages/Destinasi/Bookings";
+import PaginationClient from "@/components/users/pagination/PaginationClient";
 
 export const metadata: Metadata = {
     title: "Tours",

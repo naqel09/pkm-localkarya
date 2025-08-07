@@ -2,11 +2,11 @@ import React from "react";
 import {notFound} from "next/navigation";
 import Image from "next/image";
 import {blogs} from "@/data/blogs";
-import BlogSidebar from "@/components/pages/blog/DetailBlog/BlogSidebar";
+import BlogSidebar from "@/components/users/pages/blog/DetailBlog/BlogSidebar";
 import TourHeader from "@/components/TourHeader";
-import ButtonNavigasi from "@/components/pages/blog/DetailBlog/BlogNavigation";
-import BlogComments from "@/components/pages/blog/DetailBlog/BlogComments";
-import CommentForm from "@/components/pages/blog/DetailBlog/CommentForm";
+import ButtonNavigasi from "@/components/users/pages/blog/DetailBlog/BlogNavigation";
+import BlogComments from "@/components/users/pages/blog/DetailBlog/BlogComments";
+import CommentForm from "@/components/users/pages/blog/DetailBlog/CommentForm";
 
 type Props = {
     params: {
@@ -37,11 +37,15 @@ const BlogPage = ({params}: Props) => {
 
                 {/* Content */}
                 <article className="md:col-span-3 space-y-6">
-                    <h3 className="text-center text-blue-700 font-bold text-5xl mb-10">{blog.title}</h3>
+                    <h3 className="text-center text-blue-700 font-bold text-5xl mb-10">
+                        {blog.title}
+                    </h3>
                     {blog.sections.map((section, index) => (
                         <div key={index} className="space-y-4">
                             <h1 className="text-3xl font-bold">
-                                <span className="text-blue-500">{section.berita}. </span>
+                                <span className="text-blue-500">
+                                    {section.berita}.{" "}
+                                </span>
                                 {section.subtitle}
                             </h1>
                             <Image
@@ -61,7 +65,7 @@ const BlogPage = ({params}: Props) => {
                         nextSlug={blogs[index + 1]?.slug}
                     />
                     <BlogComments />
-                    <CommentForm/>
+                    <CommentForm />
                 </article>
             </section>
         </>

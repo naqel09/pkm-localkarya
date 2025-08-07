@@ -1,9 +1,9 @@
 import type {Metadata} from "next";
-import {Geist, Geist_Mono, Oswald} from "next/font/google";
-import "./globals.css";
-import Navbar from "../components/navbar/Navbar";
-import Footer from "../components/navbar/Footer";
-import Newsletter from "../components/newsletter/Newsletter";
+import {Oswald} from "next/font/google";
+import "../globals.css";
+import Navbar from "../../components/users/navbar/Navbar";
+import Footer from "../../components/users/navbar/Footer";
+import Newsletter from "../../components/users/newsletter/Newsletter";
 const oswald = Oswald({
     variable: "--font-oswald",
     subsets: ["latin"],

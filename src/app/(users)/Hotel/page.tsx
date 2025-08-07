@@ -1,6 +1,6 @@
 import React from "react";
-import TourHeader from "../../components/TourHeader";
-import PopularHotels from "@/components/pages/Hotel/PopularHotels";
+import TourHeader from "@/components/TourHeader";
+import PopularHotels from "@/components/users/pages/Hotel/PopularHotels";
 
 const page = () => {
     return (
