@@ -1,5 +1,6 @@
-"use client"
-import React,{useState} from "react";
+"use client";
+import React, {useState} from "react";
+import Link from "next/link";
 
 const page = () => {
     const [email, setEmail] = useState("");
@@ -29,7 +30,7 @@ const page = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
             <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
                 <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-                    Login Akun Anda
+                    Admin Login
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -74,20 +75,11 @@ const page = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200 cursor-pointer"
                     >
-                        Login
+                        <Link href="/Dashboard">Login</Link>
                     </button>
                 </form>
-                <p className="text-sm text-center text-gray-500 mt-4">
-                    Belum punya akun?{" "}
-                    <a
-                        href="/Register"
-                        className="text-blue-600 hover:underline"
-                    >
-                        Register
-                    </a>
-                </p>
             </div>
         </div>
     );

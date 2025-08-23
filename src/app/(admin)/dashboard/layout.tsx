@@ -1,8 +1,8 @@
-import { Oswald } from "next/font/google";
-import { Metadata } from "next";
+import {Oswald} from "next/font/google";
+import {Metadata} from "next";
 import "@/app/globals.css";
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import AdminNavbar from "@/components/admin/AdminNavbar";
+import AdminSidebar from "@/components/admin/ui/Navbar/AdminSidebar";
+import AdminNavbar from "@/components/admin/ui/Navbar/AdminNavbar";
 
 export const metadata: Metadata = {
     title: "Admin",
@@ -23,9 +23,13 @@ export default function AdminLayout({
     return (
         <html lang="en">
             <body className={`${oswald.variable}antialiased`}>
-                <AdminNavbar/>
-                <AdminSidebar/>
-                {children}
+                <AdminNavbar />
+                <div className="flex flex-1">
+                    <AdminSidebar />
+                    <main className="flex-1 p-6 bg-white overflow-y-auto">
+                        {children}
+                    </main>
+                </div>
             </body>
         </html>
     );

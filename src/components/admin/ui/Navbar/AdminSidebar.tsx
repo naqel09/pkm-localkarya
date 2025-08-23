@@ -18,44 +18,38 @@ import {
 
 const AdminSidebar = () => {
     return (
-        <aside className="w-64 min-h-screen bg-[#1f2937] text-white py-6 px-1 flex flex-col justify-between">
+        <aside className="xl:w-64 min-h-screen bg-[#1f2937] text-white py-6 px-1 flex flex-col justify-between">
             <div className="space-y-6">
                 <nav className="space-y-3">
                     <Link
-                        href="#"
+                        href="/Dashboard"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Home size={20} /> Dashboard
                     </Link>
                     <Link
-                        href="#"
+                        href="/Dashboard/Destinasi"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <MapPin size={20} /> Tempat Wisata
                     </Link>
                     <Link
-                        href="#"
+                        href="/Dashboard/Restaurant"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Utensils size={20} /> Tempat Makan
                     </Link>
                     <Link
-                        href="#"
+                        href="/Dashboard/Hotel"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Bed size={20} /> Penginapan
                     </Link>
                     <Link
-                        href="#"
+                        href="/Dashboard/Blog"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
-                        <Users size={20} /> Customers
-                    </Link>
-                    <Link
-                        href="#"
-                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
-                    >
-                        <FileText size={20} /> Reports
+                        <FileText size={20} /> Artikel
                     </Link>
                     <Link
                         href="#"
@@ -88,7 +82,7 @@ const AdminSidebar = () => {
 
                     <div className="mt-6 text-sm text-gray-400">Settings</div>
                     <Link
-                        href="#"
+                        href="/Auth"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <LogOut size={20} /> Logout
@@ -97,7 +91,7 @@ const AdminSidebar = () => {
                         href="#"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
-                        <Settings size={20} /> Global Settings
+                        <Settings size={20} /> Settings
                     </Link>
                 </nav>
             </div>

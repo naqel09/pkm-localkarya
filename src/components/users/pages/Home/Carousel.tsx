@@ -80,7 +80,8 @@ export default function Carousel() {
                         className="px-4 py-2 rounded text-black border border-gray-300 shadow cursor-pointer w-full"
                     />
                     <input
-                        type="text"
+                        type="number"
+                        min={0}
                         placeholder="Harga"
                         className="px-4 py-2 rounded text-black border border-gray-300 shadow"
                     />

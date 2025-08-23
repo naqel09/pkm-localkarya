@@ -1,6 +1,8 @@
+import React from "react";
+import TourHeader from "@/components/TourHeader";
+import { hotels } from "@/data/hotels";
+import { notFound } from "next/navigation";
 import Image from "next/image";
-import {hotels} from "@/data/hotels";
-import {notFound} from "next/navigation";
 import {
     Wifi,
     Utensils,
@@ -13,22 +15,21 @@ import {
     Briefcase,
     PackageCheck,
 } from "lucide-react";
-import TourHeader from "@/components/TourHeader";
 import RoomTypes from "@/components/users/pages/Hotel/RoomTypes";
 import Reviews from "@/components/users/pages/Hotel/Reviews";
 
-export default function HotelDetailPage({params}: {params: {slug: string}}) {
-    const hotel = hotels.find((hotel) => hotel.slug === params.slug);
-    if (!hotel) return notFound();
+const page = ({params}: {params: {slug: string}}) => {
+    const hotel= hotels.find((b)=>b.slug === params.slug)
+    if(!hotel) return notFound()
     return (
         <>
             <TourHeader
-                title="Hotels"
+                title="Detail Penginapan"
                 halaman="Home"
-                bagian="Hotel | Detail-Hotel"
+                bagian="Hotel | Penginapan"
                 image="/bedroom.jpg"
             />
-            <section className="max-w-8xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+           <section className="max-w-8xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Gambar utama (besar) */}
                 <div className="lg:col-span-2 space-y-4">
                     <div className="relative w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] rounded-xl overflow-hidden">
@@ -140,12 +141,12 @@ export default function HotelDetailPage({params}: {params: {slug: string}}) {
                         ></iframe>
                     </div>
                 </div>
+                <RoomTypes params={{ slug: params.slug }} />
+                <Reviews />
             </section>
-            <RoomTypes />
-            <Reviews />
         </>
     );
-}
+};
 
 function Facility({icon, label}: {icon: React.ReactNode; label: string}) {
     return (
@@ -164,3 +165,5 @@ function NearbyAttraction({name, distance}: {name: string; distance: string}) {
         </div>
     );
 }
+
+export default page;

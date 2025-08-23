@@ -6,8 +6,8 @@ const page = () => {
     return (
         <>
             <TourHeader
-                title="Hotels"
-                halaman="Home"
+                title="Penginapan"
+                halaman="Beranda"
                 bagian="Hotel"
                 image="/bedroom.jpg"
             />

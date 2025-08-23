@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const AdminNavbar = () => {
     return (
-        <nav className="h-15 bg-blue-800 text-white px-6 flex items-center justify-between shadow-md">
+        <nav className="h-15 bg-green-800 text-white px-6 flex items-center justify-between shadow-md">
             <div className="text-lg font-semibold flex w-xl justify-between">
                 ini adalah logo
                 <div className="flex items-center border-white border-b-2">

@@ -19,7 +19,6 @@ function page() {
                 image="/river.jpg"
             />
             <Bookings />
-            <PaginationClient />
         </>
     );
 }

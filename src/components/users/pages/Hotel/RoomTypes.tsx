@@ -4,16 +4,20 @@ import Image from "next/image";
 import { BedDouble, Ruler, Users } from "lucide-react";
 import Link from "next/link";
 import { hotels } from "@/data/hotels";
+import { notFound } from "next/navigation";
 
-const RoomTypes = () => {
-  const hotel = hotels[0]; // Ambil hotel pertama
-  const rooms = hotel.rooms;
+const RoomTypes = ({params}:{params:{slug:string}}) => {
+  const hotel = hotels.find((b)=>b.slug ===params.slug);
+  const index = hotels.findIndex((b)=>b.slug === params.slug);
+  const rooms = hotels[index];
+
+  if(!hotel) return notFound();
 
   return (
     <section className="max-w-8xl mx-auto px-4 py-12">
       <h2 className="text-3xl font-bold mb-10">ROOM TYPES</h2>
       <div className="space-y-10">
-        {rooms.map((room, index) => (
+        {rooms.rooms.map((room, index) => (
           <div
             key={index}
             className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col lg:flex-row border border-black"
@@ -22,8 +26,8 @@ const RoomTypes = () => {
             <div className="lg:w-1/2 w-full p-4 space-y-3">
               <div className="relative w-full h-[300px] rounded-lg overflow-hidden">
                 <Image
-                  src={room.image}
-                  alt={room.name}
+                  src={room.galeri[0]}
+                  alt={room.image}
                   fill
                   className="object-cover"
                 />
