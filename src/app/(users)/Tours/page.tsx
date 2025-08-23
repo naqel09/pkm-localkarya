@@ -1,0 +1,26 @@
+import {Metadata} from "next";
+import React from "react";
+import TourHeader from "../../../components/TourHeader";
+import Bookings from "../../../components/users/pages/Destinasi/Bookings";
+import PaginationClient from "@/components/users/pagination/PaginationClient";
+
+export const metadata: Metadata = {
+    title: "Tours",
+    description: "menampilkan halaman Tours apa saja yang ada di dalamnya",
+};
+
+function page() {
+    return (
+        <>
+            <TourHeader
+                title="Tour Packages"
+                halaman="Home"
+                bagian="Tours"
+                image="/river.jpg"
+            />
+            <Bookings />
+        </>
+    );
+}
+
+export default page;
