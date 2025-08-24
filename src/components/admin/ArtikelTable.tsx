@@ -19,7 +19,7 @@ const ArtikelTable = () => {
     const [showConfirm,setShowConfirm]= useState(false);
     const [selectedId,setSelectedId] = useState <number | null>(null);
     const [currentPage,setCurrentPage] = useState(1);
-    const itemsPerPage = 1;
+    const itemsPerPage = 5;
 
     useEffect(() => {
         async function fetchArtikels() {

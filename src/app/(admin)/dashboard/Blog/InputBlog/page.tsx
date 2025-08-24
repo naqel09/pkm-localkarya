@@ -2,6 +2,7 @@
 import React, {useState} from "react";
 import Image from "next/image";
 import {ImageIcon} from "lucide-react";
+import Link from "next/link";
 
 const page = () => {
     const [preview, setPreview] = useState<string | null>(null);
@@ -13,6 +14,7 @@ const page = () => {
         Deskripsi: "",
         Gambar: "",
     });
+    const [confirm,setConfirm]=useState(false)
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -30,8 +32,7 @@ const page = () => {
         setArtikel({...artikel,[e.target.name]:e.target.value});
     }
 
-    const handleConfirm = async(e:React.FormEvent)=>{
-        e.preventDefault();
+    const handleConfirm = async()=>{
         const res = await fetch("/api/blog",{
             method:"POST",
             headers:{"Content-Type":"application/json"},
@@ -42,24 +43,29 @@ const page = () => {
         alert(data.message);
     }
 
+    async function handleSubmit(e:React.FormEvent){
+        e.preventDefault()
+        setConfirm(true);
+    }
+
     return (
         <div className="max-w-8xl mx-auto p-6 bg-white shadow-md border border-gray-400 rounded-lg">
             <h2 className="text-3xl font-semibold mb-10 border-b-2">
                 Input Artikel
             </h2>
 
-            <form onSubmit={handleConfirm} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <h3 className="capitalize text-xl font-semibold py-3">
                         gambar Artikel
                     </h3>
                     <label htmlFor="fileUpload" className="cursor-pointer">
-                        <div className="w-full h-[17rem] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border-gray-400">
+                        <div className="w-full h-[30rem] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border-gray-400">
                             {preview ? (
                                 <Image
                                     src={preview}
                                     alt="artikel"
-                                    className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                                    className="object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
                                     width={122}
                                     height={122}
                                 />
@@ -71,7 +77,7 @@ const page = () => {
                     <input
                         type="file"
                         id="fileUpload"
-                        accept="imag/*"
+                        accept="image/*"
                         className="hidden"
                         onChange={handleImageChange}
                     />
@@ -169,6 +175,25 @@ const page = () => {
                     </div>
                 </div>
             </form>
+
+            {/* Konfirmasi Pop-up */}
+            {confirm&&(
+                <div className="fixed inset-0 bg-opacity-10 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-md w-[300px] text-center">
+                        <p className="text-lg font-medium mb-4">
+                            apakah anda yakin submit data artikel?
+                        </p>
+                        <div className="flex justify-around">
+                            <Link href="/Dashboard/Blog">
+                            <button onClick={handleConfirm} className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer">
+                                Ya
+                            </button>
+                            </Link>
+                            <button onClick={()=>setConfirm(false)} className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md cursor-pointer"> Tidak</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

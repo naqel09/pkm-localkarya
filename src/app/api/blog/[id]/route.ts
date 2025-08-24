@@ -5,6 +5,22 @@ import { Artikel } from "@/backend/entities/Artikel"
 // mengambil column dari entitas artikel dari database
 const ArtikelRepository = AppDataSource.getRepository(Artikel);
 
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  try {
+
+    const artikel = await ArtikelRepository.findOneBy({ id: Number(params.id) });
+
+    if (!artikel) {
+      return NextResponse.json({ message: "artikel tidak ditemukan" }, { status: 404 });
+    }
+
+    return NextResponse.json(artikel, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching artikel:", error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+}
+
 export async function DELETE(
     request:Request,
     {params}:{params:{id:string}}
@@ -40,33 +56,33 @@ export async function PUT(request:Request,{params}:{params:{id:string}}){
             }
         );
 
-        if(artikel){
+        if(!artikel){
             return NextResponse.json(
-                {
-                    message:"data berhasil di update",
-                    status:200,
-                    data:ArtikelRepository
-                }
+                {message:"Artikel Tidak ditemukan"},
+                {status:404}
             );
-        }else if(!artikel){
-            return NextResponse.json(
-                {
-                    message:"data artikel tidak ditemukan"
-                },
-                {
-                    status:404
-                }
-            )
-        }else{
-            return NextResponse.json(
-                {
-                    message:"database tidak terhubung"
-                },
-                {
-                    status:500
-                }
-            )
         }
+        // Update field artikel (hanya yang dikirim body)
+        artikel.Judul = body.Judul??artikel.Judul; //Pakai nullish coalescing (??) → kalau field ada di body, update; kalau tidak ada, tetap pakai nilai lama.
+        artikel.Kategori=body.Kategori??artikel.Kategori;
+        artikel.Lokasi=body.Lokasi??artikel.Lokasi;
+        artikel.Tanggal=body.Tanggal??artikel.Tanggal;
+        artikel.Deskripsi=body.Deskripsi??artikel.Deskripsi;
+        artikel.Gambar=body.Gambar??artikel.Gambar;
+        
+        // simpan perubahan ke dalam database
+        await ArtikelRepository.save(artikel);
+
+        return NextResponse.json(
+            {
+                message:"artikel berhasil di update",
+                data:artikel
+            },
+            {
+                status:200
+            }
+        )
+
     }catch(error){
         console.error("gagal update artikel",error)
         return NextResponse.json(
