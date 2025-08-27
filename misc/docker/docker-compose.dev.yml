@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: pkm-localkarya-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: Localkarya
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Zeronime09
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - pkm-network
+
+  # Next.js Application (Development)
+  app:
+    build:
+      context: ../../
+      dockerfile: misc/docker/Dockerfile.dev
+    container_name: pkm-localkarya-app-dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=Zeronime09
+      - DB_NAME=Localkarya
+      - NEXT_TELEMETRY_DISABLED=1
+      - WATCHPACK_POLLING=true
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source code for hot reload
+      - ../../src:/app/src
+      - ../../public:/app/public
+      - ../../package.json:/app/package.json
+      - ../../package-lock.json:/app/package-lock.json
+      - ../../next.config.ts:/app/next.config.ts
+      - ../../tsconfig.json:/app/tsconfig.json
+      - ../../eslint.config.mjs:/app/eslint.config.mjs
+      - ../../postcss.config.mjs:/app/postcss.config.mjs
+      # Use named volume for .next to avoid permission issues
+      - next_dev_cache:/app/.next
+      # Exclude node_modules to avoid conflicts
+      - /app/node_modules
+    depends_on:
+      - postgres
+    networks:
+      - pkm-network
+
+  # PostgreSQL Admin (Optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pkm-localkarya-pgadmin-dev
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@localkarya.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_dev_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - pkm-network
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  pgadmin_dev_data:
+    driver: local
+  next_dev_cache:
+    driver: local
+
+networks:
+  pkm-network:
+    driver: bridge
