@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "Localkarya",
   synchronize: true, // jangan aktifkan di production
   logging: false,
-  entities: [Destination,Hotel,Room,Artikel],
+  entities: [Destination,Hotel,Room,Artikel]
 });
 
 try{

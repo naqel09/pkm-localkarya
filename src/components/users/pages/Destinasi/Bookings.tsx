@@ -21,7 +21,7 @@ function Bookings() {
         const res = await fetch("/api/admin");
         if (!res.ok) throw new Error("Gagal mengambil data");
         const data = await res.json();
-        setDestinations(data);
+        setDestinations(Array.isArray(data) ? data : data.data || []);
       } catch (err) {
         console.error(err);
       } finally {

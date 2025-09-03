@@ -1,38 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity,PrimaryGeneratedColumn,Column,OneToMany } from "typeorm";
 import { Room } from "./Room";
 
+
 @Entity()
-export class Hotel {
+export class Hotel{
   @PrimaryGeneratedColumn()
-  id!: number;
+  id!:number
 
   @Column()
-  image!: string;
-
-  @Column({ unique: true })
-  slug!: string;
+  image!:string;
 
   @Column()
-  title!: string;
+  slug!:string;
+  
+  @Column()
+  title!:string;
 
   @Column()
-  location!: string;
+  location!:string;
 
   @Column()
-  price!: string;
+  price!:string;
 
-  @Column({ type: "text" })
-  description!: string;
+  @Column({type:"text"})
+  description!:string;
 
-  @Column({ nullable: true })
-  galeri1!: string;
+  @Column()
+  galeri1!:string;
 
-  @Column({ nullable: true })
-  galeri2!: string;
+  @Column()
+  galeri2!:string;
 
-  @Column({ nullable: true })
-  galeri3!: string;
+  @Column()
+  galeri3!:string;
 
-  @OneToMany(() => Room, (room) => room.hotel, { cascade: true,onDelete: "CASCADE",eager:true })
-  rooms!: Room[];
+  @OneToMany(()=>Room,(room)=>room.hotel,{cascade:true,onUpdate:'CASCADE',onDelete:'CASCADE'})
+  rooms!:Room[];
 }
