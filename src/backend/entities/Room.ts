@@ -1,30 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn,Column,ManyToOne, JoinColumn } from "typeorm";
 import { Hotel } from "./Hotel";
 
 @Entity()
-export class Room {
+export class Room{
   @PrimaryGeneratedColumn()
-  id!: number;
+  id!:number;
 
   @Column()
-  name!: string;
-
-  @Column({ type: "text" })
-  description!: string;
+  name!:string
 
   @Column()
-  image!: string;
+  description!:string
 
   @Column()
-  price!: string;
+  price!:string
+  
+  @Column()
+  image!:string
 
-  @Column({ nullable: true })
-  galeri1!: string;
+  @Column()
+  galeri1!:string
 
-  @Column({ nullable: true })
-  galeri2!: string;
+  @Column()
+  galeri2!:string
 
-  @ManyToOne(() => Hotel, (hotel) => hotel.rooms, { onDelete: "CASCADE" })
-  @JoinColumn({name: "hotelId"})
-  hotel!: Hotel;
+  @ManyToOne(()=>Hotel,(hotel)=>hotel.rooms)
+  @JoinColumn()
+  hotel!:Hotel
 }

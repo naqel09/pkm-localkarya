@@ -30,10 +30,12 @@ export default function DestinationTable() {
     useEffect(() => {
         const fetchDestinations = async () => {
             try {
-                const res = await fetch(`/api/admin`);
+                const res = await fetch(`/api/admin`,{
+                    method: "GET"
+                });
                 if (!res.ok) throw new Error("Gagal mengambil data");
                 const data = await res.json();
-                setDataDestinations(data);
+                setDataDestinations(Array.isArray(data) ? data : data.data || []);
             } catch (err) {
                 console.error("Error:", err);
             } finally {
