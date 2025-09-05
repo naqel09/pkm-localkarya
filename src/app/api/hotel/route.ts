@@ -1,81 +1,84 @@
-import { NextResponse } from "next/server";
-import { AppDataSource } from "@/backend/db/data-source";
-import { Hotel } from "@/backend/entities/Hotel";
-import { Room } from "@/backend/entities/Room";
-import path from "path";
-import fs from "fs/promises";
+// // src/app/api/hotels/route.ts
 
-export async function POST(req: Request) {
-  try {
-    const formData = await req.formData();
+// import { NextResponse } from "next/server";
+// import { AppDataSource } from "@/backend/db/data-source";
+// import { Hotel } from "@/backend/entities/Hotel";
 
-    const hotel = new Hotel();
-    hotel.slug = formData.get("slug") as string;
-    hotel.title = formData.get("title") as string;
-    hotel.location = formData.get("location") as string;
-    hotel.price = formData.get("price") as string;
-    hotel.description = formData.get("description") as string;
+// /**
+//  * @swagger
+//  * /api/hotels:
+//  * get:
+//  * summary: Mengambil semua data hotel
+//  * description: Mengembalikan daftar semua hotel beserta kamar-kamarnya.
+//  * responses:
+//  * 200:
+//  * description: Sukses, mengembalikan array hotel.
+//  * 500:
+//  * description: Terjadi kesalahan pada server.
+//  */
+// export async function GET() {
+//     try {
+//         const hotelRepository = AppDataSource.getRepository(Hotel);
+        
+//         // Mengambil semua hotel. Karena ada 'eager: true' di entitas Hotel,
+//         // semua kamar yang berelasi akan otomatis ikut terambil.
+//         const hotels = await hotelRepository.find();
 
-    // Simpan file upload hotel
-    const uploadDir = path.join(process.cwd(), "public/uploads");
-    await fs.mkdir(uploadDir, { recursive: true });
+//         return NextResponse.json(hotels, { status: 200 });
 
-    const saveFile = async (file: File | null) => {
-      if (!file) return "";
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const filePath = path.join(uploadDir, file.name);
-      await fs.writeFile(filePath, buffer);
-      return `/uploads/${file.name}`;
-    };
+//     } catch (error) {
+//         console.error("Failed to fetch hotels:", error);
+//         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+//     }
+// }
 
-    hotel.image = await saveFile(formData.get("image") as File);
-    hotel.galeri1 = await saveFile(formData.get("galeri1") as File);
-    hotel.galeri2 = await saveFile(formData.get("galeri2") as File);
-    hotel.galeri3 = await saveFile(formData.get("galeri3") as File);
+// /**
+//  * @swagger
+//  * /api/hotels:
+//  * post:
+//  * summary: Membuat hotel baru
+//  * description: Membuat entri hotel baru beserta kamar-kamarnya.
+//  * requestBody:
+//  * required: true
+//  * content:
+//  * application/json:
+//  * schema:
+//  * type: object
+//  * properties:
+//  * // Definisikan properti hotel sesuai entitas
+//  * responses:
+//  * 201:
+//  * description: Hotel berhasil dibuat.
+//  * 400:
+//  * description: Data yang dikirim tidak valid.
+//  * 500:
+//  * description: Terjadi kesalahan pada server.
+//  */
+// export async function POST(request: Request) {
+//     try {
+//         const body = await request.json();
+//         const hotelRepository = AppDataSource.getRepository(Hotel);
 
-    // Rooms
-    const rooms: Room[] = [];
-    let i = 0;
-    while (formData.get(`rooms[${i}][name]`)) {
-      const room = new Room();
-      room.name = formData.get(`rooms[${i}][name]`) as string;
-      room.description = formData.get(`rooms[${i}][description]`) as string;
-      room.price = formData.get(`rooms[${i}][price]`) as string;
-      room.image = await saveFile(formData.get(`rooms[${i}][image]`) as File);
-      room.galeri1 = await saveFile(formData.get(`rooms[${i}][galeri1]`) as File);
-      room.galeri2 = await saveFile(formData.get(`rooms[${i}][galeri2]`) as File);
-      rooms.push(room);
-      i++;
-    }
+//         // Membuat instance Hotel baru dari body request
+//         // TypeORM cukup pintar untuk menangani array 'rooms' yang nested
+//         const newHotel = hotelRepository.create(body);
 
-    hotel.rooms = rooms;
+//         // Lakukan validasi data di sini sebelum menyimpan (misalnya menggunakan Zod)
+//         // ... (contoh: if (!newHotel.title) { ... } )
 
-    await AppDataSource.manager.save(hotel);
+//         // Menyimpan hotel baru ke database.
+//         // Karena ada 'cascade: true' di entitas, semua kamar di dalam body
+//         // juga akan otomatis disimpan dan dihubungkan.
+//         const savedHotel = await hotelRepository.save(newHotel);
 
-    return NextResponse.json({ message: "Hotel berhasil disimpan" }, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Gagal menyimpan hotel" }, { status: 500 });
-  }
-}
+//         return NextResponse.json(savedHotel, { status: 201 });
 
-export async function GET() {
-  try {
-    if (!AppDataSource.isInitialized) {
-      await AppDataSource.initialize();
-    }
-
-    const hotelRepo = AppDataSource.getRepository(Hotel).find({
-      relations:["rooms"]
-    });
-    return NextResponse.json(hotelRepo);
-    
-  } catch (error) {
-    console.error("Error GET /api/hotel:", error);
-    return NextResponse.json(
-      { message: "Gagal mengambil data hotel" },
-      { status: 500 }
-    );
-  }
-}
-
+//     } catch (error: any) {
+//         console.error("Failed to create hotel:", error);
+//         // Cek jika error karena duplikat slug
+//         if (error.code === '23505') { // Kode error postgres untuk unique violation
+//              return NextResponse.json({ message: "Slug already exists." }, { status: 400 });
+//         }
+//         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+//     }
+// }

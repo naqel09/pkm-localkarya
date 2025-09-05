@@ -12,30 +12,30 @@ const potongkata =(text:string ,maxWords:number)=>{
     return words.slice(0,maxWords).join(" ") + "...";
 }
 
-const ArtikelTable = () => {
+const HotelTable = () => {
     const [search,setSearch]= useState("");
-    const [artikels, setArtikels] = useState<any[]>([]);
+    const [hotels, setHotels] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [showConfirm,setShowConfirm]= useState(false);
     const [selectedId,setSelectedId] = useState <number | null>(null);
     const [currentPage,setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    useEffect(() => {
-        async function fetchArtikels() {
-            try {
-                const response = await fetch("/api/blog");
-                if (!response.ok) throw new Error("Gagal Mengambil data");
-                const data = await response.json();
-                setArtikels(Array.isArray(data) ? data : data.data || []);
-            } catch (error) {
-                console.error("tidak terkoneksi ke database",error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchArtikels();
-    }, []);
+    // useEffect(() => {
+    //     async function fetchhotels() {
+    //         try {
+    //             const response = await fetch("/api/blog");
+    //             if (!response.ok) throw new Error("Gagal Mengambil data");
+    //             const data = await response.json();
+    //             sethotels(Array.isArray(data) ? data : data.data || []);
+    //         } catch (error) {
+    //             console.error("tidak terkoneksi ke database",error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    //     fetchhotels();
+    // }, []);
 
     const handleDelete = async () => {
         if(!selectedId) return;
@@ -44,10 +44,10 @@ const ArtikelTable = () => {
                 method: "DELETE",
             });
             if(!res.ok) throw new Error ("Gagal mengambil data");
-            setArtikels((prev)=> 
-                prev.filter((artikel)=>artikel.id !== selectedId)
+            setHotels((prev)=> 
+                prev.filter((hotel)=>hotel.id !== selectedId)
             );
-            console.log("data artikel berhasil di hapus");
+            console.log("data hotel berhasil di hapus");
         } catch (error){
             console.error("data tidak ditemukan",error);
         }finally{
@@ -56,29 +56,28 @@ const ArtikelTable = () => {
         }
     }
 
-    const filteredArtikel = artikels.filter(
-        (artikel)=> artikel.Judul.toLowerCase().includes(search.toLowerCase())||
-        artikel.Kategori.toLowerCase().includes(search.toLowerCase())
+    const filteredHotel = hotels.filter(
+        (hotel)=> hotel.Judul.toLowerCase().includes(search.toLowerCase())
     )
     
     // hitung data yang akan ditampilkna
     const lastItem = currentPage * itemsPerPage;
     const firstItem = lastItem - itemsPerPage;
-    const currentItems = filteredArtikel.slice(firstItem,lastItem);
+    const currentItems = filteredHotel.slice(firstItem,lastItem);
 
-    const totalPages =Math.ceil(filteredArtikel.length/itemsPerPage);
+    const totalPages =Math.ceil(filteredHotel.length/itemsPerPage);
 
     return (
         <section>
             <div className="flex items-center justify-between mb-4 border-b-2">
-                <h2 className="text-xl font-semibold">Daftar Aritkel</h2>
+                <h2 className="text-xl font-semibold">Daftar Hotel</h2>
             </div>
             <div className="flex justify-between mb-4">
                 <Link
                     href="/Dashboard/Blog/InputBlog"
                     className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700 cursor-pointer"
                 >
-                    <Plus size={18} /> Input Artikel
+                    <Plus size={18} /> Input hotel
                 </Link>
                 <input
                     type="text"
@@ -96,7 +95,7 @@ const ArtikelTable = () => {
                     <thead className="bg-green-500 text-gray-700 text-center">
                         <tr>
                             <th className="p-3">Gambar</th>
-                            <th className="p-3">Judul Artikel</th>
+                            <th className="p-3">Judul hotel</th>
                             <th className="p-3">Kategori</th>
                             <th className="p-3">Lokasi</th>
                             <th className="p-3">Tanggal</th>
@@ -105,38 +104,38 @@ const ArtikelTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredArtikel.length===0 ? (
+                        {filteredHotel.length===0 ? (
                             <tr>
                                 <td colSpan={6} className="text-center p-4">
-                                    data artikel belum di input
+                                    data Hotel belum di input
                                 </td>
                             </tr>
                         ):(
-                            currentItems.map((artikel : any) => (
-                            <tr key={artikel.id} className="border-t hover:bg-gray-50">
+                            currentItems.map((hotel : any) => (
+                            <tr key={hotel.id} className="border-t hover:bg-gray-50">
                                 <td className="p-2">
                                     <img
-                                        src={artikel.Gambar}
-                                        alt={artikel.Judul}
+                                        src={hotel.Gambar}
+                                        alt={hotel.Judul}
                                         className="w-20 h-12 object-cover mx-auto"
                                     />
                                 </td>
-                                <td className="p-3">{potongkata(artikel.Judul,2)}</td>
-                                <td className="p-3">{artikel.Kategori}</td>
-                                <td className="p-3">{artikel.Lokasi}</td>
-                                <td className="p-3">{artikel.Tanggal}</td>
-                                <td className="p-3">{potongkata(artikel.Deskripsi,2)}</td>
+                                <td className="p-3">{potongkata(hotel.Judul,2)}</td>
+                                <td className="p-3">{hotel.Kategori}</td>
+                                <td className="p-3">{hotel.Lokasi}</td>
+                                <td className="p-3">{hotel.Tanggal}</td>
+                                <td className="p-3">{potongkata(hotel.Deskripsi,2)}</td>
                                 <td className="p-3 ">
                                     <div className="flex justify-center items-center gap-3 mx-auto">
                                         <Link
-                                            href={`/Dashboard/Blog/Edit/${artikel.id}`}
+                                            href={`/Dashboard/Blog/Edit/${hotel.id}`}
                                             className="flex items-center text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-sm rounded-md"
                                         >
                                             <Pencil size={16} />
                                             Edit
                                         </Link>
                                         <button onClick={()=>{
-                                            setSelectedId(artikel.id);
+                                            setSelectedId(hotel.id);
                                             setShowConfirm(true);
                                         }} 
                                         className="flex items-center text-white bg-red-600 hover:bg-red-700 px-3 py-1.5 text-sm rounded-md cursor-pointer">
@@ -186,4 +185,4 @@ const ArtikelTable = () => {
     );
 };
 
-export default ArtikelTable;
+export default HotelTable;

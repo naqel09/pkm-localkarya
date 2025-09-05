@@ -1,40 +1,106 @@
-// src/app/api/hotel/[id]/route.ts
-import { NextResponse } from "next/server";
-import { HotelService } from "@/backend/services/hotelServices"; 
-import { AppDataSource } from "@/backend/db/data-source";
-import { Hotel } from "@/backend/entities/Hotel";
-import { Room } from "@/backend/entities/Room";
-import path from "path";
-import fs from "fs/promises";
+// import { NextResponse } from "next/server";
+// import { AppDataSource } from "@/backend/db/data-source";
+// import { Hotel } from "@/backend/entities/Hotel";
+// import { Room } from "@/backend/entities/Room";
 
-// GET /api/hotel/[id] -> Ambil detail hotel
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  await AppDataSource.initialize().catch(() => {}); // Pastikan DB connect
-  const { id } = await params;
+// // GET /api/hotel/[id]
+// export async function GET(
+//   request: Request,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const hotelRepo = AppDataSource.getRepository(Hotel);
+//     const hotel = await hotelRepo.findOne({
+//       where: { id: parseInt(params.id) },
+//       relations: ["rooms"],
+//     });
 
-  const hotel = await HotelService.getHotelById(Number(id));
-  if (!hotel) {
-    return NextResponse.json({ message: "Hotel tidak ditemukan" }, { status: 404 });
-  }
+//     if (!hotel) {
+//       return NextResponse.json({ error: "Hotel tidak ditemukan" }, { status: 404 });
+//     }
 
-  return NextResponse.json(hotel);
-}
+//     return NextResponse.json(hotel, { status: 200 });
+//   } catch (error: any) {
+//     return NextResponse.json({ error: error.message }, { status: 500 });
+//   }
+// }
 
+// // PUT /api/hotel/[id]
+// export async function PUT(
+//   request: Request,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const hotelRepo = AppDataSource.getRepository(Hotel);
+//     const roomRepo = AppDataSource.getRepository(Room);
 
-// DELETE /api/hotel/[id] -> Hapus hotel
-export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  await AppDataSource.initialize().catch(() => {});
-  const { id } = await params;
+//     const body = await request.json();
+//     const hotel = await hotelRepo.findOne({
+//       where: { id: parseInt(params.id) },
+//       relations: ["rooms"],
+//     });
 
-  try {
-    const deleted = await HotelService.deleteHotel(Number(id));
-    if (!deleted) {
-      return NextResponse.json({ message: "Hotel tidak ditemukan" }, { status: 404 });
-    }
+//     if (!hotel) {
+//       return NextResponse.json({ error: "Hotel tidak ditemukan" }, { status: 404 });
+//     }
 
-    return NextResponse.json({ message: "Hotel berhasil dihapus" });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Gagal menghapus hotel" }, { status: 500 });
-  }
-}
+//     // Update field hotel
+//     hotel.image = body.image ?? hotel.image;
+//     hotel.slug = body.slug ?? hotel.slug;
+//     hotel.title = body.title ?? hotel.title;
+//     hotel.location = body.location ?? hotel.location;
+//     hotel.price = body.price ?? hotel.price;
+//     hotel.description = body.description ?? hotel.description;
+//     hotel.galeri1 = body.galeri1 ?? hotel.galeri1;
+//     hotel.galeri2 = body.galeri2 ?? hotel.galeri2;
+//     hotel.galeri3 = body.galeri3 ?? hotel.galeri3;
+
+//     // Update rooms jika ada di body
+//     if (body.rooms) {
+//       // hapus rooms lama
+//       await roomRepo.delete({ hotel: { id: hotel.id } });
+
+//       // tambahkan rooms baru
+//       hotel.rooms = body.rooms.map((r: any) => {
+//         const newRoom = new Room();
+//         newRoom.name = r.name;
+//         newRoom.description = r.description;
+//         newRoom.image = r.image;
+//         newRoom.price = r.price;
+//         newRoom.galeri1 = r.galeri1;
+//         newRoom.galeri2 = r.galeri2;
+//         return newRoom;
+//       });
+//     }
+
+//     const updatedHotel = await hotelRepo.save(hotel);
+
+//     return NextResponse.json(updatedHotel, { status: 200 });
+//   } catch (error: any) {
+//     console.error(error);
+//     return NextResponse.json({ error: error.message }, { status: 500 });
+//   }
+// }
+
+// // DELETE /api/hotel/[id]
+// export async function DELETE(
+//   request: Request,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const hotelRepo = AppDataSource.getRepository(Hotel);
+//     const hotel = await hotelRepo.findOne({
+//       where: { id: parseInt(params.id) },
+//     });
+
+//     if (!hotel) {
+//       return NextResponse.json({ error: "Hotel tidak ditemukan" }, { status: 404 });
+//     }
+
+//     await hotelRepo.remove(hotel);
+
+//     return NextResponse.json({ message: "Hotel berhasil dihapus" }, { status: 200 });
+//   } catch (error: any) {
+//     return NextResponse.json({ error: error.message }, { status: 500 });
+//   }
+// }
