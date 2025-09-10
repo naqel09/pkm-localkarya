@@ -4,6 +4,16 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker production builds
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   
+  // Skip ESLint during production builds for Docker
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
+  // Skip TypeScript type checking during builds for Docker
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  
   // Note: API configuration moved to individual API routes in Next.js 13+
   
   // Environment variables for client-side

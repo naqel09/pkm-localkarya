@@ -83,7 +83,7 @@ export default function DestinationTable() {
 
             <div className="flex justify-between mb-4">
                 <Link
-                    href="/Dashboard/Destinasi/InputDestinasi"
+                    href="/dashboard/Destinasi/InputDestinasi"
                     className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700 cursor-pointer"
                 >
                     <Plus size={18} /> Input Destinasi
@@ -141,7 +141,7 @@ export default function DestinationTable() {
                                     <td className="p-3">
                                         <div className="flex justify-center items-center gap-3 mx-auto">
                                             <Link
-                                                href={`/Dashboard/Destinasi/Edit/${d.id}`}
+                                                href={`/dashboard/Destinasi/Edit/${d.id}`}
                                                 className="flex items-center text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-sm rounded-md"
                                             >
                                                 <Pencil size={16} />

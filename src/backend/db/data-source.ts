@@ -4,6 +4,8 @@ import { Destination } from "@/backend/entities/Destination";
 import { Room } from "@/backend/entities/Room";
 import { Hotel } from "@/backend/entities/Hotel";
 import { Artikel } from "../entities/Artikel";
+import { User } from "../entities/User";
+import { initializeAdmin } from "@/lib/init-admin";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -14,12 +16,39 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "Localkarya",
   synchronize: true, // jangan aktifkan di production
   logging: false,
-  entities: [Destination,Hotel,Room,Artikel]
+  entities: [Destination, Hotel, Room, Artikel, User]
 });
 
-try{
-  await AppDataSource.initialize()
-  console.log("sudah terkoneksi dengan database")
-}catch(error){
-  console.log("Database tidak terkoneksi")
+// Initialize database connection hanya sekali
+let isInitialized = false;
+let initPromise: Promise<void> | null = null;
+
+export async function initializeDatabase() {
+  if (isInitialized) {
+    return AppDataSource;
+  }
+  
+  if (initPromise) {
+    await initPromise;
+    return AppDataSource;
+  }
+  
+  initPromise = (async () => {
+    try {
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize();
+        console.log("✅ Database berhasil terkoneksi");
+        
+        // Inisialisasi user admin default - dinonaktifkan sementara
+        // await initializeAdmin();
+        isInitialized = true;
+      }
+    } catch (error) {
+      console.log("❌ Database tidak terkoneksi", error);
+      throw error;
+    }
+  })();
+  
+  await initPromise;
+  return AppDataSource;
 }

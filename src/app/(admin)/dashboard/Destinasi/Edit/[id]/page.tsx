@@ -47,7 +47,7 @@ export default function Page() {
 
         if (res.ok) {
             alert("Data berhasil diperbarui");
-            router.push("/Dashboard/Destinasi");
+            router.push("/dashboard/Destinasi");
         } else {
             alert("Gagal memperbarui data");
         }

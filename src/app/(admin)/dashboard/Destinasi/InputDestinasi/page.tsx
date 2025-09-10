@@ -201,7 +201,7 @@ const Page = () => {
                             Apakah Anda yakin ingin submit data?
                         </p>
                         <div className="flex justify-around">
-                            <Link href="/Dashboard/Destinasi">
+                            <Link href="/dashboard/Destinasi">
                                 <button
                                     onClick={() => handleConfirm(true)}
                                     className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer"

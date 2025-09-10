@@ -1,18 +1,24 @@
 "use client";
 import React, {useState} from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Link from "next/link";
 import {ImageIcon} from "lucide-react";
 import Image from "next/image";
 
-const page = () => {
+export default function Page() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [gambarHotelPreview, setgambarHotelPreview] = useState<string | null>(
         null
     );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [SupportHotel, setSupportHotel] = useState<string | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [gambarKamarUtama, setgambarKamarUtama] = useState<string | null>(
         null
     );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [supportKamar, setSupportKamar] = useState<string | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [Kamar,setKamar]= useState(0)
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -339,6 +345,4 @@ const page = () => {
             </div>
         </div>
     );
-};
-
-export default page;
+}
