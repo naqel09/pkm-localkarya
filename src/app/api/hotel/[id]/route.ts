@@ -1,7 +1,57 @@
-// import { NextResponse } from "next/server";
-// import { AppDataSource } from "@/backend/db/data-source";
-// import { Hotel } from "@/backend/entities/Hotel";
-// import { Room } from "@/backend/entities/Room";
+import { NextResponse } from "next/server";
+import { AppDataSource } from "@/backend/db/data-source";
+import { Hotel } from "@/backend/entities/Hotel";
+import { Room } from "@/backend/entities/Room";
+
+export async function GET(request:Request,{params}:{params:{id:string}}){
+    try{
+        const hotelRepo = AppDataSource.getRepository(Hotel)
+        const hotel = await hotelRepo.findOneBy({id:Number(params.id)});
+
+        if(!hotel){
+            return NextResponse.json({message:"hotel tidak ditemukan",status:404});
+        }
+        return NextResponse.json(hotel,{status:200})
+    }catch(error){
+        console.error("error fetching hotel",error);
+        return NextResponse.json({message:"Internal Server Error"},{status:500})
+    }
+}
+
+export async function PUT(request:Request,{params}:{params:{id:string}}){
+    try{
+        const id =parseInt(params.id);
+        if(isNaN(id)){
+            return NextResponse.json({message:"Invalid ID format"},{status:400})
+        }
+        const body = await request.json();
+        const repo = AppDataSource.getRepository(Hotel);
+
+        const hotelUpdate = await repo.findOne({
+            where:{id},
+            relations:['rooms']
+        })
+        if(!hotelUpdate){
+            return NextResponse.json({message:"Hotel not Found"},{status:500})
+        }
+        if(body.rooms){
+            const roomRepo =AppDataSource.getRepository(Room);
+            const updatedRooms = body.rooms.map((roomData:Partial<Room>)=>{
+                const room = new Room();
+                Object.assign(room,roomData);
+                return room;
+            });
+            hotelUpdate.rooms = updatedRooms;
+        }
+
+        repo.merge(hotelUpdate,body);
+        const updated = await repo.save(hotelUpdate)
+        return NextResponse.json(updated,{status:200})
+    }catch(error){
+        console.error("error updating Hotel:",error);
+        return NextResponse.json({message:"Internal Server Error"},{status:500})
+    }
+}
 
 // // GET /api/hotel/[id]
 // export async function GET(
@@ -81,6 +131,24 @@
 //     return NextResponse.json({ error: error.message }, { status: 500 });
 //   }
 // }
+
+
+export async function DELETE(request:Request,{params}:{params:{id:string}}){
+    try{
+        const hotelRepo=AppDataSource.getRepository(Hotel)
+        const hotel= await hotelRepo.findOneBy({id:Number(params.id)});
+        
+        if(hotel){
+            await hotelRepo.remove(hotel)
+            return NextResponse.json({message:"data hotel berhasil dihapus",data:hotel},{status:200});
+        }else{
+            return NextResponse.json({message:"data artikel tidak ditemukan",status:404})
+        }
+    }catch(error){
+        console.error("Error data artikel tidak terkoneksi ke database",error)
+        return NextResponse.json({message:"server Error",status:500})
+    }
+}
 
 // // DELETE /api/hotel/[id]
 // export async function DELETE(
