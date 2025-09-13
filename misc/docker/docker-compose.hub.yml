@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Production)
+  postgres:
+    image: postgres:15-alpine
+    container_name: pkm-localkarya-db-hub
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-localkarya_prod}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_hub_data:/var/lib/postgresql/data
+      - ./backup:/backup
+    networks:
+      - pkm-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-localkarya_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Next.js Application (Production - from Docker Hub)
+  app:
+    image: ${DOCKER_USERNAME:-esafauzi}/pkm-localkarya:${IMAGE_TAG:-production-v6}
+    container_name: pkm-localkarya-app-hub
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME:-localkarya_prod}
+      - JWT_SECRET=${JWT_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXT_TELEMETRY_DISABLED=1
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - uploads_hub_data:/app/public/uploads
+    networks:
+      - pkm-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis (Optional - for caching and sessions)
+  redis:
+    image: redis:7-alpine
+    container_name: pkm-localkarya-redis-hub
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_hub_data:/data
+    networks:
+      - pkm-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: pkm-localkarya-nginx-hub
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx_hub_logs:/var/log/nginx
+    networks:
+      - pkm-network
+    depends_on:
+      - app
+
+volumes:
+  postgres_hub_data:
+    driver: local
+  redis_hub_data:
+    driver: local
+  uploads_hub_data:
+    driver: local
+  nginx_hub_logs:
+    driver: local
+
+networks:
+  pkm-network:
+    driver: bridge

@@ -2,7 +2,7 @@
 import React, {useState} from "react";
 import Link from "next/link";
 
-const page = () => {
+export default function Page() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
@@ -83,6 +83,4 @@ const page = () => {
             </div>
         </div>
     );
-};
-
-export default page;
+}

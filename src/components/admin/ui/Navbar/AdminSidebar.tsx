@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import LogoutButton from "../../LogoutButton";
 import {
     Home,
     MapPin,
@@ -22,31 +23,31 @@ const AdminSidebar = () => {
             <div className="space-y-6">
                 <nav className="space-y-3">
                     <Link
-                        href="/Dashboard"
+                        href="/dashboard"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Home size={20} /> Dashboard
                     </Link>
                     <Link
-                        href="/Dashboard/Destinasi"
+                        href="/dashboard/Destinasi"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <MapPin size={20} /> Tempat Wisata
                     </Link>
                     <Link
-                        href="/Dashboard/Restaurant"
+                        href="/dashboard/Restaurant"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Utensils size={20} /> Tempat Makan
                     </Link>
                     <Link
-                        href="/Dashboard/Hotel"
+                        href="/dashboard/Hotel"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Bed size={20} /> Penginapan
                     </Link>
                     <Link
-                        href="/Dashboard/Blog"
+                        href="/dashboard/Blog"
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <FileText size={20} /> Artikel
@@ -93,6 +94,7 @@ const AdminSidebar = () => {
                     >
                         <Settings size={20} /> Settings
                     </Link>
+                    <LogoutButton />
                 </nav>
             </div>
         </aside>

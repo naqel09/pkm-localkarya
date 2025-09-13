@@ -4,7 +4,7 @@ import Image from "next/image";
 import {ImageIcon} from "lucide-react";
 import Link from "next/link";
 
-const page = () => {
+export default function Page() {
     const [preview, setPreview] = useState<string | null>(null);
     const [artikel, setArtikel] = useState({
         Judul: "",
@@ -196,6 +196,4 @@ const page = () => {
             )}
         </div>
     );
-};
-
-export default page;
+}

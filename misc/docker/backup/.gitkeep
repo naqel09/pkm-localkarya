@@ -1,0 +1,41 @@
+# Database Backup Directory
+
+This directory will contain PostgreSQL database backups created by the production management script.
+
+## Usage
+
+### Create Backup
+```bash
+./prod.sh backup-db
+```
+
+### Restore from Backup
+```bash
+./prod.sh restore-db backup_YYYYMMDD_HHMMSS.sql
+```
+
+### Manual Backup
+```bash
+docker-compose -f docker-compose.prod.yml exec postgres pg_dump -U postgres Localkarya > backup/manual_backup.sql
+```
+
+### Manual Restore
+```bash
+docker-compose -f docker-compose.prod.yml exec -T postgres psql -U postgres -d Localkarya < backup/manual_backup.sql
+```
+
+## Backup Schedule
+
+It's recommended to set up automated backups using cron jobs or your deployment platform's backup features.
+
+Example cron job (daily at 2 AM):
+```bash
+0 2 * * * cd /path/to/project/misc/docker && ./prod.sh backup-db
+```
+
+## Backup Retention
+
+Consider implementing a retention policy to manage disk space:
+- Keep daily backups for 7 days
+- Keep weekly backups for 4 weeks
+- Keep monthly backups for 12 months
