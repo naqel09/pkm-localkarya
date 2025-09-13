@@ -8,8 +8,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       await AppDataSource.initialize();
     }
 
-    const repo = AppDataSource.getRepository(Destination);
-    const destination = await repo.findOneBy({ id: Number(params.id) });
+    const destinationRepository = AppDataSource.getRepository(Destination);
+    const destination = await destinationRepository.findOneBy({ 
+      id: parseInt(params.id) 
+    });
 
     if (!destination) {
       return NextResponse.json({ message: "Destination not found" }, { status: 404 });
@@ -29,17 +31,40 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     const body = await req.json();
-    const repo = AppDataSource.getRepository(Destination);
+    const { namaLokasi, alamat, deskripsi, gambar1, gambar2, gambar3 } = body;
+    const destinationId = parseInt(params.id);
 
-    let destination = await repo.findOneBy({ id: Number(params.id) });
+    // Validate required fields
+    if (!namaLokasi || !alamat || !deskripsi || !gambar1) {
+      return NextResponse.json({
+        message: "Missing required fields: namaLokasi, alamat, deskripsi, and gambar1 are required",
+        status: 400
+      }, { status: 400 });
+    }
+
+    const destinationRepository = AppDataSource.getRepository(Destination);
+    
+    // Find destination by ID
+    const destination = await destinationRepository.findOneBy({ id: destinationId });
+
     if (!destination) {
       return NextResponse.json({ message: "Destination not found" }, { status: 404 });
     }
 
-    repo.merge(destination, body);
-    const updated = await repo.save(destination);
+    // Update destination properties
+    destinationRepository.merge(destination, {
+      namaLokasi,
+      alamat,
+      deskripsi,
+      gambar1,
+      gambar2: gambar2 || null,
+      gambar3: gambar3 || null
+    });
 
-    return NextResponse.json(updated, { status: 200 });
+    // Save updated destination
+    const updatedDestination = await destinationRepository.save(destination);
+
+    return NextResponse.json(updatedDestination, { status: 200 });
   } catch (error) {
     console.error("Error updating destination:", error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
@@ -52,14 +77,19 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       await AppDataSource.initialize();
     }
 
-    const repo = AppDataSource.getRepository(Destination);
-    const destination = await repo.findOneBy({ id: Number(params.id) });
+    const destinationId = parseInt(params.id);
+    const destinationRepository = AppDataSource.getRepository(Destination);
+
+    // Find destination by ID
+    const destination = await destinationRepository.findOneBy({ id: destinationId });
 
     if (!destination) {
       return NextResponse.json({ message: "Destination not found" }, { status: 404 });
     }
 
-    await repo.remove(destination);
+    // Delete destination
+    await destinationRepository.remove(destination);
+
     return NextResponse.json({ message: "Destination deleted successfully" }, { status: 200 });
   } catch (error) {
     console.error("Error deleting destination:", error);

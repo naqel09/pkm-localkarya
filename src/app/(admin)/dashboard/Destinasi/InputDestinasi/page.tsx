@@ -3,27 +3,32 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 const Page = () => {
     const [showConfirm, setShowConfirm] = useState(false);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [previews, setPreviews] = useState({
+        gambar1: null as string | null,
+        gambar2: null as string | null,
+        gambar3: null as string | null
+    });
     const [formData, setFormData] = useState({
-        location: "",
-        title: "",
-        days: "",
-        price: "",
-        phone: "",
-        description: "",
-        image: ""
+        namaLokasi: "",
+        alamat: "",
+        deskripsi: "",
+        gambar1: "",
+        gambar2: "",
+        gambar3: ""
     });
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, imageType: 'gambar1' | 'gambar2' | 'gambar3') => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setPreview(reader.result as string);
-                setFormData({ ...formData, image: reader.result as string });
+                const imageData = reader.result as string;
+                setPreviews(prev => ({ ...prev, [imageType]: imageData }));
+                setFormData(prev => ({ ...prev, [imageType]: imageData }));
             };
             reader.readAsDataURL(file);
         }
@@ -51,17 +56,21 @@ const Page = () => {
             if (res.ok) {
                 alert("✅ Data berhasil dikirim!");
                 setFormData({
-                    location: "",
-                    title: "",
-                    days: "",
-                    price: "",
-                    phone: "",
-                    description: "",
-                    image: ""
+                    namaLokasi: "",
+                    alamat: "",
+                    deskripsi: "",
+                    gambar1: "",
+                    gambar2: "",
+                    gambar3: ""
                 });
-                setPreview(null);
+                setPreviews({
+                    gambar1: null,
+                    gambar2: null,
+                    gambar3: null
+                });
             } else {
-                alert("❌ Gagal mengirim data");
+                const errorData = await res.json();
+                alert(`❌ Gagal mengirim data: ${errorData.message || "Unknown error"}`);
             }
         }
         setShowConfirm(false);
@@ -73,147 +82,190 @@ const Page = () => {
                 Input Data Destinasi
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Gambar */}
-                <div className="flex justify-between gap-3">
-                    <div className="w-1/3">
-                        <label htmlFor="fileUpload" className="cursor-pointer">
-                            <div className="w-full h-[17rem] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
-                                {preview ? (
+                {/* Upload Gambar */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Gambar 1 - Required */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Gambar Utama *
+                        </label>
+                        <label htmlFor="gambar1Upload" className="cursor-pointer">
+                            <div className="w-full h-[200px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                                {previews.gambar1 ? (
                                     <Image
-                                        src={preview}
-                                        alt="Preview"
+                                        src={previews.gambar1}
+                                        alt="Preview Gambar 1"
                                         className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
-                                        width={122}
-                                        height={122}
+                                        width={200}
+                                        height={200}
                                     />
                                 ) : (
-                                    <ImageIcon className="w-full h-full text-white" />
+                                    <div className="text-center">
+                                        <ImageIcon className="w-12 h-12 text-white mx-auto mb-2" />
+                                        <span className="text-white text-sm">Gambar Utama</span>
+                                    </div>
                                 )}
                             </div>
                         </label>
                         <input
-                            id="fileUpload"
+                            id="gambar1Upload"
                             type="file"
                             accept="image/*"
-                            onChange={handleImageChange}
+                            onChange={(e) => handleImageChange(e, 'gambar1')}
+                            className="hidden"
+                            required
+                        />
+                    </div>
+
+                    {/* Gambar 2 - Optional */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Gambar Tambahan 1
+                        </label>
+                        <label htmlFor="gambar2Upload" className="cursor-pointer">
+                            <div className="w-full h-[200px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                                {previews.gambar2 ? (
+                                    <Image
+                                        src={previews.gambar2}
+                                        alt="Preview Gambar 2"
+                                        className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                                        width={200}
+                                        height={200}
+                                    />
+                                ) : (
+                                    <div className="text-center">
+                                        <ImageIcon className="w-12 h-12 text-white mx-auto mb-2" />
+                                        <span className="text-white text-sm">Opsional</span>
+                                    </div>
+                                )}
+                            </div>
+                        </label>
+                        <input
+                            id="gambar2Upload"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageChange(e, 'gambar2')}
                             className="hidden"
                         />
                     </div>
 
-                    {/* Input Kanan */}
-                    <div className="w-2/3 space-y-4">
-                        <div>
-                            <label className="block font-medium mb-1">
-                                Lokasi
-                            </label>
-                            <input
-                                type="text"
-                                name="location"
-                                value={formData.location}
-                                onChange={handleChange}
-                                className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Contoh: Bali, Indonesia"
-                            />
-                        </div>
-                        <div>
-                            <label className="block font-medium mb-1">
-                                Judul
-                            </label>
-                            <input
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Contoh: Liburan ke Pantai"
-                            />
-                        </div>
-                        <div>
-                            <label className="block font-medium mb-1">
-                                Hari
-                            </label>
-                            <input
-                                type="text"
-                                name="days"
-                                value={formData.days}
-                                onChange={handleChange}
-                                className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Contoh: Senin - Jumat"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex justify-between gap-10">
-                    <div className="w-full">
-                        <label className="block font-medium mb-1">Harga</label>
-                        <input
-                            type="text"
-                            name="price"
-                            value={formData.price}
-                            onChange={handleChange}
-                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Contoh: 500.000"
-                        />
-                    </div>
-                    <div className="w-full">
+                    {/* Gambar 3 - Optional */}
+                    <div>
                         <label className="block font-medium mb-1">
-                            Nomor Telepon
+                            Gambar Tambahan 2
+                        </label>
+                        <label htmlFor="gambar3Upload" className="cursor-pointer">
+                            <div className="w-full h-[200px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                                {previews.gambar3 ? (
+                                    <Image
+                                        src={previews.gambar3}
+                                        alt="Preview Gambar 3"
+                                        className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                                        width={200}
+                                        height={200}
+                                    />
+                                ) : (
+                                    <div className="text-center">
+                                        <ImageIcon className="w-12 h-12 text-white mx-auto mb-2" />
+                                        <span className="text-white text-sm">Opsional</span>
+                                    </div>
+                                )}
+                            </div>
                         </label>
                         <input
-                            type="tel"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Contoh: 081234567890"
+                            id="gambar3Upload"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageChange(e, 'gambar3')}
+                            className="hidden"
                         />
                     </div>
                 </div>
 
-                <div>
-                    <label className="block font-medium mb-1">Deskripsi</label>
-                    <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        rows={4}
-                        placeholder="Tulis deskripsi di sini..."
-                    ></textarea>
+                {/* Form Data */}
+                <div className="space-y-4">
+                    {/* Nama Lokasi */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Nama Lokasi Wisata *
+                        </label>
+                        <input
+                            type="text"
+                            name="namaLokasi"
+                            value={formData.namaLokasi}
+                            onChange={handleChange}
+                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Contoh: Pantai Kuta Bali"
+                            required
+                        />
+                    </div>
+
+                    {/* Alamat */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Alamat Lengkap *
+                        </label>
+                        <input
+                            type="text"
+                            name="alamat"
+                            value={formData.alamat}
+                            onChange={handleChange}
+                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Contoh: Jl. Pantai Kuta, Badung, Bali 80361"
+                            required
+                        />
+                    </div>
+
+                    {/* Deskripsi */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Deskripsi Tempat Wisata *
+                        </label>
+                        <RichTextEditor
+                            value={formData.deskripsi}
+                            onChange={(val: string) => setFormData(prev => ({ ...prev, deskripsi: val }))}
+                            placeholder="Tulis deskripsi lengkap tentang tempat wisata ini..."
+                        />
+                    </div>
                 </div>
 
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-4">
+                    <Link href="/dashboard/Destinasi">
+                        <button
+                            type="button"
+                            className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-md"
+                        >
+                            Batal
+                        </button>
+                    </Link>
                     <button
                         type="submit"
-                        className="w-1/3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer"
+                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md"
                     >
-                        Tambah
+                        Tambah Destinasi
                     </button>
                 </div>
             </form>
 
             {/* Konfirmasi Pop-Up */}
             {showConfirm && (
-                <div className="fixed inset-0 bg-opacity-10 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-md w-[300px] text-center">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
                         <p className="text-lg font-medium mb-4">
-                            Apakah Anda yakin ingin submit data?
+                            Apakah Anda yakin ingin menambahkan destinasi ini?
                         </p>
-                        <div className="flex justify-around">
-                            <Link href="/dashboard/Destinasi">
-                                <button
-                                    onClick={() => handleConfirm(true)}
-                                    className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer"
-                                >
-                                    Ya
-                                </button>
-                            </Link>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                onClick={() => handleConfirm(true)}
+                                className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-md"
+                            >
+                                Ya, Tambahkan
+                            </button>
                             <button
                                 onClick={() => handleConfirm(false)}
-                                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md cursor-pointer"
+                                className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-md"
                             >
-                                Tidak
+                                Batal
                             </button>
                         </div>
                     </div>
