@@ -42,6 +42,16 @@ const nextConfig: NextConfig = {
     // Disable optimization in development for better compatibility
     unoptimized: process.env.NODE_ENV === 'development',
   },
+  
+  // Custom server configuration for static files
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: '/api/uploads/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { Destination } from "@/backend/entities/Destination";
+import { PaketWisata } from "@/backend/entities/PaketWisata";
 import { Room } from "@/backend/entities/Room";
 import { Hotel } from "@/backend/entities/Hotel";
 import { Artikel } from "../entities/Artikel";
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "Localkarya",
   synchronize: true, // jangan aktifkan di production
   logging: false,
-  entities: [Destination, Hotel, Room, Artikel, User]
+  entities: [Destination, PaketWisata, Hotel, Room, Artikel, User]
 });
 
 // Initialize database connection hanya sekali
