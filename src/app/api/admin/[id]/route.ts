@@ -2,37 +2,43 @@ import { NextResponse } from "next/server";
 import { AppDataSource } from "@/backend/db/data-source";
 import { Destination } from "@/backend/entities/Destination";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!AppDataSource.isInitialized) {
       await AppDataSource.initialize();
     }
 
+    const { id } = await params;
     const destinationRepository = AppDataSource.getRepository(Destination);
     const destination = await destinationRepository.findOneBy({ 
-      id: parseInt(params.id) 
+      id: parseInt(id) 
     });
 
     if (!destination) {
       return NextResponse.json({ message: "Destination not found" }, { status: 404 });
     }
 
-    return NextResponse.json(destination, { status: 200 });
+    return NextResponse.json({
+      data: destination,
+      status: 200,
+      message: "success"
+    });
   } catch (error) {
     console.error("Error fetching destination:", error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!AppDataSource.isInitialized) {
       await AppDataSource.initialize();
     }
 
+    const { id } = await params;
     const body = await req.json();
     const { namaLokasi, alamat, deskripsi, gambar1, gambar2, gambar3 } = body;
-    const destinationId = parseInt(params.id);
+    const destinationId = parseInt(id);
 
     // Validate required fields
     if (!namaLokasi || !alamat || !deskripsi || !gambar1) {
@@ -71,13 +77,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!AppDataSource.isInitialized) {
       await AppDataSource.initialize();
     }
 
-    const destinationId = parseInt(params.id);
+    const { id } = await params;
+    const destinationId = parseInt(id);
     const destinationRepository = AppDataSource.getRepository(Destination);
 
     // Find destination by ID
