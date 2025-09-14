@@ -7,7 +7,6 @@ import {
     MapPin,
     Utensils,
     Bed,
-    Users,
     FileText,
     Tag,
     ClipboardList,
@@ -15,6 +14,7 @@ import {
     RefreshCcw,
     LogOut,
     Settings,
+    Map,
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -33,6 +33,12 @@ const AdminSidebar = () => {
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <MapPin size={20} /> Tempat Wisata
+                    </Link>
+                    <Link
+                        href="/dashboard/PaketWisata"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <Map size={20} /> Paket Wisata
                     </Link>
                     <Link
                         href="/dashboard/Restaurant"

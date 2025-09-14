@@ -40,6 +40,9 @@ function Navbar() {
                     </Link>
                 </li>
                 <li className="hover:text-blue-400">
+                    <Link href="/Tours">Paket Wisata</Link>
+                </li>
+                <li className="hover:text-blue-400">
                     <Link href="/Hotel">Hotel</Link>
                 </li>
                 <li className="hover:text-blue-400">
@@ -85,6 +88,11 @@ function Navbar() {
                             <li>
                                 <Link href="/Destination" onClick={closeSidebar}>
                                     Destinasi
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/Tours" onClick={closeSidebar}>
+                                    Paket Wisata
                                 </Link>
                             </li>
                             <li>

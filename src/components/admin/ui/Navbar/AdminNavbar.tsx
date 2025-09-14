@@ -8,7 +8,7 @@ const AdminNavbar = () => {
     return (
         <nav className="h-15 bg-green-800 text-white px-6 flex items-center justify-between shadow-md">
             <div className="text-lg font-semibold flex w-xl justify-between">
-                ini adalah logo
+                Nyaba Karyawangi
                 <div className="flex items-center border-white border-b-2">
                     <LuSearch />
                     <input
@@ -20,16 +20,7 @@ const AdminNavbar = () => {
             </div>
 
             <div className="flex items-center gap-2">
-                <MessageSquare size={20} />
-                <Bell size={20} />
-                <Image
-                    src="/images/testimonials.jpg" // ganti dengan path gambar profil kamu
-                    alt="User"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
-                />
-                <span className="text-sm">Xeriya Ponald</span>
+                <span className="text-sm">Admin</span>
                 <ChevronDown size={18} />
             </div>
         </nav>
