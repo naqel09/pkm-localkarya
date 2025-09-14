@@ -35,7 +35,7 @@ function Navbar() {
                     <Link href="/">Homepage</Link>
                 </li>
                 <li className="hover:text-blue-400">
-                    <Link href="/Tours" onClick={toggleOpen}>
+                    <Link href="/Destination" onClick={toggleOpen}>
                         Destinasi
                     </Link>
                 </li>
@@ -79,12 +79,12 @@ function Navbar() {
                         <ul className="space-y-4 text-sm">
                             <li>
                                 <Link href="/" onClick={closeSidebar}>
-                                    Destination
+                                    Homepage
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/Tours" onClick={closeSidebar}>
-                                    Tours
+                                <Link href="/Destination" onClick={closeSidebar}>
+                                    Destinasi
                                 </Link>
                             </li>
                             <li>
