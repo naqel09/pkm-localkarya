@@ -1,4 +1,4 @@
-import {Entity,PrimaryGeneratedColumn,Column} from "typeorm"
+import {Entity,PrimaryGeneratedColumn,Column,CreateDateColumn} from "typeorm"
 
 @Entity()
 export class Artikel{
@@ -6,20 +6,17 @@ export class Artikel{
     id!:number;
 
     @Column()
-    Judul!:string;
+    judul!:string;
+
+    @CreateDateColumn({type: 'timestamp'})
+    tanggalPembuatan!:Date;
 
     @Column()
-    Kategori!:string;
-    
-    @Column()
-    Lokasi!:string;
-
-    @Column({type:'date'})
-    Tanggal!:string;
+    gambar!:string;
 
     @Column({type:'text'})
-    Deskripsi!:string;
+    isiArtikel!:string;
 
     @Column()
-    Gambar!:string;
+    penulis!:string;
 }

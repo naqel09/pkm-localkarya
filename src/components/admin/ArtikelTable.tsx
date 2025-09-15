@@ -57,8 +57,8 @@ const ArtikelTable = () => {
     }
 
     const filteredArtikel = artikels.filter(
-        (artikel)=> artikel.Judul.toLowerCase().includes(search.toLowerCase())||
-        artikel.Kategori.toLowerCase().includes(search.toLowerCase())
+        (artikel)=> artikel.judul?.toLowerCase().includes(search.toLowerCase())||
+        artikel.penulis?.toLowerCase().includes(search.toLowerCase())
     )
     
     // hitung data yang akan ditampilkna
@@ -75,7 +75,7 @@ const ArtikelTable = () => {
             </div>
             <div className="flex justify-between mb-4">
                 <Link
-                    href="/Dashboard/Blog/InputBlog"
+                    href="/dashboard/Blog/InputBlog"
                     className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700 cursor-pointer"
                 >
                     <Plus size={18} /> Input Artikel
@@ -83,7 +83,7 @@ const ArtikelTable = () => {
                 <input
                     type="text"
                     value={search}
-                    placeholder="Cari judul atau kategori aritkel..."
+                    placeholder="Cari judul atau penulis artikel..."
                     onChange={(e) => setSearch(e.target.value)}
                     className="w-1/4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 px-4 py-2"
                 />
@@ -97,10 +97,9 @@ const ArtikelTable = () => {
                         <tr>
                             <th className="p-3">Gambar</th>
                             <th className="p-3">Judul Artikel</th>
-                            <th className="p-3">Kategori</th>
-                            <th className="p-3">Lokasi</th>
-                            <th className="p-3">Tanggal</th>
-                            <th className="p-3">Deskripsi</th>
+                            <th className="p-3">Penulis</th>
+                            <th className="p-3">Tanggal Dibuat</th>
+                            <th className="p-3">Isi Artikel</th>
                             <th className="p-3">Action</th>
                         </tr>
                     </thead>
@@ -116,20 +115,24 @@ const ArtikelTable = () => {
                             <tr key={artikel.id} className="border-t hover:bg-gray-50">
                                 <td className="p-2">
                                     <img
-                                        src={artikel.Gambar}
-                                        alt={artikel.Judul}
+                                        src={artikel.gambar ? `/uploads/${artikel.gambar}` : '/images/default-article.jpg'}
+                                        alt={artikel.judul}
                                         className="w-20 h-12 object-cover mx-auto"
                                     />
                                 </td>
-                                <td className="p-3">{potongkata(artikel.Judul,2)}</td>
-                                <td className="p-3">{artikel.Kategori}</td>
-                                <td className="p-3">{artikel.Lokasi}</td>
-                                <td className="p-3">{artikel.Tanggal}</td>
-                                <td className="p-3">{potongkata(artikel.Deskripsi,2)}</td>
+                                <td className="p-3">{potongkata(artikel.judul,4)}</td>
+                                <td className="p-3">{artikel.penulis}</td>
+                                <td className="p-3">{new Date(artikel.tanggalPembuatan).toLocaleDateString('id-ID')}</td>
+                                <td className="p-3">
+                                    <div 
+                                        className="max-w-xs overflow-hidden"
+                                        dangerouslySetInnerHTML={{ __html: potongkata(artikel.isiArtikel?.replace(/<[^>]*>/g, '') || '', 5) }}
+                                    />
+                                </td>
                                 <td className="p-3 ">
                                     <div className="flex justify-center items-center gap-3 mx-auto">
                                         <Link
-                                            href={`/Dashboard/Blog/Edit/${artikel.id}`}
+                                            href={`/dashboard/Blog/Edit/${artikel.id}`}
                                             className="flex items-center text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-sm rounded-md"
                                         >
                                             <Pencil size={16} />

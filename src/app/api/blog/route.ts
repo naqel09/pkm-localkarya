@@ -1,41 +1,80 @@
 import { AppDataSource } from "@/backend/db/data-source";
-import { Artikel } from "@/backend/entities/Artikel";
+import { artikelService } from "@/backend/services/artikelServices";
 import { NextResponse } from "next/server";
 
-const artikelRepository = AppDataSource.getRepository(Artikel)
-
-export async function GET(){
-
-    try{
-        if(!AppDataSource.isInitialized){
-            await AppDataSource.initialize()
+export async function GET(request: Request) {
+    try {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
         }
-        const artikel = await artikelRepository.find();
-        return NextResponse.json({message:"success",status:200,data:artikel})
-    }catch(error){
-        console.error("Error fetching artikels");
+        
+        const url = new URL(request.url);
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '10');
+        
+        if (url.searchParams.has('page')) {
+            const result = await artikelService.getArtikelsPaginated(page, limit);
+            return NextResponse.json({
+                message: "success",
+                status: 200,
+                data: result.articles,
+                pagination: {
+                    page,
+                    limit,
+                    total: result.total,
+                    totalPages: result.totalPages
+                }
+            });
+        } else {
+            const articles = await artikelService.getAllArtikels();
+            return NextResponse.json({
+                message: "success",
+                status: 200,
+                data: articles
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching artikels:", error);
         return NextResponse.json(
-            {message:"Gagal mengambil data artikel"},
-            {status: 500}
-        )
+            { message: "Gagal mengambil data artikel" },
+            { status: 500 }
+        );
     }
 }
 
-export async function POST(request:Request){
-    try{
-        const artikels= await request.json();
-        const artikel= artikelRepository.create({
-            Judul:artikels.Judul,
-            Kategori:artikels.Kategori,
-            Lokasi:artikels.Lokasi,
-            Tanggal:artikels.Tanggal&&artikels.Tanggal !== ""? artikels.tanggal : new Date().toISOString().split("T")[0],
-            Deskripsi:artikels.Deskripsi,
-            Gambar:artikels.Gambar,
-        })
-        await artikelRepository.save(artikel)
-        return NextResponse.json({message:"Artikel Berhasil dibuat",data:artikel,status:201})
-    }catch(error){
-        console.error("Error,tidak bisa membuat hotels:",error);
-        return NextResponse.json({message:"Internal Server Error"},{status:500});
+export async function POST(request: Request) {
+    try {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+        
+        const artikelData = await request.json();
+        
+        // Validate required fields
+        if (!artikelData.judul || !artikelData.isiArtikel || !artikelData.penulis) {
+            return NextResponse.json(
+                { message: "Judul, isi artikel, dan penulis harus diisi" },
+                { status: 400 }
+            );
+        }
+        
+        const artikel = await artikelService.createArtikel({
+            judul: artikelData.judul,
+            gambar: artikelData.gambar || '',
+            isiArtikel: artikelData.isiArtikel,
+            penulis: artikelData.penulis
+        });
+        
+        return NextResponse.json({
+            message: "Artikel berhasil dibuat",
+            data: artikel,
+            status: 201
+        });
+    } catch (error) {
+        console.error("Error creating artikel:", error);
+        return NextResponse.json(
+            { message: "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }

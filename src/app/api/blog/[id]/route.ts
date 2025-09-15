@@ -1,98 +1,120 @@
-import { NextResponse } from "next/server"
-import { AppDataSource } from "@/backend/db/data-source"
-import { Artikel } from "@/backend/entities/Artikel"
+import { AppDataSource } from "@/backend/db/data-source";
+import { artikelService } from "@/backend/services/artikelServices";
+import { NextResponse } from "next/server";
 
-// mengambil column dari entitas artikel dari database
-const ArtikelRepository = AppDataSource.getRepository(Artikel);
-
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id: idParam } = await params;
-    const artikel = await ArtikelRepository.findOneBy({ id: Number(idParam) });
-
-    if (!artikel) {
-      return NextResponse.json({ message: "artikel tidak ditemukan" }, { status: 404 });
-    }
-
-    return NextResponse.json(artikel, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching artikel:", error);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
-  }
-}
-
-export async function DELETE(
-    request:Request,
-    {params}:{params:Promise<{id:string}>}
-){
-    try{
-        const { id: idParam } = await params;
-        const artikel = await ArtikelRepository.findOneBy({id:Number(idParam)});
-        if(artikel){
-            await ArtikelRepository.remove(artikel);
-            return NextResponse.json
-            (
-                {
-                    message:"Artikel berhasil di hapus",
-                    status:200,
-                    data:artikel
-                }
-            ); 
-        }else{
-            return NextResponse.json({message:"Artikel tidak ditemukan",status:404})
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+    try {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
         }
-    }catch(error){
-        console.error("Error data artikel tidak terkoneksi ke database",error);
-        return NextResponse.json({message:"Server Error",status:500});
-    }
-}
-
-export async function PUT(request:Request,{params}:{params:Promise<{id:string}>}){
-    try{
-        const { id: idParam } = await params;
-        const body = await request.json()
-        // cari artikel yang mau di update
-        const artikel = await ArtikelRepository.findOne(
-            {
-                where: {id:Number(idParam)}
-            }
-        );
-
-        if(!artikel){
+        
+        const id = parseInt(params.id);
+        if (isNaN(id)) {
             return NextResponse.json(
-                {message:"Artikel Tidak ditemukan"},
-                {status:404}
+                { message: "ID artikel tidak valid" },
+                { status: 400 }
             );
         }
-        // Update field artikel (hanya yang dikirim body)
-        artikel.Judul = body.Judul??artikel.Judul; //Pakai nullish coalescing (??) → kalau field ada di body, update; kalau tidak ada, tetap pakai nilai lama.
-        artikel.Kategori=body.Kategori??artikel.Kategori;
-        artikel.Lokasi=body.Lokasi??artikel.Lokasi;
-        artikel.Tanggal=body.Tanggal??artikel.Tanggal;
-        artikel.Deskripsi=body.Deskripsi??artikel.Deskripsi;
-        artikel.Gambar=body.Gambar??artikel.Gambar;
         
-        // simpan perubahan ke dalam database
-        await ArtikelRepository.save(artikel);
-
+        const artikel = await artikelService.getArtikelById(id);
+        
+        if (!artikel) {
+            return NextResponse.json(
+                { message: "Artikel tidak ditemukan" },
+                { status: 404 }
+            );
+        }
+        
+        return NextResponse.json({
+            message: "success",
+            status: 200,
+            data: artikel
+        });
+    } catch (error) {
+        console.error("Error fetching artikel:", error);
         return NextResponse.json(
-            {
-                message:"artikel berhasil di update",
-                data:artikel
-            },
-            {
-                status:200
-            }
-        )
+            { message: "Gagal mengambil data artikel" },
+            { status: 500 }
+        );
+    }
+}
 
-    }catch(error){
-        console.error("gagal update artikel",error)
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
+    try {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+        
+        const id = parseInt(params.id);
+        if (isNaN(id)) {
+            return NextResponse.json(
+                { message: "ID artikel tidak valid" },
+                { status: 400 }
+            );
+        }
+        
+        const artikelData = await request.json();
+        
+        const updatedArtikel = await artikelService.updateArtikel(id, {
+            judul: artikelData.judul,
+            gambar: artikelData.gambar,
+            isiArtikel: artikelData.isiArtikel,
+            penulis: artikelData.penulis
+        });
+        
+        if (!updatedArtikel) {
+            return NextResponse.json(
+                { message: "Artikel tidak ditemukan" },
+                { status: 404 }
+            );
+        }
+        
+        return NextResponse.json({
+            message: "Artikel berhasil diperbarui",
+            data: updatedArtikel,
+            status: 200
+        });
+    } catch (error) {
+        console.error("Error updating artikel:", error);
         return NextResponse.json(
-            {
-                message:"Internal Server Error",
-                error:String(error),
-                status:500
-            }
+            { message: "Gagal memperbarui artikel" },
+            { status: 500 }
+        );
+    }
+}
+
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+    try {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+        
+        const id = parseInt(params.id);
+        if (isNaN(id)) {
+            return NextResponse.json(
+                { message: "ID artikel tidak valid" },
+                { status: 400 }
+            );
+        }
+        
+        const deleted = await artikelService.deleteArtikel(id);
+        
+        if (!deleted) {
+            return NextResponse.json(
+                { message: "Artikel tidak ditemukan" },
+                { status: 404 }
+            );
+        }
+        
+        return NextResponse.json({
+            message: "Artikel berhasil dihapus",
+            status: 200
+        });
+    } catch (error) {
+        console.error("Error deleting artikel:", error);
+        return NextResponse.json(
+            { message: "Gagal menghapus artikel" },
+            { status: 500 }
         );
     }
 }
