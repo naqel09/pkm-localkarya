@@ -1,39 +1,41 @@
-import { Entity,PrimaryGeneratedColumn,Column,OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Room } from "./Room";
 
-
 @Entity()
-export class Hotel{
+export class Hotel {
   @PrimaryGeneratedColumn()
-  id!:number
+  id!: number;
 
-  @Column()
-  image!:string;
+  @Column({ name: 'nama_hotel' })
+  namaHotel!: string;
 
-  @Column()
-  slug!:string;
-  
-  @Column()
-  title!:string;
+  @Column({ name: 'alamat_hotel' })
+  alamatHotel!: string;
 
-  @Column()
-  location!:string;
+  @Column({ name: 'google_maps_hotel', nullable: true })
+  googleMapsHotel?: string;
 
-  @Column()
-  price!:string;
+  @Column({ name: 'deskripsi_hotel', type: 'text' })
+  deskripsiHotel!: string;
 
-  @Column({type:"text"})
-  description!:string;
+  @Column({ name: 'fasilitas', type: 'json' })
+  fasilitas!: string[];
 
-  @Column()
-  galeri1!:string;
+  @Column({ name: 'gambar1', nullable: true })
+  gambar1?: string;
 
-  @Column()
-  galeri2!:string;
+  @Column({ name: 'gambar2', nullable: true })
+  gambar2?: string;
 
-  @Column()
-  galeri3!:string;
+  @Column({ name: 'gambar3', nullable: true })
+  gambar3?: string;
 
-  @OneToMany(()=>Room,(room)=>room.hotel,{cascade:true,onUpdate:'CASCADE',onDelete:'CASCADE'})
-  rooms!:Room[];
+  @OneToMany(() => Room, (room) => room.hotel, { cascade: true, onUpdate: 'CASCADE', onDelete: 'CASCADE' })
+  rooms!: Room[];
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt!: Date;
 }

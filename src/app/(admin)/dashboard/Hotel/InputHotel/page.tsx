@@ -1,791 +1,1023 @@
 "use client";
-import React, {useState} from "react";
-import {ImageIcon, Trash2, Eye} from "lucide-react";
-import Image from "next/image";
+import React, { useState } from "react";
+import { Plus, Save, ArrowLeft, X, ImageIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-// Tipe data untuk kamar
-interface RoomType {
-    id?: number;
-    image: string;
-    name: string;
-    price: string;
-    description: string;
-    galeri1: string;
-    galeri2: string;
+interface RoomFormData {
+  jenisKamar: string;
+  luasKamar: string;
+  fasilitasKamar: string[];
+  hargaPerMalam: string;
+  banyaknyaTamu: string;
+  deskripsiKamar: string;
+  gambar1?: string;
+  gambar2?: string;
+  gambar3?: string;
+  gambar360?: string;
 }
 
-const initialRoomState: RoomType = {
-    image: "",
-    name: "",
-    price: "",
-    description: "",
-    galeri1: "",
-    galeri2: "",
-};
+interface HotelFormData {
+  namaHotel: string;
+  alamatHotel: string;
+  googleMapsHotel: string;
+  deskripsiHotel: string;
+  fasilitas: string[];
+  gambar1?: string;
+  gambar2?: string;
+  gambar3?: string;
+}
 
-const Page = () => {
-    // --- STATE (Tidak berubah) ---
-    const [hotel, setHotel] = useState({
-        image: "",
-        slug: "",
-        title: "",
-        location: "",
-        price: "",
-        description: "",
-        galeri1: "",
-        galeri2: "",
-        galeri3: "",
-    });
-    const [savedHotelId, setSavedHotelId] = useState<number | null>(null);
-    const [rooms, setRooms] = useState<RoomType[]>([]);
-    const [currentRoom, setCurrentRoom] = useState<RoomType>(initialRoomState);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [viewModalOpen, setViewModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    // State preview gambar... (tidak berubah)
-    const [gambarHotelPreview, setGambarHotelPreview] = useState<string | null>(
-        null
-    );
-    const [galeri1Preview, setGaleri1Preview] = useState<string | null>(null);
-    const [galeri2Preview, setGaleri2Preview] = useState<string | null>(null);
-    const [galeri3Preview, setGaleri3Preview] = useState<string | null>(null);
-    const [gambarKamarUtamaPreview, setGambarKamarUtamaPreview] = useState<
-        string | null
-    >(null);
-    const [kamarGaleri1Preview, setKamarGaleri1Preview] = useState<
-        string | null
-    >(null);
-    const [kamarGaleri2Preview, setKamarGaleri2Preview] = useState<
-        string | null
-    >(null);
+const InputHotelPage = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  
+  // Form data states
+  const [hotelData, setHotelData] = useState<HotelFormData>({
+    namaHotel: "",
+    alamatHotel: "",
+    googleMapsHotel: "",
+    deskripsiHotel: "",
+    fasilitas: [],
+    gambar1: "",
+    gambar2: "",
+    gambar3: ""
+  });
 
-    // --- HANDLER INPUT (Tidak berubah) ---
-    const handleHotelChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const {name, value} = e.target;
-        setHotel((prev) => ({
+  // Preview states for Hotel images
+  const [hotelPreviews, setHotelPreviews] = useState({
+    gambar1: null as string | null,
+    gambar2: null as string | null,
+    gambar3: null as string | null
+  });
+  
+  const [rooms, setRooms] = useState<RoomFormData[]>([]);
+  const [showRoomModal, setShowRoomModal] = useState(false);
+  const [editingRoomIndex, setEditingRoomIndex] = useState<number | null>(null);
+  
+  // Form states
+  const [newFasilitas, setNewFasilitas] = useState("");
+  const [currentRoom, setCurrentRoom] = useState<RoomFormData>({
+    jenisKamar: "",
+    luasKamar: "",
+    fasilitasKamar: [],
+    hargaPerMalam: "",
+    banyaknyaTamu: "",
+    deskripsiKamar: "",
+    gambar1: "",
+    gambar2: "",
+    gambar3: "",
+    gambar360: ""
+  });
+  const [newRoomFasilitas, setNewRoomFasilitas] = useState("");
+
+  // Preview states for Room images
+  const [roomPreviews, setRoomPreviews] = useState({
+    gambar1: null as string | null,
+    gambar2: null as string | null,
+    gambar3: null as string | null,
+    gambar360: null as string | null
+  });
+
+  // Handle hotel form input changes
+  const handleHotelChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setHotelData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle hotel image change with preview
+  const handleHotelImageChange = async (e: React.ChangeEvent<HTMLInputElement>, imageType: 'gambar1' | 'gambar2' | 'gambar3') => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const uploadResult = await uploadResponse.json();
+        
+        if (uploadResult.success) {
+          // Store the actual filename in hotel data
+          setHotelData(prev => ({
             ...prev,
-            [name]: value,
-            ...(name === "title" && {
-                slug: value.toLowerCase().replace(/\s+/g, "-"),
-            }),
+            [imageType]: uploadResult.filename
+          }));
+          
+          // Update preview with full path
+          setHotelPreviews(prev => ({
+            ...prev,
+            [imageType]: `/uploads/${uploadResult.filename}`
+          }));
+        } else {
+          alert('Gagal mengupload gambar: ' + uploadResult.message);
+          // Reset preview on error
+          setHotelPreviews(prev => ({
+            ...prev,
+            [imageType]: null
+          }));
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        alert('Gagal mengupload gambar. Silakan coba lagi.');
+        // Reset preview on error
+        setHotelPreviews(prev => ({
+          ...prev,
+          [imageType]: null
         }));
-    };
-    const handleRoomChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const {name, value} = e.target;
-        setCurrentRoom((prev) => ({...prev, [name]: value}));
-    };
-    // Handler gambar... (tidak berubah)
-    const handleImageChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        field: "image" | "galeri1" | "galeri2" | "galeri3"
-    ) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const imgUrl = reader.result as string;
-            setHotel({...hotel, [field]: imgUrl});
-            if (field === "image") setGambarHotelPreview(imgUrl);
-            if (field === "galeri1") setGaleri1Preview(imgUrl);
-            if (field === "galeri2") setGaleri2Preview(imgUrl);
-            if (field === "galeri3") setGaleri3Preview(imgUrl);
-        };
-        reader.readAsDataURL(file);
-    };
-    const handleImageKamar = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        field: "image" | "galeri1" | "galeri2"
-    ) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const imgUrl = reader.result as string;
-            setCurrentRoom({...currentRoom, [field]: imgUrl});
-            if (field === "image") setGambarKamarUtamaPreview(imgUrl);
-            if (field === "galeri1") setKamarGaleri1Preview(imgUrl);
-            if (field === "galeri2") setKamarGaleri2Preview(imgUrl);
-        };
-        reader.readAsDataURL(file);
-    };
+      }
+    }
+  };
 
-    // --- LOGIKA UTAMA (BAGIAN YANG DIPERBAIKI) ---
+  // Handle fasilitas hotel
+  const addFasilitas = () => {
+    if (newFasilitas.trim() && !hotelData.fasilitas.includes(newFasilitas.trim())) {
+      setHotelData(prev => ({
+        ...prev,
+        fasilitas: [...prev.fasilitas, newFasilitas.trim()]
+      }));
+      setNewFasilitas("");
+    }
+  };
 
-    const handleSaveHotel = async () => {
-        if (!hotel.title || !hotel.location) {
-            alert("Nama hotel dan lokasi wajib diisi.");
-            return;
+  const removeFasilitas = (index: number) => {
+    setHotelData(prev => ({
+      ...prev,
+      fasilitas: prev.fasilitas.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Handle room form
+  const handleRoomChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCurrentRoom(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle room image change with preview
+  const handleRoomImageChange = async (e: React.ChangeEvent<HTMLInputElement>, imageType: 'gambar1' | 'gambar2' | 'gambar3' | 'gambar360') => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const uploadResult = await uploadResponse.json();
+        
+        if (uploadResult.success) {
+          // Store the actual filename in room data
+          setCurrentRoom(prev => ({
+            ...prev,
+            [imageType]: uploadResult.filename
+          }));
+          
+          // Update preview with full path
+          setRoomPreviews(prev => ({
+            ...prev,
+            [imageType]: `/uploads/${uploadResult.filename}`
+          }));
+        } else {
+          alert('Gagal mengupload gambar: ' + uploadResult.message);
+          // Reset preview on error
+          setRoomPreviews(prev => ({
+            ...prev,
+            [imageType]: null
+          }));
         }
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/hotel", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(hotel),
-            });
+      } catch (error) {
+        console.error('Upload error:', error);
+        alert('Gagal mengupload gambar. Silakan coba lagi.');
+        // Reset preview on error
+        setRoomPreviews(prev => ({
+          ...prev,
+          [imageType]: null
+        }));
+      }
+    }
+  };
 
-            // Periksa header untuk memastikan respons adalah JSON
-            const contentType = res.headers.get("content-type");
-            if (res.ok) {
-                const savedData = await res.json();
-                setSavedHotelId(savedData.id);
-                alert(
-                    "Data hotel berhasil disimpan! Sekarang Anda bisa menambahkan kamar."
-                );
-            } else {
-                // Jika gagal, cek apakah responsnya JSON sebelum di-parse
-                if (
-                    contentType &&
-                    contentType.indexOf("application/json") !== -1
-                ) {
-                    const errorData = await res.json();
-                    alert(
-                        `Gagal menyimpan data hotel: ${
-                            errorData.message || "Error tidak diketahui"
-                        }`
-                    );
-                } else {
-                    // Jika bukan JSON, tampilkan pesan error umum dari status text
-                    const errorText = await res.text();
-                    console.error(
-                        "Server returned non-JSON response:",
-                        errorText
-                    );
-                    alert(
-                        `Gagal menyimpan data hotel. Server merespons dengan status: ${res.status} ${res.statusText}`
-                    );
-                }
-            }
-        } catch (error) {
-            console.error("Error saat menyimpan hotel:", error);
-            alert("Terjadi kesalahan pada server saat menyimpan hotel.");
-        } finally {
-            setIsLoading(false);
+  const addRoomFasilitas = () => {
+    if (newRoomFasilitas.trim() && !currentRoom.fasilitasKamar.includes(newRoomFasilitas.trim())) {
+      setCurrentRoom(prev => ({
+        ...prev,
+        fasilitasKamar: [...prev.fasilitasKamar, newRoomFasilitas.trim()]
+      }));
+      setNewRoomFasilitas("");
+    }
+  };
+
+  const removeRoomFasilitas = (index: number) => {
+    setCurrentRoom(prev => ({
+      ...prev,
+      fasilitasKamar: prev.fasilitasKamar.filter((_, i) => i !== index)
+    }));
+  };
+
+  const openRoomModal = (roomIndex?: number) => {
+    if (roomIndex !== undefined && roomIndex >= 0) {
+      const room = rooms[roomIndex];
+      setCurrentRoom(room);
+      setEditingRoomIndex(roomIndex);
+      // Set preview images for editing
+      setRoomPreviews({
+        gambar1: room.gambar1 || null,
+        gambar2: room.gambar2 || null,
+        gambar3: room.gambar3 || null,
+        gambar360: room.gambar360 || null
+      });
+    } else {
+      setCurrentRoom({
+        jenisKamar: "",
+        luasKamar: "",
+        fasilitasKamar: [],
+        hargaPerMalam: "",
+        banyaknyaTamu: "",
+        deskripsiKamar: "",
+        gambar1: "",
+        gambar2: "",
+        gambar3: "",
+        gambar360: ""
+      });
+      setEditingRoomIndex(null);
+      // Reset preview images for new room
+      setRoomPreviews({
+        gambar1: null,
+        gambar2: null,
+        gambar3: null,
+        gambar360: null
+      });
+    }
+    setShowRoomModal(true);
+  };
+
+  const closeRoomModal = () => {
+    setShowRoomModal(false);
+    setEditingRoomIndex(null);
+    setNewRoomFasilitas("");
+    // Reset room preview images
+    setRoomPreviews({
+      gambar1: null,
+      gambar2: null,
+      gambar3: null,
+      gambar360: null
+    });
+  };
+
+  const saveRoom = () => {
+    // Validasi
+    if (!currentRoom.jenisKamar || !currentRoom.luasKamar || !currentRoom.hargaPerMalam || 
+        !currentRoom.banyaknyaTamu || !currentRoom.deskripsiKamar) {
+      alert("Semua field kamar wajib diisi!");
+      return;
+    }
+
+    if (editingRoomIndex !== null) {
+      // Update room
+      const updatedRooms = [...rooms];
+      updatedRooms[editingRoomIndex] = currentRoom;
+      setRooms(updatedRooms);
+    } else {
+      // Add new room
+      setRooms(prev => [...prev, currentRoom]);
+    }
+    
+    closeRoomModal();
+  };
+
+  const deleteRoom = (index: number) => {
+    if (confirm("Apakah Anda yakin ingin menghapus kamar ini?")) {
+      setRooms(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  // Submit form
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validasi
+    if (!hotelData.namaHotel || !hotelData.alamatHotel || !hotelData.deskripsiHotel) {
+      alert("Nama hotel, alamat, dan deskripsi wajib diisi!");
+      return;
+    }
+
+    if (hotelData.fasilitas.length === 0) {
+      alert("Minimal satu fasilitas hotel harus diisi!");
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Submit hotel first
+      const hotelResponse = await fetch("/api/hotel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(hotelData)
+      });
+
+      const hotelResult = await hotelResponse.json();
+
+      if (!hotelResult.success) {
+        throw new Error(hotelResult.message || "Gagal menyimpan hotel");
+      }
+
+      const hotelId = hotelResult.data.id;
+
+      // Submit rooms if any
+      if (rooms.length > 0) {
+        for (const room of rooms) {
+          const roomResponse = await fetch("/api/admin/room", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              ...room,
+              hotelId: hotelId,
+              hargaPerMalam: parseFloat(room.hargaPerMalam),
+              banyaknyaTamu: parseInt(room.banyaknyaTamu)
+            })
+          });
+
+          const roomResult = await roomResponse.json();
+          if (!roomResult.success) {
+            console.error("Error creating room:", roomResult.message);
+          }
         }
-    };
+      }
 
-    const handleAddKamar = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!savedHotelId) return alert("Simpan data hotel terlebih dahulu.");
-        if (!currentRoom.name || !currentRoom.price)
-            return alert("Nama kamar dan harga wajib diisi!");
+      alert("Hotel berhasil ditambahkan!");
+      router.push("/dashboard/Hotel");
+      
+    } catch (error) {
+      console.error("Error submitting hotel:", error);
+      alert("Error: " + (error instanceof Error ? error.message : "Terjadi kesalahan"));
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setIsLoading(true);
-        try {
-            const res = await fetch(`/api/hotel`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    ...currentRoom,
-                    hotelId: savedHotelId,
-                }),
-            });
-
-            const contentType = res.headers.get("content-type");
-            if (res.ok) {
-                const newRoom = await res.json();
-                setRooms([...rooms, newRoom]);
-                setCurrentRoom(initialRoomState);
-                setModalOpen(false);
-                setGambarKamarUtamaPreview(null);
-                setKamarGaleri1Preview(null);
-                setKamarGaleri2Preview(null);
-                alert("Kamar berhasil ditambahkan!");
-            } else {
-                if (
-                    contentType &&
-                    contentType.indexOf("application/json") !== -1
-                ) {
-                    const errorData = await res.json();
-                    alert(
-                        `Gagal menambah kamar: ${
-                            errorData.message || "Error tidak diketahui"
-                        }`
-                    );
-                } else {
-                    const errorText = await res.text();
-                    console.error(
-                        "Server returned non-JSON response:",
-                        errorText
-                    );
-                    alert(
-                        `Gagal menambah kamar. Server merespons dengan status: ${res.status} ${res.statusText}`
-                    );
-                }
-            }
-        } catch (error) {
-            console.error("Error saat menambah kamar:", error);
-            alert("Terjadi kesalahan pada server saat menambah kamar.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleDeleteRoom = async (roomId: number) => {
-        if (!window.confirm("Apakah anda yakin ingin menghapus kamar ini?")) {
-            return;
-        }
-
-        try {
-            const res = await fetch(`/api/room/${roomId}`, {
-                method: "DELETE",
-            });
-            if (res.ok) {
-                setRooms(rooms.filter((room) => room.id !== roomId));
-                alert("kamar berhasil dihapus.");
-            }
-        } catch (error) {
-            console.error("Error saat menghapus kamar:", error);
-            alert("terjadi kesalahan pada server saat menghapus kamar.");
-        }
-    };
-
-    const handleViewRoom = (room: RoomType) => {
-        setCurrentRoom(room);
-        setViewModalOpen(true);
-    };
-
-    // --- TAMPILAN JSX (Tidak berubah) ---
-    return (
-        <div>
-            {/* ... Seluruh kode JSX Anda tetap sama ... */}
-            <div className="max-w-8xl mx-auto bg-white p-8 rounded-xl shadow-lg my-10">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-4">
-                    {savedHotelId
-                        ? `Edit Hotel: ${hotel.title}`
-                        : "Input Data Hotel Baru"}
-                </h1>
-
-                <fieldset disabled={!!savedHotelId}>
-                    <form onSubmit={(e) => e.preventDefault()}>
-                        <div className="grid md:grid-cols-2 gap-10">
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">
-                                        Nama Hotel
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="title"
-                                        value={hotel.title}
-                                        onChange={handleHotelChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm read-only:bg-gray-100"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label>Lokasi</label>
-                                    <input
-                                        type="text"
-                                        name="location"
-                                        value={hotel.location}
-                                        onChange={handleHotelChange}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm read-only:bg-gray-100"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label>Harga Mulai Dari</label>
-                                    <input
-                                        type="text"
-                                        name="price"
-                                        value={hotel.price}
-                                        onChange={handleHotelChange}
-                                        placeholder="Contoh: Rp 350.000"
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm read-only:bg-gray-100"
-                                    />
-                                </div>
-                                <div>
-                                    <label>Deskripsi</label>
-                                    <textarea
-                                        name="description"
-                                        value={hotel.description}
-                                        onChange={handleHotelChange}
-                                        rows={12}
-                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm read-only:bg-gray-100"
-                                    ></textarea>
-                                </div>
-                            </div>
-                            <div className="space-y-4">
-                                <h3 className="font-semibold text-gray-700 text-lg">
-                                    Gambar Hotel
-                                </h3>
-                                <div>
-                                    <label
-                                        htmlFor="gambarUtama"
-                                        className="cursor-pointer"
-                                    >
-                                        <div className="w-full h-48 xl:h-90 bg-gray-200 flex items-center justify-center rounded-md border-2 border-gray-300 border-dashed hover:border-indigo-500">
-                                            {gambarHotelPreview ? (
-                                                <Image
-                                                    src={gambarHotelPreview}
-                                                    alt="Preview"
-                                                    width={500}
-                                                    height={192}
-                                                    className="object-cover w-full h-full rounded-md"
-                                                />
-                                            ) : (
-                                                <div className="text-center text-gray-500">
-                                                    {" "}
-                                                    <ImageIcon className="mx-auto h-12 w-12" />{" "}
-                                                    <span>Gambar Utama</span>{" "}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </label>
-                                    <input
-                                        id="gambarUtama"
-                                        type="file"
-                                        className="hidden"
-                                        onChange={(e) =>
-                                            handleImageChange(e, "image")
-                                        }
-                                    />
-                                </div>
-                                <div className="grid grid-cols-3 gap-4">
-                                    <div>
-                                        <label
-                                            htmlFor="galeri1"
-                                            className="cursor-pointer"
-                                        >
-                                            <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded-md border-2 border-gray-300 border-dashed hover:border-indigo-500">
-                                                {galeri1Preview ? (
-                                                    <Image
-                                                        src={galeri1Preview}
-                                                        alt="Preview"
-                                                        width={150}
-                                                        height={112}
-                                                        className="object-cover w-full h-full rounded-md"
-                                                    />
-                                                ) : (
-                                                    <ImageIcon className="h-8 w-8 text-gray-400" />
-                                                )}
-                                            </div>
-                                        </label>
-                                        <input
-                                            id="galeri1"
-                                            type="file"
-                                            className="hidden"
-                                            onChange={(e) =>
-                                                handleImageChange(e, "galeri1")
-                                            }
-                                        />
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor="galeri2"
-                                            className="cursor-pointer"
-                                        >
-                                            <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded-md border-2 border-gray-300 border-dashed hover:border-indigo-500">
-                                                {galeri2Preview ? (
-                                                    <Image
-                                                        src={galeri2Preview}
-                                                        alt="Preview"
-                                                        width={150}
-                                                        height={112}
-                                                        className="object-cover w-full h-full rounded-md"
-                                                    />
-                                                ) : (
-                                                    <ImageIcon className="h-8 w-8 text-gray-400" />
-                                                )}
-                                            </div>
-                                        </label>
-                                        <input
-                                            id="galeri2"
-                                            type="file"
-                                            className="hidden"
-                                            onChange={(e) =>
-                                                handleImageChange(e, "galeri2")
-                                            }
-                                        />
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor="galeri3"
-                                            className="cursor-pointer"
-                                        >
-                                            <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded-md border-2 border-gray-300 border-dashed hover:border-indigo-500">
-                                                {galeri3Preview ? (
-                                                    <Image
-                                                        src={galeri3Preview}
-                                                        alt="Preview"
-                                                        width={150}
-                                                        height={112}
-                                                        className="object-cover w-full h-full rounded-md"
-                                                    />
-                                                ) : (
-                                                    <ImageIcon className="h-8 w-8 text-gray-400" />
-                                                )}
-                                            </div>
-                                        </label>
-                                        <input
-                                            id="galeri3"
-                                            type="file"
-                                            className="hidden"
-                                            onChange={(e) =>
-                                                handleImageChange(e, "galeri3")
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </fieldset>
-
-                {!savedHotelId && (
-                    <div className="mt-8 flex justify-end">
-                        <button
-                            onClick={handleSaveHotel}
-                            disabled={isLoading}
-                            className="bg-green-600 px-6 py-3 rounded-md text-white font-bold cursor-pointer hover:bg-green-700 disabled:bg-gray-400"
-                        >
-                            {isLoading ? "Menyimpan..." : "Simpan Data Hotel"}
-                        </button>
-                    </div>
-                )}
-
-                {savedHotelId && (
-                    <div className="mt-10 border-t pt-6">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-bold text-gray-800">
-                                Daftar Kamar ({rooms.length})
-                            </h2>
-                            <button
-                                onClick={() => setModalOpen(true)}
-                                className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold cursor-pointer hover:bg-indigo-700"
-                            >
-                                + Tambah Kamar
-                            </button>
-                        </div>
-                        <div className="mt-4 space-y-3">
-                            {rooms.length > 0 ? (
-                                rooms.map((room) => (
-                                    <div
-                                        key={room.id}
-                                        className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border"
-                                    >
-                                        <p className="font-medium text-gray-700">
-                                            {room.name} - ({room.price})
-                                        </p>
-                                        <div>
-                                            <button
-                                                onClick={() =>
-                                                    handleViewRoom(room)
-                                                }
-                                                className="text-blue-500 hover:text-blue-700"
-                                            >
-                                                <Eye size={20} />
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    room.id &&
-                                                    handleDeleteRoom(room.id)
-                                                }
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash2 size={20} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-center text-gray-500 py-4">
-                                    Belum ada kamar yang ditambahkan.
-                                </p>
-                            )}
-                        </div>
-                        <div className="flex justify-end my-3">
-                            <Link href="/Dashboard/Hotel">
-                                <button className="border p-2 rounded-md text-white bg-gray-500 cursor-pointer">
-                                    kembali
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
-                )}
-
-                {modalOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                            <h2 className="text-2xl font-bold mb-6 text-center">
-                                Tambah Detail Kamar
-                            </h2>
-                            <form onSubmit={handleAddKamar}>
-                                <div className="grid md:grid-cols-2 gap-8">
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label>Nama Kamar</label>
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                value={currentRoom.name}
-                                                onChange={handleRoomChange}
-                                                placeholder="Contoh: Deluxe Room"
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <label>Harga per Malam</label>
-                                            <input
-                                                type="text"
-                                                name="price"
-                                                value={currentRoom.price}
-                                                onChange={handleRoomChange}
-                                                placeholder="Contoh: Rp 500.000"
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <label>Deskripsi Kamar</label>
-                                            <textarea
-                                                name="description"
-                                                value={currentRoom.description}
-                                                onChange={handleRoomChange}
-                                                rows={5}
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                                            ></textarea>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <h3 className="font-semibold text-gray-700 text-lg">
-                                            Gambar Kamar
-                                        </h3>
-                                        <div>
-                                            <label
-                                                htmlFor="kamarUtama"
-                                                className="cursor-pointer"
-                                            >
-                                                <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-md border-2 border-gray-300 border-dashed hover:border-indigo-500">
-                                                    {gambarKamarUtamaPreview ? (
-                                                        <Image
-                                                            src={
-                                                                gambarKamarUtamaPreview
-                                                            }
-                                                            alt="Preview"
-                                                            width={500}
-                                                            height={192}
-                                                            className="object-cover w-full h-full rounded-md"
-                                                        />
-                                                    ) : (
-                                                        <div className="text-center text-gray-500">
-                                                            <ImageIcon className="mx-auto h-12 w-12" />
-                                                            <span>
-                                                                Gambar Utama
-                                                                Kamar
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </label>
-                                            <input
-                                                id="kamarUtama"
-                                                type="file"
-                                                className="hidden"
-                                                onChange={(e) =>
-                                                    handleImageKamar(e, "image")
-                                                }
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label
-                                                    htmlFor="gambarkamar1"
-                                                    className="cursor-pointer"
-                                                >
-                                                    <div className="w-full h-28 bg-gray-200 flex items-center justify-center rounded-md border-2 border-gray-300 border-dashed hover:border-indigo-500">
-                                                        {kamarGaleri1Preview ? (
-                                                            <Image
-                                                                src={
-                                                                    kamarGaleri1Preview
-                                                                }
-                                                                alt="Preview"
-                                                                width={150}
-                                                                height={112}
-                                                                className="object-cover w-full h-full rounded-md"
-                                                            />
-                                                        ) : (
-                                                            <ImageIcon className="h-8 w-8 text-gray-400" />
-                                                        )}
-                                                    </div>
-                                                </label>
-                                                <input
-                                                    id="gambarkamar1"
-                                                    type="file"
-                                                    className="hidden"
-                                                    onChange={(e) =>
-                                                        handleImageKamar(
-                                                            e,
-                                                            "galeri1"
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <div>
-                                                <label
-                                                    htmlFor="kamargaleri2"
-                                                    className="cursor-pointer"
-                                                >
-                                                    <div className="w-full h-28 bg-gray-200 flex items-center justify-center rounded-md border-2 border-gray-300 border-dashed hover:border-indigo-500">
-                                                        {kamarGaleri2Preview ? (
-                                                            <Image
-                                                                src={
-                                                                    kamarGaleri2Preview
-                                                                }
-                                                                alt="Preview"
-                                                                width={150}
-                                                                height={112}
-                                                                className="object-cover w-full h-full rounded-md"
-                                                            />
-                                                        ) : (
-                                                            <ImageIcon className="h-8 w-8 text-gray-400" />
-                                                        )}
-                                                    </div>
-                                                </label>
-                                                <input
-                                                    id="kamargaleri2"
-                                                    type="file"
-                                                    className="hidden"
-                                                    onChange={(e) =>
-                                                        handleImageKamar(
-                                                            e,
-                                                            "galeri2"
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="mt-8 flex justify-end space-x-3">
-                                    <button
-                                        type="button"
-                                        onClick={() => setModalOpen(false)}
-                                        className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-                                    >
-                                        Batal
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isLoading}
-                                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-gray-400"
-                                    >
-                                        {isLoading
-                                            ? "Menambahkan..."
-                                            : "Tambahkan Kamar Ini"}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
-
-                {viewModalOpen && currentRoom && (
-                    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-                            <h2 className="text-3xl font-bold mb-6 text-center text-gray-800 border-b pb-4">
-                                Detail Kamar: {currentRoom.name}
-                            </h2>
-                            <div className="space-y-6">
-                                <div>
-                                    <h3 className="font-semibold text-lg text-gray-700 mb-2">
-                                        Gambar Utama
-                                    </h3>
-                                    <div className="w-full h-64 bg-gray-200 rounded-md overflow-hidden">
-                                        {currentRoom.image ? (
-                                            <Image
-                                                src={currentRoom.image}
-                                                alt={currentRoom.name}
-                                                width={700}
-                                                height={256}
-                                                className="object-cover w-full h-full"
-                                            />
-                                        ) : (
-                                            <div className="flex items-center justify-center h-full text-gray-500">
-                                                Gambar tidak tersedia
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h3 className="font-semibold text-lg text-gray-700 mb-2">
-                                        Galeri Tambahan
-                                    </h3>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="w-full h-40 bg-gray-200 rounded-md overflow-hidden">
-                                            {currentRoom.galeri1 ? (
-                                                <Image
-                                                    src={currentRoom.galeri1}
-                                                    alt="Galeri 1"
-                                                    width={400}
-                                                    height={160}
-                                                    className="object-cover w-full h-full"
-                                                />
-                                            ) : (
-                                                <div className="flex items-center justify-center h-full text-gray-500">
-                                                    Gambar 1 tidak tersedia
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="w-full h-40 bg-gray-200 rounded-md overflow-hidden">
-                                            {currentRoom.galeri2 ? (
-                                                <Image
-                                                    src={currentRoom.galeri2}
-                                                    alt="Galeri 2"
-                                                    width={400}
-                                                    height={160}
-                                                    className="object-cover w-full h-full"
-                                                />
-                                            ) : (
-                                                <div className="flex items-center justify-center h-full text-gray-500">
-                                                    Gambar 2 tidak tersedia
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-                                    <div>
-                                        <p className="font-semibold">
-                                            Harga per Malam:
-                                        </p>
-                                        <p className="text-lg">
-                                            {currentRoom.price}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">
-                                            Deskripsi:
-                                        </p>
-                                        <p className="whitespace-pre-wrap">
-                                            {currentRoom.description || "-"}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="mt-8 flex justify-end">
-                                <button
-                                    type="button"
-                                    onClick={() => setViewModalOpen(false)}
-                                    className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-                                >
-                                    Tutup
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Link
+            href="/dashboard/Hotel"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Kembali
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-800">Tambah Hotel Baru</h1>
         </div>
-    );
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Hotel Information */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6">Informasi Hotel</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Nama Hotel */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nama Hotel *
+              </label>
+              <input
+                type="text"
+                name="namaHotel"
+                value={hotelData.namaHotel}
+                onChange={handleHotelChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Masukkan nama hotel"
+                required
+              />
+            </div>
+
+            {/* Alamat Hotel */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Alamat Hotel *
+              </label>
+              <input
+                type="text"
+                name="alamatHotel"
+                value={hotelData.alamatHotel}
+                onChange={handleHotelChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Masukkan alamat lengkap hotel"
+                required
+              />
+            </div>
+
+            {/* Google Maps */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Link Google Maps (Opsional)
+              </label>
+              <input
+                type="url"
+                name="googleMapsHotel"
+                value={hotelData.googleMapsHotel}
+                onChange={handleHotelChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="https://maps.google.com/..."
+              />
+            </div>
+
+            {/* Deskripsi */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Deskripsi Hotel *
+              </label>
+              <textarea
+                name="deskripsiHotel"
+                value={hotelData.deskripsiHotel}
+                onChange={handleHotelChange}
+                rows={4}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Jelaskan tentang hotel ini..."
+                required
+              />
+            </div>
+
+            {/* Fasilitas Hotel */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Fasilitas Hotel *
+              </label>
+              <div className="flex gap-2 mb-3">
+                <input
+                  type="text"
+                  value={newFasilitas}
+                  onChange={(e) => setNewFasilitas(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Tambah fasilitas (contoh: WiFi Gratis, Parkir, Kolam Renang)"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFasilitas())}
+                />
+                <button
+                  type="button"
+                  onClick={addFasilitas}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Tambah
+                </button>
+              </div>
+              
+              {/* List Fasilitas */}
+              <div className="flex flex-wrap gap-2">
+                {hotelData.fasilitas.map((fasilitas, index) => (
+                  <span
+                    key={index}
+                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                  >
+                    {fasilitas}
+                    <button
+                      type="button"
+                      onClick={() => removeFasilitas(index)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              {hotelData.fasilitas.length === 0 && (
+                <p className="text-sm text-gray-500 mt-2">Belum ada fasilitas yang ditambahkan</p>
+              )}
+            </div>
+
+            {/* Upload Gambar Hotel */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Gambar Hotel
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Gambar 1 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                    Gambar Utama *
+                  </label>
+                  <label htmlFor="hotelGambar1Upload" className="cursor-pointer">
+                    <div className="w-full h-[200px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                      {hotelPreviews.gambar1 ? (
+                        <Image
+                          src={hotelPreviews.gambar1}
+                          alt="Preview Gambar Hotel 1"
+                          className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                          width={200}
+                          height={200}
+                        />
+                      ) : (
+                        <div className="text-center">
+                          <ImageIcon className="w-12 h-12 text-white mx-auto mb-2" />
+                          <span className="text-white text-sm">Gambar Utama</span>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                  <input
+                    id="hotelGambar1Upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleHotelImageChange(e, 'gambar1')}
+                    className="hidden"
+                  />
+                </div>
+
+                {/* Gambar 2 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                    Gambar Tambahan 1
+                  </label>
+                  <label htmlFor="hotelGambar2Upload" className="cursor-pointer">
+                    <div className="w-full h-[200px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                      {hotelPreviews.gambar2 ? (
+                        <Image
+                          src={hotelPreviews.gambar2}
+                          alt="Preview Gambar Hotel 2"
+                          className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                          width={200}
+                          height={200}
+                        />
+                      ) : (
+                        <div className="text-center">
+                          <ImageIcon className="w-12 h-12 text-white mx-auto mb-2" />
+                          <span className="text-white text-sm">Opsional</span>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                  <input
+                    id="hotelGambar2Upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleHotelImageChange(e, 'gambar2')}
+                    className="hidden"
+                  />
+                </div>
+
+                {/* Gambar 3 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                    Gambar Tambahan 2
+                  </label>
+                  <label htmlFor="hotelGambar3Upload" className="cursor-pointer">
+                    <div className="w-full h-[200px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                      {hotelPreviews.gambar3 ? (
+                        <Image
+                          src={hotelPreviews.gambar3}
+                          alt="Preview Gambar Hotel 3"
+                          className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                          width={200}
+                          height={200}
+                        />
+                      ) : (
+                        <div className="text-center">
+                          <ImageIcon className="w-12 h-12 text-white mx-auto mb-2" />
+                          <span className="text-white text-sm">Opsional</span>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                  <input
+                    id="hotelGambar3Upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleHotelImageChange(e, 'gambar3')}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Upload hingga 3 gambar hotel. Format yang didukung: JPG, PNG, GIF
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Room Management */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-800">Manajemen Kamar</h2>
+            <button
+              type="button"
+              onClick={() => openRoomModal()}
+              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+            >
+              <Plus className="w-4 h-4" />
+              Tambah Kamar
+            </button>
+          </div>
+
+          {/* Room List */}
+          {rooms.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <p>Belum ada kamar yang ditambahkan</p>
+              <p className="text-sm">Klik tombol &quot;Tambah Kamar&quot; untuk menambahkan kamar</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {rooms.map((room, index) => (
+                <div key={index} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="font-semibold text-gray-800">{room.jenisKamar}</h3>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => openRoomModal(index)}
+                        className="text-blue-600 hover:text-blue-800 text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteRoom(index)}
+                        className="text-red-600 hover:text-red-800 text-sm"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <p><span className="font-medium">Luas:</span> {room.luasKamar}</p>
+                    <p><span className="font-medium">Harga:</span> Rp {parseFloat(room.hargaPerMalam).toLocaleString('id-ID')}/malam</p>
+                    <p><span className="font-medium">Tamu:</span> {room.banyaknyaTamu} orang</p>
+                    
+                    {room.fasilitasKamar.length > 0 && (
+                      <div>
+                        <p className="font-medium">Fasilitas:</p>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {room.fasilitasKamar.slice(0, 2).map((fasilitas, fIndex) => (
+                            <span key={fIndex} className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs">
+                              {fasilitas}
+                            </span>
+                          ))}
+                          {room.fasilitasKamar.length > 2 && (
+                            <span className="text-xs text-gray-500">+{room.fasilitasKamar.length - 2} lagi</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-end gap-4">
+          <Link
+            href="/dashboard/Hotel"
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          >
+            Batal
+          </Link>
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Menyimpan...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                Simpan Hotel
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+
+      {/* Room Modal */}
+      {showRoomModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {editingRoomIndex !== null ? 'Edit Kamar' : 'Tambah Kamar Baru'}
+                </h3>
+                <button
+                  type="button"
+                  onClick={closeRoomModal}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Jenis Kamar */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Jenis Kamar *
+                  </label>
+                  <input
+                    type="text"
+                    name="jenisKamar"
+                    value={currentRoom.jenisKamar}
+                    onChange={handleRoomChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Contoh: Deluxe Room, Standard Room, Suite"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Luas Kamar */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Luas Kamar *
+                    </label>
+                    <input
+                      type="text"
+                      name="luasKamar"
+                      value={currentRoom.luasKamar}
+                      onChange={handleRoomChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Contoh: 25 m², 30 m²"
+                    />
+                  </div>
+
+                  {/* Harga per Malam */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Harga per Malam *
+                    </label>
+                    <input
+                      type="number"
+                      name="hargaPerMalam"
+                      value={currentRoom.hargaPerMalam}
+                      onChange={handleRoomChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Contoh: 500000"
+                      min="0"
+                    />
+                  </div>
+
+                  {/* Banyaknya Tamu */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Kapasitas Tamu *
+                    </label>
+                    <input
+                      type="number"
+                      name="banyaknyaTamu"
+                      value={currentRoom.banyaknyaTamu}
+                      onChange={handleRoomChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Contoh: 2"
+                      min="1"
+                    />
+                  </div>
+                </div>
+
+                {/* Deskripsi Kamar */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Deskripsi Kamar *
+                  </label>
+                  <textarea
+                    name="deskripsiKamar"
+                    value={currentRoom.deskripsiKamar}
+                    onChange={handleRoomChange}
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Jelaskan tentang kamar ini..."
+                  />
+                </div>
+
+                {/* Fasilitas Kamar */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Fasilitas Kamar
+                  </label>
+                  <div className="flex gap-2 mb-3">
+                    <input
+                      type="text"
+                      value={newRoomFasilitas}
+                      onChange={(e) => setNewRoomFasilitas(e.target.value)}
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Tambah fasilitas kamar (AC, TV, WiFi, dll)"
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addRoomFasilitas())}
+                    />
+                    <button
+                      type="button"
+                      onClick={addRoomFasilitas}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                  
+                  {/* List Fasilitas Kamar */}
+                  <div className="flex flex-wrap gap-2">
+                    {currentRoom.fasilitasKamar.map((fasilitas, index) => (
+                      <span
+                        key={index}
+                        className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                      >
+                        {fasilitas}
+                        <button
+                          type="button"
+                          onClick={() => removeRoomFasilitas(index)}
+                          className="text-green-600 hover:text-green-800"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Upload Gambar Kamar */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Gambar Kamar
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Gambar 1 */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Gambar Utama *
+                      </label>
+                      <label htmlFor="roomGambar1Upload" className="cursor-pointer">
+                        <div className="w-full h-[150px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                          {roomPreviews.gambar1 ? (
+                            <Image
+                              src={roomPreviews.gambar1}
+                              alt="Preview Gambar Room 1"
+                              className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                              width={150}
+                              height={150}
+                            />
+                          ) : (
+                            <div className="text-center">
+                              <ImageIcon className="w-8 h-8 text-white mx-auto mb-1" />
+                              <span className="text-white text-xs">Utama</span>
+                            </div>
+                          )}
+                        </div>
+                      </label>
+                      <input
+                        id="roomGambar1Upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleRoomImageChange(e, 'gambar1')}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {/* Gambar 2 */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Gambar 2
+                      </label>
+                      <label htmlFor="roomGambar2Upload" className="cursor-pointer">
+                        <div className="w-full h-[150px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                          {roomPreviews.gambar2 ? (
+                            <Image
+                              src={roomPreviews.gambar2}
+                              alt="Preview Gambar Room 2"
+                              className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                              width={150}
+                              height={150}
+                            />
+                          ) : (
+                            <div className="text-center">
+                              <ImageIcon className="w-8 h-8 text-white mx-auto mb-1" />
+                              <span className="text-white text-xs">Opsional</span>
+                            </div>
+                          )}
+                        </div>
+                      </label>
+                      <input
+                        id="roomGambar2Upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleRoomImageChange(e, 'gambar2')}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {/* Gambar 3 */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Gambar 3
+                      </label>
+                      <label htmlFor="roomGambar3Upload" className="cursor-pointer">
+                        <div className="w-full h-[150px] bg-gray-300 rounded-md flex items-center justify-center hover:bg-gray-400 transition shadow-sm border border-gray-400">
+                          {roomPreviews.gambar3 ? (
+                            <Image
+                              src={roomPreviews.gambar3}
+                              alt="Preview Gambar Room 3"
+                              className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
+                              width={150}
+                              height={150}
+                            />
+                          ) : (
+                            <div className="text-center">
+                              <ImageIcon className="w-8 h-8 text-white mx-auto mb-1" />
+                              <span className="text-white text-xs">Opsional</span>
+                            </div>
+                          )}
+                        </div>
+                      </label>
+                      <input
+                        id="roomGambar3Upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleRoomImageChange(e, 'gambar3')}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {/* Gambar 360 */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Gambar 360° (Khusus)
+                      </label>
+                      <label htmlFor="roomGambar360Upload" className="cursor-pointer">
+                        <div className="w-full h-[150px] bg-gradient-to-r from-blue-300 to-purple-300 rounded-md flex items-center justify-center hover:from-blue-400 hover:to-purple-400 transition shadow-sm border border-blue-400">
+                          {roomPreviews.gambar360 ? (
+                            <Image
+                              src={roomPreviews.gambar360}
+                              alt="Preview Gambar 360°"
+                              className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-purple-400"
+                              width={150}
+                              height={150}
+                            />
+                          ) : (
+                            <div className="text-center">
+                              <ImageIcon className="w-8 h-8 text-white mx-auto mb-1" />
+                              <span className="text-white text-xs">360°</span>
+                            </div>
+                          )}
+                        </div>
+                      </label>
+                      <input
+                        id="roomGambar360Upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleRoomImageChange(e, 'gambar360')}
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Upload hingga 3 gambar kamar dan 1 gambar 360°. Format yang didukung: JPG, PNG, GIF. Gambar 360° khusus untuk virtual tour.
+                  </p>
+                </div>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex justify-end gap-4 mt-6 pt-6 border-t">
+                <button
+                  type="button"
+                  onClick={closeRoomModal}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={saveRoom}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  Simpan Kamar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
-export default Page;
+export default InputHotelPage;

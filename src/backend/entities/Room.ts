@@ -1,30 +1,48 @@
-import { Entity, PrimaryGeneratedColumn,Column,ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Hotel } from "./Hotel";
 
 @Entity()
-export class Room{
+export class Room {
   @PrimaryGeneratedColumn()
-  id!:number;
+  id!: number;
 
-  @Column()
-  name!:string
+  @Column({ name: 'jenis_kamar' })
+  jenisKamar!: string;
 
-  @Column()
-  description!:string
+  @Column({ name: 'luas_kamar' })
+  luasKamar!: string;
 
-  @Column()
-  price!:string
-  
-  @Column()
-  image!:string
+  @Column({ name: 'fasilitas_kamar', type: 'json' })
+  fasilitasKamar!: string[];
 
-  @Column()
-  galeri1!:string
+  @Column({ name: 'harga_per_malam', type: 'decimal', precision: 10, scale: 2 })
+  hargaPerMalam!: number;
 
-  @Column()
-  galeri2!:string
+  @Column({ name: 'banyaknya_tamu' })
+  banyaknyaTamu!: number;
 
-  @ManyToOne(()=>Hotel,(hotel)=>hotel.rooms)
-  @JoinColumn()
-  hotel!:Hotel
+  @Column({ name: 'deskripsi_kamar', type: 'text' })
+  deskripsiKamar!: string;
+
+  @Column({ name: 'gambar1', nullable: true })
+  gambar1?: string;
+
+  @Column({ name: 'gambar2', nullable: true })
+  gambar2?: string;
+
+  @Column({ name: 'gambar3', nullable: true })
+  gambar3?: string;
+
+  @Column({ name: 'gambar360', nullable: true })
+  gambar360?: string;
+
+  @ManyToOne(() => Hotel, (hotel) => hotel.rooms, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'hotel_id' })
+  hotel!: Hotel;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt!: Date;
 }
