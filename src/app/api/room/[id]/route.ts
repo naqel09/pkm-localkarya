@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { AppDataSource } from "@/backend/db/data-source";
 import { Room } from "@/backend/entities/Room";
 
-export async function GET(request:Request,{params}:{params:{id:string}}){
+export async function GET(request:Request,{params}:{params:Promise<{id:string}>}){
     try{
+        const { id: idParam } = await params;
         const roomRepo = AppDataSource.getRepository(Room)
-        const room = await roomRepo.findOneBy({id:Number(params.id)});
+        const room = await roomRepo.findOneBy({id:Number(idParam)});
 
         if(!room){
             return NextResponse.json({message:"room tidak ditemukan",status:404})
@@ -17,9 +18,10 @@ export async function GET(request:Request,{params}:{params:{id:string}}){
     }
 }
 
-export async function PUT(request:Request,{params}:{params:{id:string}}){
+export async function PUT(request:Request,{params}:{params:Promise<{id:string}>}){
     try{
-        const id = parseInt(params.id);
+        const { id: idParam } = await params;
+        const id = parseInt(idParam);
         if(isNaN(id)){
             return NextResponse.json({message:"Invalid ID format"},{status:400})
         }
