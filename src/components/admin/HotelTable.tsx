@@ -1,19 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Gunakan Image dari Next.js untuk optimisasi
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, MapPin, Users } from "lucide-react";
 import Pagination from "./ui/Pagination/Pagination";
 
-// Definisikan tipe data untuk Hotel agar lebih aman dan mudah dibaca
+// Definisikan tipe data untuk Hotel sesuai entity baru
 interface HotelType {
   id: number;
-  image: string;
-  title: string;
-  location: string;
-  price: string;
-  description: string;
-  rooms?: any[]; // Opsional jika data kamar disertakan
+  namaHotel: string;
+  alamatHotel: string;
+  googleMapsHotel?: string;
+  deskripsiHotel: string;
+  fasilitas: string[];
+  rooms?: RoomType[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface RoomType {
+  id: number;
+  jenisKamar: string;
+  luasKamar: string;
+  fasilitasKamar: string[];
+  hargaPerMalam: number;
+  banyaknyaTamu: number;
+  deskripsiKamar: string;
 }
 
 // Fungsi Potong kata
@@ -33,20 +44,26 @@ const HotelTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // 1. useEffect diperbaiki dengan dependency array `[]`
+  // Fetch hotels data
   useEffect(() => {
     const fetchHotels = async () => {
-      setLoading(true); // Set loading ke true sebelum fetch
+      setLoading(true);
       try {
         const res = await fetch("/api/hotel", {
           method: "GET",
           headers: {
-            'Cache-Control': 'no-cache' // Menghindari caching agresif dari Next.js
+            'Cache-Control': 'no-cache'
           }
         });
         if (!res.ok) throw new Error("Gagal mengambil data hotel");
-        const data = await res.json();
-        setHotels(Array.isArray(data) ? data : []); // Pastikan data adalah array
+        const response = await res.json();
+        
+        if (response.success) {
+          setHotels(Array.isArray(response.data) ? response.data : []);
+        } else {
+          console.error("Error:", response.message);
+          setHotels([]);
+        }
       } catch (error) {
         console.error("Error fetching hotels:", error);
         setHotels([]); // Jika error, set data ke array kosong
@@ -77,9 +94,9 @@ const HotelTable = () => {
     }
   };
 
-  // 3. Filter menggunakan properti `title` (huruf kecil)
+  // Filter hotels berdasarkan nama
   const filteredHotel = hotels.filter((hotel) =>
-    hotel.title.toLowerCase().includes(search.toLowerCase())
+    hotel.namaHotel.toLowerCase().includes(search.toLowerCase())
   );
 
   // Kalkulasi untuk pagination
@@ -95,10 +112,10 @@ const HotelTable = () => {
       </div>
       <div className="flex justify-between mb-4">
         <Link
-          href="/Dashboard/Hotel/InputHotel"
+          href="/dashboard/Hotel/InputHotel"
           className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700 cursor-pointer"
         >
-          <Plus size={18} /> Input hotel
+          <Plus size={18} /> Tambah Hotel
         </Link>
         <input
           type="text"
@@ -112,12 +129,12 @@ const HotelTable = () => {
         <table className="w-full text-left rounded-lg border overflow-hidden">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="p-3">Gambar</th>
               <th className="p-3">Nama Hotel</th>
-              <th className="p-3">Lokasi</th>
-              <th className="p-3">Harga</th>
+              <th className="p-3">Alamat</th>
+              <th className="p-3">Fasilitas</th>
               <th className="p-3">Deskripsi</th>
-              <th className="p-3 text-center">Kamar</th>
+              <th className="p-3 text-center">Jumlah Kamar</th>
+              <th className="p-3 text-center">Tanggal Dibuat</th>
               <th className="p-3 text-center">Aksi</th>
             </tr>
           </thead>
@@ -135,26 +152,39 @@ const HotelTable = () => {
             ) : (
               currentItems.map((hotel: HotelType) => (
                 <tr key={hotel.id} className="border-t hover:bg-gray-50">
-                  <td className="p-2">
-                    {/* 4. Properti `image` dan `title` (huruf kecil) */}
-                    <Image
-                      src={hotel.image || '/placeholder.png'} // Fallback jika image null
-                      alt={hotel.title}
-                      width={80}
-                      height={48}
-                      className="w-20 h-12 object-cover rounded"
-                    />
+                  <td className="p-3 font-medium">
+                    {potongkata(hotel.namaHotel, 4)}
                   </td>
-                  <td className="p-3 font-medium">{potongkata(hotel.title, 4)}</td>
-                  <td className="p-3">{hotel.location}</td>
-                  <td className="p-3">{hotel.price}</td>
-                  <td className="p-3 text-sm text-gray-600">{potongkata(hotel.description, 5)}</td>
-                  <td className="p-3 text-center">{hotel.rooms?.length || 0}</td>
+                  <td className="p-3">
+                    {potongkata(hotel.alamatHotel, 5)}
+                  </td>
+                  <td className="p-3">
+                    <div className="flex flex-wrap gap-1">
+                      {hotel.fasilitas.slice(0, 2).map((fasilitas, index) => (
+                        <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                          {fasilitas}
+                        </span>
+                      ))}
+                      {hotel.fasilitas.length > 2 && (
+                        <span className="text-xs text-gray-500">+{hotel.fasilitas.length - 2} lagi</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="p-3 text-sm text-gray-600">
+                    {potongkata(hotel.deskripsiHotel, 8)}
+                  </td>
+                  <td className="p-3 text-center">
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">
+                      {hotel.rooms?.length || 0}
+                    </span>
+                  </td>
+                  <td className="p-3 text-center text-sm text-gray-600">
+                    {new Date(hotel.createdAt).toLocaleDateString('id-ID')}
+                  </td>
                   <td className="p-3">
                     <div className="flex justify-center items-center gap-2">
-                      {/* 5. Link Edit diperbaiki */}
                       <Link
-                        href={`/Dashboard/Hotel/Edit/${hotel.id}`}
+                        href={`/dashboard/Hotel/Edit/${hotel.id}`}
                         className="flex items-center gap-1 text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-sm rounded-md"
                       >
                         <Pencil size={16} /> Edit

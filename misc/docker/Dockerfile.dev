@@ -17,8 +17,14 @@ COPY package.json package-lock.json* ./
 # Install dependencies
 RUN npm ci
 
+# Copy source code (this will be done after installing deps)
+COPY --chown=nextjs:nodejs . .
+
 # Create .next directory with proper permissions
 RUN mkdir -p .next && chown -R nextjs:nodejs .next
+
+# Create uploads directory with proper permissions
+RUN mkdir -p public/uploads && chown -R nextjs:nodejs public/uploads
 
 # Change ownership of the entire app directory
 RUN chown -R nextjs:nodejs /app

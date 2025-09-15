@@ -55,13 +55,7 @@ function Navbar() {
                     <Link href="/Blog">Blog</Link>
                 </li>
             </ul>
-
-            <Link
-                href="/Login"
-                className="hidden md:block px-4 py-2 font-bold rounded-md bg-blue-600 hover:bg-blue-700 transition"
-            >
-                Sign In
-            </Link>
+            <div className="hidden md:block"></div>
 
             {/* Hamburger Icon */}
             <button onClick={toggleSidebar} className="block md:hidden">

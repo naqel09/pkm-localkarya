@@ -4,17 +4,18 @@ import { join } from 'path';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
-    const filePath = join(process.cwd(), 'public', 'uploads', ...params.path);
+    const { path } = await params;
+    const filePath = join(process.cwd(), 'public', 'uploads', ...path);
     
     console.log('Attempting to serve file:', filePath);
     
     const fileBuffer = await readFile(filePath);
     
-    // Determine content type based on file extension
-    const ext = params.path[params.path.length - 1].split('.').pop()?.toLowerCase();
+    // Get file extension for content type
+    const ext = path[path.length - 1].split('.').pop()?.toLowerCase();
     const contentType = getContentType(ext || '');
     
     return new Response(new Uint8Array(fileBuffer), {

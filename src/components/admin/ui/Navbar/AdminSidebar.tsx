@@ -58,18 +58,6 @@ const AdminSidebar = () => {
                     >
                         <FileText size={20} /> Artikel
                     </Link>
-                    <Link
-                        href="#"
-                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
-                    >
-                        <Tag size={20} /> Coupons
-                    </Link>
-                    <Link
-                        href="#"
-                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
-                    >
-                        <ClipboardList size={20} /> Applications
-                    </Link>
 
                     <div className="mt-6 text-sm text-gray-400">
                         Other Information
@@ -88,18 +76,6 @@ const AdminSidebar = () => {
                     </Link>
 
                     <div className="mt-6 text-sm text-gray-400">Settings</div>
-                    <Link
-                        href="/Auth"
-                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
-                    >
-                        <LogOut size={20} /> Logout
-                    </Link>
-                    <Link
-                        href="#"
-                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
-                    >
-                        <Settings size={20} /> Settings
-                    </Link>
                     <LogoutButton />
                 </nav>
             </div>
