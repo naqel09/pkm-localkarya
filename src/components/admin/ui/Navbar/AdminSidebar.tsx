@@ -59,22 +59,6 @@ const AdminSidebar = () => {
                         <FileText size={20} /> Artikel
                     </Link>
 
-                    <div className="mt-6 text-sm text-gray-400">
-                        Other Information
-                    </div>
-                    <Link
-                        href="#"
-                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
-                    >
-                        <BookOpen size={20} /> Knowledge Base
-                    </Link>
-                    <Link
-                        href="#"
-                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
-                    >
-                        <RefreshCcw size={20} /> Product Updates
-                    </Link>
-
                     <div className="mt-6 text-sm text-gray-400">Settings</div>
                     <LogoutButton />
                 </nav>

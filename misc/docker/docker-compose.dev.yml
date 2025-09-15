@@ -41,6 +41,8 @@ services:
       # Mount source code for hot reload
       - ../../src:/app/src
       - ../../public:/app/public
+      # Specific mount for uploads to ensure persistence
+      - ../../public/uploads:/app/public/uploads
       - ../../package.json:/app/package.json
       - ../../package-lock.json:/app/package-lock.json
       - ../../next.config.ts:/app/next.config.ts

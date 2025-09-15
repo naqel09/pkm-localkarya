@@ -72,7 +72,7 @@ services:
       - redis_prod_data:/data
     networks:
       - pkm-network
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass "$REDIS_PASSWORD"}
     healthcheck:
       test: ["CMD", "redis-cli", "--no-auth-warning", "ping"]
       interval: 10s

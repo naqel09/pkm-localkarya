@@ -5,10 +5,10 @@ import { Artikel } from "@/backend/entities/Artikel"
 // mengambil column dari entitas artikel dari database
 const ArtikelRepository = AppDataSource.getRepository(Artikel);
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-
-    const artikel = await ArtikelRepository.findOneBy({ id: Number(params.id) });
+    const { id: idParam } = await params;
+    const artikel = await ArtikelRepository.findOneBy({ id: Number(idParam) });
 
     if (!artikel) {
       return NextResponse.json({ message: "artikel tidak ditemukan" }, { status: 404 });
@@ -23,10 +23,11 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
 export async function DELETE(
     request:Request,
-    {params}:{params:{id:string}}
+    {params}:{params:Promise<{id:string}>}
 ){
     try{
-        const artikel = await ArtikelRepository.findOneBy({id:Number(params.id)});
+        const { id: idParam } = await params;
+        const artikel = await ArtikelRepository.findOneBy({id:Number(idParam)});
         if(artikel){
             await ArtikelRepository.remove(artikel);
             return NextResponse.json
@@ -46,13 +47,14 @@ export async function DELETE(
     }
 }
 
-export async function PUT(request:Request,{params}:{params:{id:string}}){
+export async function PUT(request:Request,{params}:{params:Promise<{id:string}>}){
     try{
+        const { id: idParam } = await params;
         const body = await request.json()
         // cari artikel yang mau di update
         const artikel = await ArtikelRepository.findOne(
             {
-                where: {id:Number(params.id)}
+                where: {id:Number(idParam)}
             }
         );
 

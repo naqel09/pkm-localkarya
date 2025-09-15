@@ -24,7 +24,7 @@ COPY --chown=nextjs:nodejs . .
 RUN mkdir -p .next && chown -R nextjs:nodejs .next
 
 # Create uploads directory with proper permissions
-RUN mkdir -p public/uploads && chown -R nextjs:nodejs public/uploads
+RUN mkdir -p public/uploads && chown -R nextjs:nodejs public/uploads && chmod -R 755 public/uploads
 
 # Change ownership of the entire app directory
 RUN chown -R nextjs:nodejs /app

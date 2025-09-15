@@ -1,11 +1,12 @@
 import React from 'react'
+import RestaurantTable from '@/components/admin/RestaurantTable'
 
-const page = () => {
+const RestaurantPage = () => {
   return (
-    <div>
-      
+    <div className="p-6">
+      <RestaurantTable />
     </div>
   )
 }
 
-export default page
+export default RestaurantPage

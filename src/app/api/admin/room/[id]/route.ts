@@ -4,15 +4,16 @@ import { Room } from "@/backend/entities/Room";
 import { Hotel } from "@/backend/entities/Hotel";
 
 // GET - Mengambil detail room berdasarkan ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         if (!AppDataSource.isInitialized) {
             await AppDataSource.initialize();
         }
 
+        const { id: idParam } = await params;
         const roomRepository = AppDataSource.getRepository(Room);
         const room = await roomRepository.findOne({
-            where: { id: Number(params.id) },
+            where: { id: Number(idParam) },
             relations: ["hotel"]
         });
 
@@ -39,13 +40,14 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT - Update room berdasarkan ID
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         if (!AppDataSource.isInitialized) {
             await AppDataSource.initialize();
         }
 
-        const id = parseInt(params.id);
+        const { id: idParam } = await params;
+        const id = parseInt(idParam);
         if (isNaN(id)) {
             return NextResponse.json({
                 success: false,
