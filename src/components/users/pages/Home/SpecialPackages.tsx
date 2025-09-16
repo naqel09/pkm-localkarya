@@ -9,10 +9,10 @@ function SpecialPackages() {
             <div className="flex justify-between flex-wrap items-center mb-10">
                 <div>
                     <h3 className="font-bold text-xl uppercase tracking-wide">
-                        special packages
+                        Paket Wisata Spesial
                     </h3>
                     <p className="text-sm text-gray-600">
-                        Get Special travel packages made tailored for your needs
+                        Nikmati paket wisata terbaik yang dirancang khusus untuk pengalaman nyaba di Desa Karyawangi
                     </p>
                 </div>
                 <Link
@@ -39,7 +39,7 @@ function SpecialPackages() {
                         <span className="text-xl font-bold">01</span>
                         <div className="text-justify lg:w-3">
                             <p className="text-2xl lg:text-5xl font-semibold hidden lg:block">
-                                Cultural Immersion Package
+                                Paket Nyaba Keluarga
                             </p>
                         </div>
                     </div>
@@ -48,7 +48,7 @@ function SpecialPackages() {
                 {/* Gambar kanan atas */}
                 <div className="relative h-[300px] lg:h-full lg:col-span-6 lg:row-span-3 lg:col-start-4">
                     <Image
-                        src="/cultural.jpg"
+                        src="/Kebun-Teh-Sukawana-1.jpg"
                         alt="Cultural"
                         fill
                         className="object-cover rounded-lg"
@@ -61,18 +61,17 @@ function SpecialPackages() {
                 {/* Judul bawah */}
                 <div className="lg:col-span-3 lg:col-start-4 lg:row-start-4 ">
                     <h2 className="text-5xl lg:text-7xl xl:text-8xl font-bold mt-4 lg:mt-0">
-                        ESCAPE TO PARADISE
+                        ULIN BARENG
                     </h2>
                 </div>
 
                 {/* Deskripsi dan tombol */}
                 <div className="lg:col-span-3 flex flex-col justify-between">
                     <p className="text-gray-600 text-base lg:text-2xl font-extralight text-justify mt-4 lg:mt-0">
-                        Bask in the warm tropical sun with our exclusive
-                        Tropical Escape Package. This 7-day trip takes you to
-                        the most stunning tropical islands.
+                        Bergabunglah dengan pengalaman seru bermain bersama keluarga di tengah keindahan alam Desa Karyawangi. 
+                        Nikmati permainan tradisional, aktivitas outdoor, dan ciptakan kenangan manis bersama orang terkasih.
                     </p>
-                    <Link href="/Booking" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer transition mt-4 text-center md:w-1/3">Pesan</Link>
+                    <Link href="/Tours" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer transition mt-4 text-center md:w-1/3">Pesan Sekarang</Link>
                 </div>
             </div>
         </section>

@@ -34,6 +34,26 @@ const truncateText = (text: string, maxLength: number = 120) => {
   return cleanText.slice(0, maxLength) + "...";
 };
 
+// Fungsi untuk mengecek dan membersihkan path gambar
+const getImageSrc = (imagePath: string | null | undefined, fallback: string = '/river.jpg') => {
+  if (!imagePath || imagePath.trim() === '') {
+    return fallback;
+  }
+  
+  // Jika path sudah dimulai dengan /, gunakan langsung
+  if (imagePath.startsWith('/')) {
+    return imagePath;
+  }
+  
+  // Jika path adalah data URL, gunakan langsung
+  if (imagePath.startsWith('data:')) {
+    return imagePath;
+  }
+  
+  // Jika tidak, anggap sebagai file upload
+  return `/uploads/${imagePath}`;
+};
+
 // Fungsi untuk generate slug dari nama lokasi
 const generateSlug = (name: string) => {
   return name
@@ -99,22 +119,34 @@ export default function DestinationPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-96 overflow-hidden">
-        <Image
-          src="/images/mountain2.jpg"
-          alt="Destinations"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-wider">
-              DESTINATIONS
+      <div className="relative h-96 overflow-hidden bg-gradient-to-br from-lime-400 via-green-500 to-emerald-600">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white/20 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-16 h-16 bg-white/15 rounded-full animate-bounce"></div>
+          <div className="absolute top-32 right-32 w-12 h-12 bg-white/25 rounded-full animate-ping"></div>
+          <div className="absolute bottom-32 left-32 w-8 h-8 bg-white/30 rounded-full animate-pulse"></div>
+        </div>
+        
+        {/* Content */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="text-center text-white px-4">
+            <div className="mb-4">
+              <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
+                🌿 Desa Karyawangi, Parongpong
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-wider drop-shadow-2xl">
+              NYABA WISATA
             </h1>
-            <p className="text-lg md:text-xl opacity-90">
-              Discover Amazing Places in Indonesia
+            <p className="text-lg md:text-2xl opacity-95 max-w-2xl mx-auto">
+              Ulin Bareng, Nikmati Keseruan di Alam Bandung Barat
             </p>
+            <div className="mt-8">
+              <span className="px-8 py-3 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-full backdrop-blur-sm border border-white/30 transition-all duration-300 hover:scale-105">
+                Jelajahi Destinasi ✨
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -123,7 +155,7 @@ export default function DestinationPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-4 md:mb-0">
-            POPULAR DESTINATIONS
+            DESTINASI POPULER
           </h2>
           
           {/* Filter Buttons */}
@@ -171,27 +203,16 @@ export default function DestinationPage() {
                 <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-1">
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
-                    {destination.gambar1 ? (
-                      destination.gambar1.startsWith('data:image') ? (
-                        <div 
-                          className="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-300"
-                          style={{ backgroundImage: `url(${destination.gambar1})` }}
-                        />
-                      ) : (
-                        <Image
-                          src={destination.gambar1}
-                          alt={destination.namaLokasi}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                      )
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                        <span className="text-white text-lg font-semibold">
-                          {destination.namaLokasi.charAt(0)}
-                        </span>
-                      </div>
-                    )}
+                    <Image
+                      src={getImageSrc(destination.gambar1)}
+                      alt={destination.namaLokasi}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/river.jpg';
+                      }}
+                    />
                     
                     {/* Overlay Badge */}
                     <div className="absolute top-3 left-3">

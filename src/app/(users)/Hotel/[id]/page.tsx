@@ -114,7 +114,7 @@ const HotelDetailPage = () => {
           title="Hotel"
           halaman="Beranda"
           bagian="Hotel Tidak Ditemukan"
-          image="/bedroom.jpg"
+          image="/villa1.jpg"
         />
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
@@ -151,7 +151,7 @@ const HotelDetailPage = () => {
         title={hotel.namaHotel}
         halaman="Beranda"
         bagian={`Hotel | ${hotel.namaHotel}`}
-        image="/bedroom.jpg"
+        image="/villa1.jpg"
       />
       
       <div className="min-h-screen bg-gray-50">

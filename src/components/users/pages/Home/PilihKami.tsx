@@ -6,33 +6,33 @@ import {Smile, Mountain, Flag, RefreshCw} from "lucide-react";
 const features = [
     {
         icon: <Smile size={40} className=" mb-4" />,
-        title: "Customer Delight",
+        title: "Kegembiraan Keluarga",
         description:
-            "We deliver the best service and experience for our dear customer.",
-        href:"/customer-delight"
+            "Kami menghadirkan kebahagiaan dan tawa untuk seluruh anggota keluarga di setiap petualangan.",
+        href:"/kegembiraan-keluarga"
     },
     {
         icon: <Mountain size={40} className=" mb-4" />,
-        title: "Authentic Adventure",
+        title: "Wisata Alam Autentik",
         description:
-            "We deliver the real adventure experience for our dear customer.",
-        href:"/authentic-adventure"
+            "Nikmati keindahan alam pegunungan Bandung Barat yang masih asli dan mempesona.",
+        href:"/wisata-alam"
     },
     {
         icon: (
                 <Flag size={40} className=" mb-4" />
         ),
-        title: "Expert Guides",
+        title: "Pemandu Lokal Berpengalaman",
         description:
-            "We deliver only expert tour guides for our dear customer.",
-        href:"/expert-guides"
+            "Dipandu oleh warga lokal yang mengenal setiap sudut desa dan budaya Sunda.",
+        href:"/pemandu-lokal"
     },
     {
         icon: <RefreshCw size={40} className="mb-4" />,
-        title: "Time Flexibility",
+        title: "Fleksibilitas Waktu",
         description:
-            "We welcome time flexibility of traveling for our dear customer.",
-        href:"/time-flexibility"
+            "Jadwal wisata yang dapat disesuaikan dengan kebutuhan dan kenyamanan Anda.",
+        href:"/fleksibilitas-waktu"
     },
 ];
 
@@ -40,6 +40,10 @@ function PilihKami() {
     const [activeIndex,setActiveIndex]=useState<number | null>(null)
     return (
         <section className="py-16 bg-blue-100/100 my-20 rounded-2xl">
+            <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold text-gray-800 mb-4">Mengapa Memilih Nyaba Wisata?</h2>
+                <p className="text-gray-600 max-w-2xl mx-auto">Pengalaman wisata terbaik di Desa Karyawangi dengan pelayanan yang mengutamakan kenyamanan dan kepuasan pengunjung</p>
+            </div>
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-20 text-center">
                 {features.map((feature,index)=>{
                     const isActive = activeIndex ===index;

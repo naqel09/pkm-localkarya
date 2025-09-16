@@ -7,9 +7,9 @@ const page = () => {
         <>
             <TourHeader
                 title="Penginapan"
-                halaman="Beranda"
+                halaman="Villa"
                 bagian="Hotel"
-                image="/bedroom.jpg"
+                image="/hotel1.webp"
             />
             <PopularHotels />
         </>

@@ -6,7 +6,7 @@ function QualitySection() {
         <section className="relative max-w-8-xl h-[35rem] rounded-2xl overflow-hidden text-white md:mx-20 mx-10 my-20 ">
             {/* Background Image */}
             <Image
-                src="/bgImage.jpg"
+                src="/nyaba7.jpg"
                 alt="Quality Background"
                 fill
                 priority
@@ -14,8 +14,8 @@ function QualitySection() {
             />
             <div className="absolute top-1/2 right-20 text-right max-w-sm text-sm md:text-base text-gray-200 hidden md:block">
                 <p>
-                    Take a look at our numbers for our credibility. Let’s have
-                    an adventure!
+                    Lihat angka-angka prestasi kami sebagai bukti komitmen dalam memberikan pengalaman wisata terbaik. 
+                    Mari berpetualang bersama di Desa Karyawangi!
                 </p>
             </div>
             {/* Overlay */}
@@ -26,31 +26,31 @@ function QualitySection() {
                 {/* Header Text */}
                 <div className="max-w-lg">
                     <h2 className="text-lg md:text-xl font-semibold uppercase">
-                        Only the best quality for you
+                        Kualitas Terbaik untuk Pengalaman Nyaba Anda
                     </h2>
                     <p className="mt-2 text-sm md:text-base text-gray-200">
-                        You deserve the ultimate best quality for your memorable
-                        experiences.
+                        Kami berkomitmen memberikan pelayanan wisata terbaik di Desa Karyawangi untuk menciptakan 
+                        kenangan indah yang tak terlupakan.
                     </p>
                 </div>
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 text-center border-t border-white/30 pt-6 gap-6 text-sm md:text-base">
                     <div>
-                        <p className="text-xl font-semibold">20+</p>
-                        <p className="text-gray-200">years of experience</p>
+                        <p className="text-xl font-semibold">5+</p>
+                        <p className="text-gray-200">tahun pengalaman wisata desa</p>
                     </div>
                     <div>
-                        <p className="text-xl font-semibold">100+</p>
-                        <p className="text-gray-200">destination countries</p>
+                        <p className="text-xl font-semibold">15+</p>
+                        <p className="text-gray-200">destinasi menarik di desa</p>
                     </div>
                     <div>
-                        <p className="text-xl font-semibold">10+</p>
-                        <p className="text-gray-200">tour & travel awards</p>
+                        <p className="text-xl font-semibold">50+</p>
+                        <p className="text-gray-200">paket wisata tersedia</p>
                     </div>
                     <div>
-                        <p className="text-xl font-semibold">2,237,216</p>
-                        <p className="text-gray-200">delighted clients</p>
+                        <p className="text-xl font-semibold">1,000+</p>
+                        <p className="text-gray-200">pengunjung puas</p>
                     </div>
                 </div>
 

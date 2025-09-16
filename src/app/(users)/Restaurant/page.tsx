@@ -5,7 +5,7 @@ import React from 'react'
 const page = () => {
   return (
     <>
-      <TourHeader title='Restaurant' halaman='Beranda' bagian='Restaurant' image="/bedroom.jpg"/>
+      <TourHeader title='Kuliner' halaman='Kuliner Asik' bagian='Food Ranger' image="/makanan1.webp"/>
       <RestaurantList />
     </>
   )

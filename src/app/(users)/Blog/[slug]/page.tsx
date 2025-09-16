@@ -58,7 +58,7 @@ const BlogPage = ({ params }: Props) => {
                 <TourHeader
                     title="Artikel"
                     halaman="Home"
-                    bagian="Blog | Berita"
+                    bagian="Berita"
                     image="/images/artikel/headerblog.jpg"
                 />
                 <section className="max-w-8xl mx-auto px-4 mt-5 py-12">
@@ -84,8 +84,8 @@ const BlogPage = ({ params }: Props) => {
         <>
             <TourHeader
                 title="Artikel"
-                halaman="Home"
-                bagian="Blog | Berita"
+                halaman="Kisah"
+                bagian="Cerita"
                 image="/images/artikel/headerblog.jpg"
             />
             <section className="max-w-8xl mx-auto px-4 mt-5 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">

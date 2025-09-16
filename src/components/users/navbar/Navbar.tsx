@@ -19,20 +19,13 @@ function Navbar() {
     return (
         <nav className="flex items-center justify-between px-6 py-4 absolute bg-transparent text-white top-0 left-0 w-full z-20">
             <div className="text-2xl font-bold">
-                <Link href="/">
-                    <Image
-                        src="/images/mclaren.svg"
-                        alt="Logo"
-                        width={40}
-                        height={40}
-                    />
-                </Link>
+                
             </div>
 
             {/* Desktop Navigation */}
             <ul className="hidden md:flex space-x-8 text-sm font-medium">
                 <li className="hover:text-blue-400">
-                    <Link href="/">Homepage</Link>
+                    <Link href="/">Beranda</Link>
                 </li>
                 <li className="hover:text-blue-400">
                     <Link href="/Destination" onClick={toggleOpen}>
@@ -43,16 +36,17 @@ function Navbar() {
                     <Link href="/Tours">Paket Wisata</Link>
                 </li>
                 <li className="hover:text-blue-400">
-                    <Link href="/Hotel">Hotel</Link>
+                    <Link href="/Hotel">Penginapan</Link>
                 </li>
                 <li className="hover:text-blue-400">
-                    <Link href="/Restaurant">Restaurant</Link>
+                    <Link href="/Restaurant">Kuliner</Link>
+                </li>
+                
+                <li className="hover:text-blue-400">
+                    <Link href="/Blog">Artikel</Link>
                 </li>
                 <li className="hover:text-blue-400">
-                    <Link href="/About">About</Link>
-                </li>
-                <li className="hover:text-blue-400">
-                    <Link href="/Blog">Blog</Link>
+                    <Link href="/About">Tentang Kami</Link>
                 </li>
             </ul>
             <div className="hidden md:block"></div>
@@ -76,7 +70,7 @@ function Navbar() {
                         <ul className="space-y-4 text-sm">
                             <li>
                                 <Link href="/" onClick={closeSidebar}>
-                                    Homepage
+                                    Beranda
                                 </Link>
                             </li>
                             <li>
@@ -91,22 +85,22 @@ function Navbar() {
                             </li>
                             <li>
                                 <Link href="/Restaurant" onClick={closeSidebar}>
-                                    Restaurant
+                                    Kuliner
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/Hotel" onClick={closeSidebar}>
-                                    Hotel
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/About" onClick={closeSidebar}>
-                                    About
+                                    Penginapan
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/Blog" onClick={closeSidebar}>
-                                    Blog
+                                    Artikel
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/About" onClick={closeSidebar}>
+                                    Tentang Kami
                                 </Link>
                             </li>
                             <li>

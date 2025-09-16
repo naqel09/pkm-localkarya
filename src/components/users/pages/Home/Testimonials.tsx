@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import Testimonial from "@/app/assets/testimonials.jpg";
 import {ChevronUpIcon, ChevronDownIcon} from "@heroicons/react/24/solid";
 
 function Testimonials() {
@@ -11,10 +10,10 @@ function Testimonials() {
                 <div className="flex flex-col justify-between">
                     <div>
                         <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                            TESTIMONIALS
+                            TESTIMONI
                         </h2>
                         <p className="text-gray-500">
-                            What our clients love about us.
+                            Apa yang pengunjung katakan tentang Nyaba Wisata.
                         </p>
                     </div>
                     <div>
@@ -26,15 +25,12 @@ function Testimonials() {
                 {/* Right Side */}
                 <div className="bg-white shadow-xl rounded-xl p-6 col-span-2">
                     <p className="text-gray-700 mb-6 text-justify">
-                        I recently booked a trip to Italy with Vacasay, and I
-                        couldn't be happier with the experience. From the
-                        initial consultation to the post-trip follow-up,
-                        everything was handled with the utmost professionalism
-                        and care. Our itinerary was perfectly tailored to our
-                        interests, and we had an amazing time exploring the
-                        country. I would highly recommend Vacasay to anyone
-                        looking for a stress-free and unforgettable travel
-                        experience.
+                        Saya baru saja mengunjungi Desa Karyawangi bersama keluarga melalui paket Nyaba Wisata, 
+                        dan saya sangat puas dengan pengalaman yang diberikan. Mulai dari konsultasi awal hingga 
+                        follow-up setelah wisata, semuanya ditangani dengan sangat profesional dan penuh perhatian. 
+                        Itinerary kami disesuaikan dengan sempurna sesuai minat keluarga, dan kami sangat menikmati 
+                        setiap momen bermain dan menjelajahi keindahan desa. Saya sangat merekomendasikan Nyaba Wisata 
+                        kepada siapa saja yang mencari pengalaman wisata desa yang tak terlupakan dan bebas stres.
                     </p>
                     <div className="flex items-center gap-4">
                         <Image
@@ -46,10 +42,10 @@ function Testimonials() {
                         />
                         <div>
                             <p className="font-semibold text-gray-900">
-                                Sarah Johnson
+                                Sari Indah
                             </p>
                             <p className="text-sm text-gray-500">
-                                Client from United States of America
+                                Pengunjung dari Jakarta
                             </p>
                         </div>
                     </div>

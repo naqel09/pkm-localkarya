@@ -119,7 +119,7 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
   if (loading) {
     return (
       <>
-        <TourHeader title='Restaurant Detail' halaman='Home' bagian="Restaurant | Loading..." image="/bedroom.jpg"/>
+        <TourHeader title='Restaurant Detail' halaman='Home' bagian="Restaurant | Loading..." image="/makanan1.webp"/>
         <section className='max-w-7xl mx-auto p-6'>
           <div className="text-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -156,7 +156,7 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
         title={restaurant.namaRestaurant} 
         halaman='Home' 
         bagian={`Restaurant | ${restaurant.namaRestaurant}`} 
-        image="/bedroom.jpg"
+        image="/makanan1.webp"
       />
       
       <section className='max-w-7xl mx-auto p-6'>

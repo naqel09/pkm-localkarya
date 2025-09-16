@@ -47,12 +47,13 @@ function Footer() {
                         <Link href="/Restaurant" className="hover:text-white transition">
                             Kuliner
                         </Link>
+                        <Link href="/Blog" className="hover:text-white transition">
+                            Artikel
+                        </Link>
                         <Link href="/About" className="hover:text-white transition">
                             Tentang Kami
                         </Link>
-                        <Link href="/Blog" className="hover:text-white transition">
-                            Blog
-                        </Link>
+                        
                     </nav>
                 </div>
 

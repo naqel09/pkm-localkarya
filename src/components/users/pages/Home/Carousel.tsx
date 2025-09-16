@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
-const images = ["/mountaincarousel1.jpg", "/mountain2.jpg"];
+const images = ["/nyaba1.jpg", "/nyaba2.jpg"];
 
 export default function Carousel() {
     const [current, setCurrent] = useState(0);
-    const interval = 10000; // default 10 detik
+    const interval = 5000; // default 10 detik
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -58,37 +58,16 @@ export default function Carousel() {
             {/* Konten tengah dan search box */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10">
                 <p className="lg:text-3xl md:text-xl text-sm tracking-widest uppercase text-white">
-                    ini adalah tampilan dari hero dsfasdf
+                    Selamat Datang di Desa Karyawangi
                 </p>
                 <h1 className="md:text-9xl lg:text-[10rem] text-6xl font-bold text-white">
-                    ADVENTURE
+                    NYABA WISATA
                 </h1>
-                <p className="text-center text-white max-w-xl mt-4 text-xl">
-                    mari menciptakan perjalanan yang indah dan dapat dilakukan
-                    di saat anda memiliki waktu luang yang sedang langka
-                    terjadwal dan sedang dinanti-nanti.
+                <p className="text-center text-white max-w-2xl mt-4 text-xl">
+                    Rasakan keseruan bermain dan menjelajahi keindahan alam Desa Karyawangi, 
+                    Parongpong, Bandung Barat. Tempat di mana tradisi bertemu dengan petualangan modern, 
+                    dan setiap sudut menawarkan pengalaman tak terlupakan untuk keluarga.
                 </p>
-
-                <div className="mt-10 bg-white shadow-md rounded-lg grid grid-cols-1 md:grid-cols-4 gap-4 w-full max-w-3xl p-4">
-                    <input
-                        type="text"
-                        placeholder="Destinasi"
-                        className="px-4 py-2 rounded border border-gray-300 shadow"
-                    />
-                    <input
-                        type="date"
-                        className="px-4 py-2 rounded text-black border border-gray-300 shadow cursor-pointer w-full"
-                    />
-                    <input
-                        type="number"
-                        min={0}
-                        placeholder="Harga"
-                        className="px-4 py-2 rounded text-black border border-gray-300 shadow"
-                    />
-                    <button className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer shadow-md">
-                        Search
-                    </button>
-                </div>
             </div>
         </section>
     );

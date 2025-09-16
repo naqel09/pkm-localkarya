@@ -8,8 +8,8 @@ const page = () => {
         <>
             <TourHeader
                 title="ARTIKEL"
-                halaman="Home"
-                bagian="Blog"
+                halaman="Kisah"
+                bagian="Cerita"
                 image="/images/artikel/headerblog.jpg"
             />
             <BlogList />

@@ -6,20 +6,20 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 // Data pertanyaan & jawaban
 const faqs = [
     {
-        question: "What type of travel packages does Vacasky offer?",
-        answer: "Vacasky offers a wide range of travel packages to destinations around the world, including customized tours, group tours, luxury travel, adventure travel, and more. Our travel specialists work with you to create an itinerary that meets your specific needs and preferences.",
+        question: "Jenis paket wisata apa saja yang ditawarkan Nyaba Wisata?",
+        answer: "Nyaba Wisata menawarkan berbagai paket wisata di Desa Karyawangi, termasuk wisata keluarga, wisata budaya, wisata alam, dan paket khusus sesuai kebutuhan. Tim kami akan membantu Anda merancang itinerary yang sesuai dengan minat dan preferensi keluarga.",
     },
     {
-        question: "How do I book a trip with Vacasky?",
-        answer: "You can book a trip by visiting our website and filling out the booking form or by contacting one of our travel consultants directly.",
+        question: "Bagaimana cara memesan wisata dengan Nyaba Wisata?",
+        answer: "Pemesanan sangat mudah! Anda cukup mengklik tombol 'Pesan' pada paket wisata yang diminati, kemudian Anda akan diarahkan ke WhatsApp kami untuk konsultasi langsung dengan tim customer service. Kami akan membantu mengatur detail perjalanan sesuai kebutuhan Anda.",
     },
     {
-        question: "What is the payment process for Vacasky?",
-        answer: "Vacasky accepts various payment methods including credit/debit cards, bank transfers, and online payment platforms. Full details will be shared during the booking process.",
+        question: "Bagaimana sistem pembayaran dan konfirmasi pesanan?",
+        answer: "Setelah Anda menghubungi kami melalui WhatsApp, tim kami akan memberikan informasi lengkap mengenai harga, jadwal, dan metode pembayaran yang tersedia. Pembayaran dapat dilakukan melalui transfer bank atau metode lain yang akan dijelaskan saat konsultasi.",
     },
     {
-        question: "How to cancel my booking in Vacasky?",
-        answer: "To cancel your booking, please contact our customer service. Cancellation policies may apply depending on the timing and type of booking.",
+        question: "Apakah bisa konsultasi dulu sebelum memutuskan paket wisata?",
+        answer: "Tentu saja! Kami sangat mendorong calon pengunjung untuk berkonsultasi terlebih dahulu melalui WhatsApp. Tim kami akan dengan senang hati menjelaskan detail setiap paket, memberikan rekomendasi sesuai kebutuhan, dan menjawab semua pertanyaan Anda sebelum Anda memutuskan.",
     },
 ];
 

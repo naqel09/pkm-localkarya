@@ -110,7 +110,7 @@ const PopularHotels: React.FC = () => {
   return (
     <section className="max-w-8xl mx-auto px-6 py-12 space-y-5">
       <h3 className="text-5xl font-semibold capitalize underline">
-        Hotel Populer
+        Penginapan Populer
       </h3>
 
       <div className="flex flex-wrap justify-between">
