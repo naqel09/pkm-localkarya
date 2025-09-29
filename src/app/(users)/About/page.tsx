@@ -41,7 +41,7 @@ const page = () => {
                             🌿 Tim Nyaba - Informasi Kontak
                         </h3>
                         
-                        <div className="grid md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Contact Details */}
                             <div className="space-y-6">
                                 {/* Address */}
@@ -88,17 +88,16 @@ const page = () => {
                                 </div>
                             </div>
                             
-                            {/* Google Maps */}
                             <div>
                                 <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                                     <span className="mr-2">🗺️</span>
                                     Lokasi Kami
                                 </h4>
-                                <div className="rounded-lg overflow-hidden shadow-md">
+                                <div className="rounded-lg overflow-hidden shadow-md h-64 md:h-[300px]">
                                     <iframe 
                                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.56211937005!2d107.41311766484375!3d-6.87167665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e1dce64b31b1%3A0x7a1f1e1c8a8b9c0d!2sKaryawangi%2C%20Parongpong%2C%20West%20Bandung%20Regency%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1703123456789!5m2!1sen!2sid"
                                         width="100%" 
-                                        height="300" 
+                                        height="100%" 
                                         style={{border: 0}} 
                                         allowFullScreen 
                                         loading="lazy" 

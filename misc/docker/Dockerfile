@@ -34,9 +34,10 @@ RUN apk add --no-cache dumb-init && \
     addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Create uploads directory
+# Create uploads directory with proper permissions
 RUN mkdir -p /app/public/uploads && \
-    chown -R nextjs:nodejs /app/public/uploads
+    chown -R nextjs:nodejs /app/public/uploads && \
+    chmod -R 755 /app/public/uploads
 
 # Copy built application
 COPY --from=builder /app/.next/standalone ./
@@ -45,9 +46,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copy public directory from source (not builder stage)
 COPY --chown=nextjs:nodejs public ./public
 
-# Ensure uploads directory exists
+# Ensure uploads directory exists with proper permissions
 RUN mkdir -p ./public/uploads && \
-    chown -R nextjs:nodejs ./public
+    chown -R nextjs:nodejs ./public && \
+    chmod -R 755 ./public/uploads
 
 # Copy additional files needed for production
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json

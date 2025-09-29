@@ -57,13 +57,13 @@ export default function Carousel() {
 
             {/* Konten tengah dan search box */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10">
-                <p className="lg:text-3xl md:text-xl text-sm tracking-widest uppercase text-white">
+                <p className="text-xs md:text-sm lg:text-3xl tracking-widest uppercase text-white">
                     Selamat Datang di Desa Karyawangi
                 </p>
-                <h1 className="md:text-9xl lg:text-[10rem] text-6xl font-bold text-white">
+                <h1 className="text-4xl md:text-6xl lg:text-9xl xl:text-[10rem] font-bold text-white">
                     NYABA WISATA
                 </h1>
-                <p className="text-center text-white max-w-2xl mt-4 text-xl">
+                <p className="text-center text-white max-w-2xl mt-4 text-sm md:text-lg lg:text-xl px-4">
                     Rasakan keseruan bermain dan menjelajahi keindahan alam Desa Karyawangi, 
                     Parongpong, Bandung Barat. Tempat di mana tradisi bertemu dengan petualangan modern, 
                     dan setiap sudut menawarkan pengalaman tak terlupakan untuk keluarga.

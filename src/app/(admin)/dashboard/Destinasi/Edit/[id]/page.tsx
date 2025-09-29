@@ -7,6 +7,26 @@ import Image from "next/image";
 import Link from "next/link";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 
+// Fungsi untuk mengecek dan membersihkan path gambar
+const getImageSrc = (imagePath: string | null | undefined, fallback: string = '/images/mountain2.jpg') => {
+  if (!imagePath || imagePath.trim() === '') {
+    return fallback;
+  }
+  
+  // Jika path sudah dimulai dengan /, gunakan langsung
+  if (imagePath.startsWith('/')) {
+    return imagePath;
+  }
+  
+  // Jika path adalah data URL, gunakan langsung
+  if (imagePath.startsWith('data:')) {
+    return imagePath;
+  }
+  
+  // Jika tidak, anggap sebagai file upload
+  return `/uploads/${imagePath}`;
+};
+
 const Page = () => {
     const router = useRouter();
     const params = useParams();
@@ -37,21 +57,25 @@ const Page = () => {
                 const res = await fetch(`/api/admin/${id}`);
                 if (!res.ok) throw new Error("Failed to fetch destination");
                 
-                const data = await res.json();
+                const response = await res.json();
+                console.log('API Response:', response); // Debug log
+                
+                // Handle different response structures
+                const destinationData = response.data || response;
                 
                 setFormData({
-                    namaLokasi: data.namaLokasi || "",
-                    alamat: data.alamat || "",
-                    deskripsi: data.deskripsi || "",
-                    gambar1: data.gambar1 || "",
-                    gambar2: data.gambar2 || "",
-                    gambar3: data.gambar3 || ""
+                    namaLokasi: destinationData.namaLokasi || "",
+                    alamat: destinationData.alamat || "",
+                    deskripsi: destinationData.deskripsi || "",
+                    gambar1: destinationData.gambar1 || "",
+                    gambar2: destinationData.gambar2 || "",
+                    gambar3: destinationData.gambar3 || ""
                 });
 
                 setPreviews({
-                    gambar1: data.gambar1 || null,
-                    gambar2: data.gambar2 || null,
-                    gambar3: data.gambar3 || null
+                    gambar1: destinationData.gambar1 ? getImageSrc(destinationData.gambar1) : null,
+                    gambar2: destinationData.gambar2 ? getImageSrc(destinationData.gambar2) : null,
+                    gambar3: destinationData.gambar3 ? getImageSrc(destinationData.gambar3) : null
                 });
             } catch (error) {
                 console.error("Error fetching destination:", error);
@@ -145,6 +169,11 @@ const Page = () => {
                                         className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
                                         width={200}
                                         height={200}
+                                        onError={(e) => {
+                                            console.error('Image 1 failed to load:', previews.gambar1);
+                                            const target = e.target as HTMLImageElement;
+                                            target.style.display = 'none';
+                                        }}
                                     />
                                 ) : (
                                     <div className="text-center">
@@ -177,6 +206,11 @@ const Page = () => {
                                         className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
                                         width={200}
                                         height={200}
+                                        onError={(e) => {
+                                            console.error('Image 2 failed to load:', previews.gambar2);
+                                            const target = e.target as HTMLImageElement;
+                                            target.style.display = 'none';
+                                        }}
                                     />
                                 ) : (
                                     <div className="text-center">
@@ -209,6 +243,11 @@ const Page = () => {
                                         className="object-cover object-center w-full h-full rounded-md hover:ring-2 hover:ring-blue-400"
                                         width={200}
                                         height={200}
+                                        onError={(e) => {
+                                            console.error('Image 3 failed to load:', previews.gambar3);
+                                            const target = e.target as HTMLImageElement;
+                                            target.style.display = 'none';
+                                        }}
                                     />
                                 ) : (
                                     <div className="text-center">

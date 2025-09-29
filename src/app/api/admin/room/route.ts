@@ -17,16 +17,14 @@ export async function GET(request: Request) {
         
         let rooms;
         if (hotelId) {
-            // Ambil rooms berdasarkan hotel ID
+            // Ambil rooms berdasarkan hotel ID using foreign key
             rooms = await roomRepository.find({
-                where: { hotel: { id: parseInt(hotelId) } },
-                relations: ["hotel"],
+                where: { hotelId: parseInt(hotelId) },
                 order: { createdAt: "DESC" }
             });
         } else {
             // Ambil semua rooms
             rooms = await roomRepository.find({
-                relations: ["hotel"],
                 order: { createdAt: "DESC" }
             });
         }
@@ -89,7 +87,7 @@ export async function POST(request: Request) {
             gambar2: gambar2?.trim() || null,
             gambar3: gambar3?.trim() || null,
             gambar360: gambar360?.trim() || null,
-            hotel: hotel
+            hotelId: hotelId
         });
 
         const savedRoom = await roomRepository.save(newRoom);

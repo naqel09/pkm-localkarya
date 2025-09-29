@@ -20,6 +20,9 @@ cd misc/docker
 # Make script executable (Linux/macOS/WSL)
 chmod +x dev.sh
 
+# If you're having trouble because wsl and windows, use this	
+sed -i 's/\r$//' dev.sh && chmod +x dev.sh
+
 # Start all services
 ./dev.sh up
 ```

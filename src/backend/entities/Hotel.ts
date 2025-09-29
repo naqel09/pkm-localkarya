@@ -1,7 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Room } from "./Room";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity("hotels")
 export class Hotel {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -29,9 +28,6 @@ export class Hotel {
 
   @Column({ name: 'gambar3', nullable: true })
   gambar3?: string;
-
-  @OneToMany(() => Room, (room) => room.hotel, { cascade: true, onUpdate: 'CASCADE', onDelete: 'CASCADE' })
-  rooms!: Room[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

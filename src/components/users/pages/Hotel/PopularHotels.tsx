@@ -108,16 +108,16 @@ const PopularHotels: React.FC = () => {
   };
 
   return (
-    <section className="max-w-8xl mx-auto px-6 py-12 space-y-5">
+    <section className="max-w-8xl mx-auto px-4 md:px-6 py-12 space-y-5">
       <h3 className="text-5xl font-semibold capitalize underline">
         Penginapan Populer
       </h3>
 
-      <div className="flex flex-wrap justify-between">
-        <p>
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+        <p className="text-sm md:text-base">
           Pesan kamar yang anda inginkan untuk memulai petualangan baru lagi
         </p>
-        <div className="w-full md:w-1/4 relative">
+        <div className="w-full lg:w-1/4 relative">
           <input
             type="text"
             placeholder="Cari hotel..."

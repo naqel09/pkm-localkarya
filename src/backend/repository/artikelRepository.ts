@@ -1,38 +1,50 @@
 import { AppDataSource } from "../db/data-source";
 import { Artikel } from "../entities/Artikel";
 
-export const artikelRepository = AppDataSource.getRepository(Artikel);
+// Get repository dynamically to ensure AppDataSource is initialized
+function getArtikelRepository() {
+    if (!AppDataSource.isInitialized) {
+        throw new Error('Database not initialized');
+    }
+    return AppDataSource.getRepository(Artikel);
+}
 
 export const artikelRepositoryService = {
     async findAll(): Promise<Artikel[]> {
-        return await artikelRepository.find({
+        const repository = getArtikelRepository();
+        return await repository.find({
             order: { tanggalPembuatan: 'DESC' }
         });
     },
 
     async findById(id: number): Promise<Artikel | null> {
-        return await artikelRepository.findOne({
+        const repository = getArtikelRepository();
+        return await repository.findOne({
             where: { id }
         });
     },
 
     async create(artikelData: Partial<Artikel>): Promise<Artikel> {
-        const artikel = artikelRepository.create(artikelData);
-        return await artikelRepository.save(artikel);
+        const repository = getArtikelRepository();
+        const artikel = repository.create(artikelData);
+        return await repository.save(artikel);
     },
 
     async update(id: number, artikelData: Partial<Artikel>): Promise<Artikel | null> {
-        await artikelRepository.update(id, artikelData);
+        const repository = getArtikelRepository();
+        await repository.update(id, artikelData);
         return await this.findById(id);
     },
 
     async delete(id: number): Promise<boolean> {
-        const result = await artikelRepository.delete(id);
+        const repository = getArtikelRepository();
+        const result = await repository.delete(id);
         return result.affected !== 0;
     },
 
     async findPaginated(page: number = 1, limit: number = 10): Promise<{articles: Artikel[], total: number}> {
-        const [articles, total] = await artikelRepository.findAndCount({
+        const repository = getArtikelRepository();
+        const [articles, total] = await repository.findAndCount({
             order: { tanggalPembuatan: 'DESC' },
             skip: (page - 1) * limit,
             take: limit

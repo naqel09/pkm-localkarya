@@ -5,9 +5,9 @@ import Image from "next/image";
 
 function SpecialPackages() {
     return (
-        <section className="py-16 px-4 max-w-8xl lg:mx-20 mx-10">
-            <div className="flex justify-between flex-wrap items-center mb-10">
-                <div>
+        <section className="py-16 px-4 max-w-8xl lg:mx-20 mx-4">
+            <div className="flex justify-between flex-wrap items-start mb-10">
+                <div className="w-full lg:w-auto mb-4 lg:mb-0">
                     <h3 className="font-bold text-xl uppercase tracking-wide">
                         Paket Wisata Spesial
                     </h3>
@@ -20,7 +20,7 @@ function SpecialPackages() {
                     className="relative inline-block text-blue-600 text-sm transition-colors duration-300 hover:text-blue-700
              after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
              after:h-[2px] after:w-full after:scale-x-0 after:origin-center
-             after:bg-blue-500 after:transition-transform after:duration-300 hover:after:scale-x-100 mt-3"
+             after:bg-blue-500 after:transition-transform after:duration-300 hover:after:scale-x-100 w-full lg:w-auto text-center lg:text-left"
                 >
                     see more packages
                 </Link>
@@ -37,8 +37,8 @@ function SpecialPackages() {
                     />
                     <div className="absolute inset-0 bg-black/30 rounded-2xl flex flex-col justify-between p-4 text-white">
                         <span className="text-xl font-bold">01</span>
-                        <div className="text-justify lg:w-3">
-                            <p className="text-2xl lg:text-5xl font-semibold hidden lg:block">
+                        <div className="text-left lg:text-justify lg:w-3">
+                            <p className="text-xl lg:text-2xl xl:text-5xl font-semibold">
                                 Paket Nyaba Keluarga
                             </p>
                         </div>
@@ -59,8 +59,8 @@ function SpecialPackages() {
                 </div>
 
                 {/* Judul bawah */}
-                <div className="lg:col-span-3 lg:col-start-4 lg:row-start-4 ">
-                    <h2 className="text-5xl lg:text-7xl xl:text-8xl font-bold mt-4 lg:mt-0">
+                <div className="lg:col-span-3 lg:col-start-4 lg:row-start-4 text-center lg:text-left">
+                    <h2 className="text-4xl lg:text-7xl xl:text-8xl font-bold mt-4 lg:mt-0">
                         ULIN BARENG
                     </h2>
                 </div>
@@ -71,7 +71,7 @@ function SpecialPackages() {
                         Bergabunglah dengan pengalaman seru bermain bersama keluarga di tengah keindahan alam Desa Karyawangi. 
                         Nikmati permainan tradisional, aktivitas outdoor, dan ciptakan kenangan manis bersama orang terkasih.
                     </p>
-                    <Link href="/Tours" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer transition mt-4 text-center md:w-1/3">Pesan Sekarang</Link>
+                    <Link href="/Tours" className="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 cursor-pointer transition mt-4 text-center w-full lg:w-auto inline-block">Pesan Sekarang</Link>
                 </div>
             </div>
         </section>

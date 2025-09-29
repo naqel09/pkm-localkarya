@@ -12,9 +12,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
         const { id: idParam } = await params;
         const roomRepository = AppDataSource.getRepository(Room);
+        const hotelRepository = AppDataSource.getRepository(Hotel);
+        
         const room = await roomRepository.findOne({
-            where: { id: Number(idParam) },
-            relations: ["hotel"]
+            where: { id: Number(idParam) }
         });
 
         if (!room) {
@@ -24,9 +25,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             }, { status: 404 });
         }
 
+        // Manually fetch hotel data if needed
+        const hotel = await hotelRepository.findOne({
+            where: { id: room.hotelId }
+        });
+
         return NextResponse.json({
             success: true,
-            data: room,
+            data: { ...room, hotel },
             message: "Room data retrieved successfully"
         }, { status: 200 });
 
@@ -60,8 +66,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const hotelRepository = AppDataSource.getRepository(Hotel);
 
         const room = await roomRepository.findOne({
-            where: { id },
-            relations: ['hotel']
+            where: { id }
         });
 
         if (!room) {
@@ -82,7 +87,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         }
 
         // Jika hotelId berubah, validasi hotel baru
-        if (hotelId && hotelId !== room.hotel.id) {
+        if (hotelId && hotelId !== room.hotelId) {
             const hotel = await hotelRepository.findOne({ where: { id: hotelId } });
             if (!hotel) {
                 return NextResponse.json({
@@ -90,7 +95,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
                     message: "Hotel tidak ditemukan"
                 }, { status: 404 });
             }
-            room.hotel = hotel;
+            room.hotelId = hotelId;
         }
 
         // Update room data
@@ -127,8 +132,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
         const roomRepository = AppDataSource.getRepository(Room);
         const room = await roomRepository.findOne({
-            where: { id: Number(params.id) },
-            relations: ["hotel"]
+            where: { id: Number(params.id) }
         });
 
         if (!room) {

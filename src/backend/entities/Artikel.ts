@@ -1,6 +1,6 @@
 import {Entity,PrimaryGeneratedColumn,Column,CreateDateColumn} from "typeorm"
 
-@Entity()
+@Entity("artikels")
 export class Artikel{
     @PrimaryGeneratedColumn()
     id!:number;

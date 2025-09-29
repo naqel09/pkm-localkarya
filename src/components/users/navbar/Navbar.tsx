@@ -17,7 +17,7 @@ function Navbar() {
     const toggleOpen = () => setOpen((prev) => !prev);
 
     return (
-        <nav className="flex items-center justify-between px-6 py-4 absolute bg-transparent text-white top-0 left-0 w-full z-20">
+        <nav className="flex items-center justify-between px-4 md:px-6 py-4 absolute bg-transparent text-white top-0 left-0 w-full z-20">
             <div className="text-2xl font-bold">
                 
             </div>
@@ -52,14 +52,14 @@ function Navbar() {
             <div className="hidden md:block"></div>
 
             {/* Hamburger Icon */}
-            <button onClick={toggleSidebar} className="block md:hidden">
-                <Menu size={28} />
+            <button onClick={toggleSidebar} className="block md:hidden p-2">
+                <Menu size={24} />
             </button>
 
             {/* Sidebar */}
             {sidebarOpen && (
                 <div className="fixed inset-0 z-50 flex justify-end bg-black/30 bg-opacity-60">
-                    <div className="fixed right-0 top-0 w-64 bg-white text-black p-6 space-y-4 h-full overflow-y-auto">
+                    <div className="fixed right-0 top-0 w-72 md:w-80 bg-white text-black p-6 space-y-4 h-full overflow-y-auto shadow-2xl">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold">Menu</h2>
                             <button onClick={closeSidebar}>
@@ -101,15 +101,6 @@ function Navbar() {
                             <li>
                                 <Link href="/About" onClick={closeSidebar}>
                                     Tentang Kami
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/Login"
-                                    className="block w-full bg-blue-600 text-white text-center py-2 rounded"
-                                    onClick={closeSidebar}
-                                >
-                                    Sign In
                                 </Link>
                             </li>
                         </ul>

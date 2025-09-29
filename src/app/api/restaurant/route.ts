@@ -1,17 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RestaurantService } from "@/backend/services/restaurantServices";
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
-
-const restaurantService = new RestaurantService();
+import { AppDataSource } from "@/backend/db/data-source";
+import { Restaurant } from "@/backend/entities/Restaurant";
+import { Menu } from "@/backend/entities/Menu";
 
 export async function GET(request: NextRequest) {
   try {
-    const restaurants = await restaurantService.getAllRestaurants();
+    // Initialize database directly like other API routes
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+    
+    // Use efficient database queries instead of service layer
+    const restaurantRepository = AppDataSource.getRepository(Restaurant);
+    const menuRepository = AppDataSource.getRepository(Menu);
+    
+    // Get all restaurants
+    const restaurants = await restaurantRepository.find({
+      order: {
+        createdAt: "DESC"
+      }
+    });
+    
+    // Get all menus in one query
+    const allMenus = await menuRepository.find({
+      order: {
+        createdAt: "DESC"
+      }
+    });
+    
+    // Group menus by restaurant ID
+    const menusByRestaurant = allMenus.reduce((acc, menu) => {
+      if (!acc[menu.restaurantId]) {
+        acc[menu.restaurantId] = [];
+      }
+      acc[menu.restaurantId].push(menu);
+      return acc;
+    }, {} as Record<number, typeof allMenus>);
+    
+    // Attach menus to restaurants
+    const restaurantsWithMenus = restaurants.map(restaurant => ({
+      ...restaurant,
+      menus: menusByRestaurant[restaurant.id] || []
+    }));
+    
     return NextResponse.json({
       success: true,
-      data: restaurants
+      data: restaurantsWithMenus
     });
   } catch (error) {
     console.error("Error fetching restaurants:", error);
@@ -27,8 +64,21 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('🍴 Starting restaurant creation...');
+  
   try {
     const formData = await request.formData();
+    console.log('📎 Received form data');
+    
+    // Log received form data for debugging
+    console.log('Form data entries:');
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: File - ${value.name} (${value.size} bytes)`);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
     
     // Extract basic restaurant data
     const restaurantData = {
@@ -36,10 +86,35 @@ export async function POST(request: NextRequest) {
       alamatRestaurant: formData.get('alamatRestaurant') as string,
       deskripsiRestaurant: formData.get('deskripsiRestaurant') as string,
     };
+    
+    console.log('🏢 Restaurant data extracted:', restaurantData);
+    
+    // Validate required fields early
+    if (!restaurantData.namaRestaurant || !restaurantData.namaRestaurant.trim()) {
+      return NextResponse.json({
+        success: false,
+        message: 'Nama restaurant harus diisi'
+      }, { status: 400 });
+    }
+    
+    if (!restaurantData.alamatRestaurant || !restaurantData.alamatRestaurant.trim()) {
+      return NextResponse.json({
+        success: false,
+        message: 'Alamat restaurant harus diisi'
+      }, { status: 400 });
+    }
+    
+    if (!restaurantData.deskripsiRestaurant || !restaurantData.deskripsiRestaurant.trim()) {
+      return NextResponse.json({
+        success: false,
+        message: 'Deskripsi restaurant harus diisi'
+      }, { status: 400 });
+    }
 
     // Create uploads directory if it doesn't exist
     const uploadsDir = join(process.cwd(), 'public/uploads');
     if (!existsSync(uploadsDir)) {
+      console.log('📁 Creating uploads directory...');
       await mkdir(uploadsDir, { recursive: true });
     }
 
@@ -185,20 +260,52 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Validate data
-    const validation = restaurantService.validateRestaurantData(restaurantData);
-    if (!validation.isValid) {
+    // Validate data inline (same logic as service)
+    console.log('✅ Validating restaurant data...');
+    const validationErrors: string[] = [];
+    
+    if (!restaurantData.namaRestaurant || restaurantData.namaRestaurant.trim() === '') {
+      validationErrors.push('Nama restaurant harus diisi');
+    }
+    if (!restaurantData.alamatRestaurant || restaurantData.alamatRestaurant.trim() === '') {
+      validationErrors.push('Alamat restaurant harus diisi');
+    }
+    if (!restaurantData.deskripsiRestaurant || restaurantData.deskripsiRestaurant.trim() === '') {
+      validationErrors.push('Deskripsi restaurant harus diisi');
+    }
+    
+    if (validationErrors.length > 0) {
+      console.log('❌ Validation failed:', validationErrors);
       return NextResponse.json(
         { 
           success: false, 
           message: "Data tidak valid",
-          errors: validation.errors
+          errors: validationErrors
         },
         { status: 400 }
       );
     }
 
-    const restaurant = await restaurantService.createRestaurant(restaurantData);
+    console.log('🏢 Creating restaurant in database...');
+    
+    // Initialize database directly like other API routes
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+      console.log('✅ Database initialized successfully');
+    }
+    
+    // Create restaurant directly using AppDataSource
+    const restaurantRepository = AppDataSource.getRepository(Restaurant);
+    const restaurant = restaurantRepository.create({
+      namaRestaurant: restaurantData.namaRestaurant.trim(),
+      alamatRestaurant: restaurantData.alamatRestaurant.trim(),
+      deskripsiRestaurant: restaurantData.deskripsiRestaurant.trim(),
+      ...Object.fromEntries(imageFields.map(field => [field, (restaurantData as any)[field] || null])),
+      ...Object.fromEntries(menuPhotoFields.map(field => [field, (restaurantData as any)[field] || null]))
+    });
+    
+    const savedRestaurant = await restaurantRepository.save(restaurant);
+    console.log('✅ Restaurant created successfully:', savedRestaurant.id);
     
     // Handle menus if provided
     const menusJson = formData.get('menus') as string;
@@ -216,16 +323,20 @@ export async function POST(request: NextRequest) {
           );
           console.log('🍽️ Valid menus to create:', validMenus.length);
           
+          const menuRepository = AppDataSource.getRepository(Menu);
+          
           for (let i = 0; i < validMenus.length; i++) {
             const menuData = validMenus[i];
             if (menuData.namaMenu && menuData.harga) {
-              const newMenu = await restaurantService.createMenu({
+              const newMenu = menuRepository.create({
                 namaMenu: menuData.namaMenu,
                 harga: parseFloat(menuData.harga.toString()),
-                restaurantId: restaurant.id
+                restaurantId: savedRestaurant.id
               });
-              createdMenus.push(newMenu);
-              console.log(`✅ Created menu ${newMenu.id}: ${menuData.namaMenu}`);
+              
+              const savedMenu = await menuRepository.save(newMenu);
+              createdMenus.push(savedMenu);
+              console.log(`✅ Created menu ${savedMenu.id}: ${menuData.namaMenu}`);
             }
           }
         }
@@ -239,6 +350,8 @@ export async function POST(request: NextRequest) {
     if (Object.keys(menuImageUpdates).length > 0 && createdMenus.length > 0) {
       console.log('🍴 Updating newly created menu items with images:', menuImageUpdates);
       
+      const menuRepository = AppDataSource.getRepository(Menu);
+      
       for (const [imageKey, filename] of Object.entries(menuImageUpdates)) {
         // Parse menu-{index}-{field} format
         const matches = imageKey.match(/menu-(\d+)-(\w+)/);
@@ -249,7 +362,7 @@ export async function POST(request: NextRequest) {
           // Find the corresponding menu (assuming menus are in order)
           if (createdMenus && createdMenus[menuIndex]) {
             const menuId = createdMenus[menuIndex].id;
-            await restaurantService.updateMenu(menuId, {
+            await menuRepository.update(menuId, {
               [field]: filename
             });
             console.log(`✅ Updated menu ${menuId} ${field} with ${filename}`);
@@ -258,10 +371,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    console.log('✅ Restaurant creation completed successfully');
     return NextResponse.json({
       success: true,
       message: "Restaurant berhasil dibuat",
-      data: restaurant
+      data: savedRestaurant
     }, { status: 201 });
   } catch (error) {
     console.error("Error creating restaurant:", error);

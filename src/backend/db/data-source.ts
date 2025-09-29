@@ -42,8 +42,8 @@ export async function initializeDatabase() {
         await AppDataSource.initialize();
         console.log("✅ Database berhasil terkoneksi");
         
-        // Inisialisasi user admin default - dinonaktifkan sementara
-        // await initializeAdmin();
+        // Inisialisasi user admin default
+        await initializeAdmin();
         isInitialized = true;
       }
     } catch (error) {

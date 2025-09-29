@@ -6,6 +6,8 @@ services:
     image: postgres:15-alpine
     container_name: pkm-localkarya-db-hub
     restart: unless-stopped
+    env_file:
+      - .env.hub
     environment:
       POSTGRES_DB: ${DB_NAME:-localkarya_prod}
       POSTGRES_USER: ${DB_USER:-postgres}
@@ -26,9 +28,11 @@ services:
 
   # Next.js Application (Production - from Docker Hub)
   app:
-    image: ${DOCKER_USERNAME:-esafauzi}/pkm-localkarya:${IMAGE_TAG:-production-v6}
+    image: ${DOCKER_USERNAME:-esafauzi}/pkm-localkarya:${IMAGE_TAG:-local-v15}
     container_name: pkm-localkarya-app-hub
     restart: unless-stopped
+    env_file:
+      - .env.hub
     environment:
       - NODE_ENV=production
       - DB_HOST=postgres
@@ -61,13 +65,15 @@ services:
     image: redis:7-alpine
     container_name: pkm-localkarya-redis-hub
     restart: unless-stopped
+    env_file:
+      - .env.hub
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_hub_data:/data
     networks:
       - pkm-network
-    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass "$REDIS_PASSWORD"}
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-defaultpass}"]
     healthcheck:
       test: ["CMD", "redis-cli", "--no-auth-warning", "ping"]
       interval: 10s
@@ -79,6 +85,8 @@ services:
     image: nginx:alpine
     container_name: pkm-localkarya-nginx-hub
     restart: unless-stopped
+    env_file:
+      - .env.hub
     ports:
       - "80:80"
       - "443:443"

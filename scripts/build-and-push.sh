@@ -8,7 +8,7 @@ set -e
 # Configuration
 DOCKER_USERNAME="esafauzi"
 IMAGE_NAME="pkm-localkarya"
-TAG=${1:-production-v6}
+TAG=${1:-1.0.0}
 
 # Colors
 RED='\033[0;31m'

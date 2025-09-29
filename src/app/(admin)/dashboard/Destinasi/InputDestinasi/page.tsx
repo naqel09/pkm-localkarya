@@ -1,11 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 
 const Page = () => {
+    const router = useRouter();
     const [showConfirm, setShowConfirm] = useState(false);
     const [previews, setPreviews] = useState({
         gambar1: null as string | null,
@@ -55,19 +57,8 @@ const Page = () => {
 
             if (res.ok) {
                 alert("✅ Data berhasil dikirim!");
-                setFormData({
-                    namaLokasi: "",
-                    alamat: "",
-                    deskripsi: "",
-                    gambar1: "",
-                    gambar2: "",
-                    gambar3: ""
-                });
-                setPreviews({
-                    gambar1: null,
-                    gambar2: null,
-                    gambar3: null
-                });
+                // Redirect to destination list page
+                router.push("/dashboard/Destinasi");
             } else {
                 const errorData = await res.json();
                 alert(`❌ Gagal mengirim data: ${errorData.message || "Unknown error"}`);

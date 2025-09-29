@@ -44,20 +44,32 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
+        console.log('🚀 [BLOG-API] Starting blog creation...');
+        
         if (!AppDataSource.isInitialized) {
+            console.log('📊 [BLOG-API] Initializing database connection...');
             await AppDataSource.initialize();
+            console.log('✅ [BLOG-API] Database connection initialized');
         }
         
         const artikelData = await request.json();
+        console.log('📝 [BLOG-API] Received article data:', {
+            judul: artikelData.judul,
+            penulis: artikelData.penulis,
+            gambar: artikelData.gambar,
+            isiArtikelLength: artikelData.isiArtikel?.length || 0
+        });
         
         // Validate required fields
         if (!artikelData.judul || !artikelData.isiArtikel || !artikelData.penulis) {
+            console.log('❌ [BLOG-API] Validation failed: Missing required fields');
             return NextResponse.json(
                 { message: "Judul, isi artikel, dan penulis harus diisi" },
                 { status: 400 }
             );
         }
         
+        console.log('📊 [BLOG-API] Creating article via service...');
         const artikel = await artikelService.createArtikel({
             judul: artikelData.judul,
             gambar: artikelData.gambar || '',
@@ -65,15 +77,23 @@ export async function POST(request: Request) {
             penulis: artikelData.penulis
         });
         
+        console.log('✅ [BLOG-API] Article created successfully:', artikel.id);
         return NextResponse.json({
             message: "Artikel berhasil dibuat",
             data: artikel,
             status: 201
         });
     } catch (error) {
-        console.error("Error creating artikel:", error);
+        console.error('❌ [BLOG-API] Error creating artikel:', {
+            message: error instanceof Error ? error.message : 'Unknown error',
+            stack: error instanceof Error ? error.stack : undefined,
+            error: error
+        });
         return NextResponse.json(
-            { message: "Internal Server Error" },
+            { 
+                message: "Internal Server Error", 
+                error: error instanceof Error ? error.message : 'Unknown error'
+            },
             { status: 500 }
         );
     }

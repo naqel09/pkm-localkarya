@@ -146,12 +146,36 @@ export const RestaurantInput: React.FC<RestaurantInputProps> = ({
   };
 
   const submitForm = async (data: RestaurantForm) => {
+    console.log('🚀 Starting form submission...');
+    console.log('Form data received:', {
+      namaRestaurant: data.namaRestaurant,
+      alamatRestaurant: data.alamatRestaurant,
+      deskripsiRestaurant: data.deskripsiRestaurant,
+      menusCount: data.menus.length
+    });
+    
     const formData = new FormData();
     
+    // Validate required fields
+    if (!data.namaRestaurant || !data.namaRestaurant.trim()) {
+      alert('Nama Restaurant harus diisi');
+      return;
+    }
+    
+    if (!data.alamatRestaurant || !data.alamatRestaurant.trim()) {
+      alert('Alamat Restaurant harus diisi');
+      return;
+    }
+    
+    if (!data.deskripsiRestaurant || !data.deskripsiRestaurant.trim()) {
+      alert('Deskripsi Restaurant harus diisi');
+      return;
+    }
+    
     // Add restaurant data
-    formData.append('namaRestaurant', data.namaRestaurant);
-    formData.append('alamatRestaurant', data.alamatRestaurant);
-    formData.append('deskripsiRestaurant', data.deskripsiRestaurant);
+    formData.append('namaRestaurant', data.namaRestaurant.trim());
+    formData.append('alamatRestaurant', data.alamatRestaurant.trim());
+    formData.append('deskripsiRestaurant', data.deskripsiRestaurant.trim());
 
     // Add restaurant images from selectedFiles state
     const imageFields = ['gambar1', 'gambar2', 'gambar3', 'gambar4', 'gambar5', 'gambar6'];
@@ -195,7 +219,14 @@ export const RestaurantInput: React.FC<RestaurantInputProps> = ({
     formData.append('menus', JSON.stringify(validMenus));
     
     console.log('📤 Submitting FormData with files:', Object.keys(selectedFiles));
-    onSubmit(formData);
+    console.log('📤 Submitting menu images:', Object.keys(menuImages));
+    
+    try {
+      await onSubmit(formData);
+    } catch (error) {
+      console.error('❌ Error in submitForm:', error);
+      alert('Terjadi kesalahan saat mengirim data');
+    }
   };
 
   const ImageUploadField = ({ name, label, required = false }: { name: string; label: string; required?: boolean }) => (

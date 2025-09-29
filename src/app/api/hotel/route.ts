@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { AppDataSource } from "@/backend/db/data-source";
 import { Hotel } from "@/backend/entities/Hotel";
+import { Room } from "@/backend/entities/Room";
 
 // GET - Mengambil semua data hotel
 export async function GET() {
@@ -10,16 +11,28 @@ export async function GET() {
         }
         
         const hotelRepository = AppDataSource.getRepository(Hotel);
+        const roomRepository = AppDataSource.getRepository(Room);
+        
         const hotels = await hotelRepository.find({
-            relations: ["rooms"],
             order: {
                 createdAt: "DESC"
             }
         });
 
+        // Manually fetch rooms for each hotel like Restaurant/Menu pattern
+        const hotelsWithRooms = await Promise.all(
+            hotels.map(async (hotel) => {
+                const rooms = await roomRepository.find({
+                    where: { hotelId: hotel.id },
+                    order: { createdAt: "ASC" }
+                });
+                return { ...hotel, rooms };
+            })
+        );
+
         return NextResponse.json({
             success: true,
-            data: hotels,
+            data: hotelsWithRooms,
             message: "Hotel data retrieved successfully"
         }, { status: 200 });
 

@@ -39,12 +39,12 @@ const features = [
 function PilihKami() {
     const [activeIndex,setActiveIndex]=useState<number | null>(null)
     return (
-        <section className="py-16 bg-blue-100/100 my-20 rounded-2xl">
+        <section className="py-16 bg-blue-100/100 my-20 rounded-2xl mx-4 lg:mx-0">
             <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-gray-800 mb-4">Mengapa Memilih Nyaba Wisata?</h2>
                 <p className="text-gray-600 max-w-2xl mx-auto">Pengalaman wisata terbaik di Desa Karyawangi dengan pelayanan yang mengutamakan kenyamanan dan kepuasan pengunjung</p>
             </div>
-            <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-20 text-center">
+            <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-20 text-center">
                 {features.map((feature,index)=>{
                     const isActive = activeIndex ===index;
                     return(

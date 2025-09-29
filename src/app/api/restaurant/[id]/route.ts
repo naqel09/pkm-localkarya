@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RestaurantService } from "@/backend/services/restaurantServices";
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { AppDataSource } from "@/backend/db/data-source";
+import { Restaurant } from "@/backend/entities/Restaurant";
+import { Menu } from "@/backend/entities/Menu";
+import { RestaurantService } from "@/backend/services/restaurantServices";
 
+// Temporary service for complex PUT/DELETE operations
 const restaurantService = new RestaurantService();
 
 export async function GET(
@@ -20,17 +24,42 @@ export async function GET(
       );
     }
 
-    const restaurant = await restaurantService.getRestaurantById(id);
+    // Initialize database directly like other API routes
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+    
+    // Use efficient database queries instead of service layer
+    const restaurantRepository = AppDataSource.getRepository(Restaurant);
+    const menuRepository = AppDataSource.getRepository(Menu);
+    
+    // Get restaurant by ID
+    const restaurant = await restaurantRepository.findOne({
+      where: { id }
+    });
+    
     if (!restaurant) {
       return NextResponse.json(
         { success: false, message: "Restaurant tidak ditemukan" },
         { status: 404 }
       );
     }
+    
+    // Get menus for this restaurant
+    const menus = await menuRepository.find({
+      where: { restaurantId: id },
+      order: { createdAt: "DESC" }
+    });
+    
+    // Attach menus to restaurant
+    const restaurantWithMenus = {
+      ...restaurant,
+      menus
+    };
 
     return NextResponse.json({
       success: true,
-      data: restaurant
+      data: restaurantWithMenus
     });
   } catch (error) {
     console.error("Error fetching restaurant:", error);
@@ -61,8 +90,17 @@ export async function PUT(
 
     const formData = await request.formData();
     
+    // Initialize database directly like other API routes
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+    
+    const restaurantRepository = AppDataSource.getRepository(Restaurant);
+    
     // Get existing restaurant data first
-    const existingRestaurant = await restaurantService.getRestaurantById(id);
+    const existingRestaurant = await restaurantRepository.findOne({
+      where: { id }
+    });
     if (!existingRestaurant) {
       return NextResponse.json(
         { success: false, message: "Restaurant tidak ditemukan" },

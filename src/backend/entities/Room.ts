@@ -1,7 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Hotel } from "./Hotel";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity("rooms")
 export class Room {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -36,9 +35,8 @@ export class Room {
   @Column({ name: 'gambar360', nullable: true })
   gambar360?: string;
 
-  @ManyToOne(() => Hotel, (hotel) => hotel.rooms, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'hotel_id' })
-  hotel!: Hotel;
+  @Column({ name: 'hotel_id' })
+  hotelId!: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

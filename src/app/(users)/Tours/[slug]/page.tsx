@@ -32,6 +32,26 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
+// Fungsi untuk mengecek dan membersihkan path gambar
+const getImageSrc = (imagePath: string | null | undefined, fallback: string = '/river.jpg') => {
+  if (!imagePath || imagePath.trim() === '') {
+    return fallback;
+  }
+  
+  // Jika path sudah dimulai dengan /, gunakan langsung
+  if (imagePath.startsWith('/')) {
+    return imagePath;
+  }
+  
+  // Jika path adalah data URL, gunakan langsung
+  if (imagePath.startsWith('data:')) {
+    return imagePath;
+  }
+  
+  // Jika tidak, anggap sebagai file upload
+  return `/uploads/${imagePath}`;
+};
+
 export default function PaketWisataDetailPage() {
   const params = useParams();
   const [paketWisata, setPaketWisata] = useState<PaketWisata | null>(null);
@@ -197,43 +217,46 @@ export default function PaketWisataDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section with Image Gallery */}
-      <div 
-        className="relative h-96 bg-gray-900 cursor-pointer"
-        onDoubleClick={() => {
-          if (images[activeImageIndex] === paketWisata.gambar360) {
-            open360Viewer();
-          } else {
-            setGalleryActiveIndex(activeImageIndex);
-            setShowGalleryModal(true);
-          }
-        }}
-      >
-        {images[activeImageIndex]?.startsWith('data:image') ? (
-          <div 
-            className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${images[activeImageIndex]})` }}
-          />
-        ) : (
-          <img
-            src={`/uploads/${images[activeImageIndex]}`}
-            alt={paketWisata.namaPaket}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              console.error('Hero image failed to load:', `/uploads/${images[activeImageIndex]}`);
-              const target = e.target as HTMLImageElement;
-              target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxMjAwIDQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNmM2Y0ZjYiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzYiIGZpbGw9IiM2Yjc5ODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=`;
-              target.style.backgroundColor = '#f3f4f6';
-            }}
-          />
-        )}
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+      {/* Hero Section - Image Independent Design */}
+      <div className="relative h-96 bg-gradient-to-br from-green-600 via-emerald-700 to-green-900 overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-10 left-10 w-32 h-32 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
+            <div className="absolute top-40 right-20 w-24 h-24 bg-white bg-opacity-10 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+            <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-white bg-opacity-5 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          </div>
+        </div>
+        
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-center justify-center">
+          <div className="text-center text-white px-4">
+            <div className="text-7xl mb-6 animate-bounce">🏞️</div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-2xl">
+              {paketWisata.namaPaket}
+            </h1>
+            <p className="text-xl md:text-2xl font-light mb-2 drop-shadow-lg opacity-95">
+              Paket Wisata Premium
+            </p>
+            <p className="text-lg opacity-90 drop-shadow-md">
+              Desa Karyawangi, Parongpong
+            </p>
+            <div className="mt-6 flex items-center justify-center gap-4 text-sm">
+              <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full backdrop-blur-sm text-black">
+                🌲 Wisata Alam
+              </div>
+              <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full backdrop-blur-sm text-black">
+                📷 Foto Instagramable
+              </div>
+            </div>
+          </div>
+        </div>
         
         {/* Navigation */}
-        <div className="absolute top-6 left-6 z-10">
+        <div className="absolute top-6 left-6 z-20">
           <Link
             href="/Tours"
-            className="inline-flex items-center gap-2 bg-white bg-opacity-90 text-gray-800 px-4 py-2 rounded-lg hover:bg-opacity-100 transition-all"
+            className="inline-flex items-center gap-2 bg-white bg-opacity-90 text-gray-800 px-4 py-2 rounded-lg hover:bg-opacity-100 transition-all shadow-lg"
           >
             <ArrowLeft className="w-4 h-4" />
             Kembali
@@ -241,70 +264,47 @@ export default function PaketWisataDetailPage() {
         </div>
 
         {/* Actions */}
-        <div className="absolute top-6 right-6 z-10 flex gap-2">
-          <button 
-            onClick={() => {
-              setGalleryActiveIndex(activeImageIndex);
-              setShowGalleryModal(true);
-            }}
-            className="inline-flex items-center gap-2 bg-blue-500 bg-opacity-90 text-white px-3 py-2 rounded-lg hover:bg-opacity-100 transition-all"
-          >
-            📷 Galeri
-          </button>
+        <div className="absolute top-6 right-6 z-20 flex gap-2">
+          {images.length > 0 && (
+            <button 
+              onClick={() => {
+                setGalleryActiveIndex(0);
+                setShowGalleryModal(true);
+              }}
+              className="inline-flex items-center gap-2 bg-blue-500 bg-opacity-90 text-white px-3 py-2 rounded-lg hover:bg-opacity-100 transition-all shadow-lg"
+            >
+              📷 Galeri ({images.length})
+            </button>
+          )}
           <button 
             onClick={() => setIsLiked(!isLiked)}
-            className={`p-2 rounded-full transition-colors ${
+            className={`p-2 rounded-full transition-all shadow-lg ${
               isLiked ? 'bg-red-500 text-white' : 'bg-white bg-opacity-90 text-gray-800 hover:bg-opacity-100'
             }`}
           >
             <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
           </button>
-          <button className="p-2 bg-white bg-opacity-90 text-gray-800 rounded-full hover:bg-opacity-100 transition-colors">
+          <button className="p-2 bg-white bg-opacity-90 text-gray-800 rounded-full hover:bg-opacity-100 transition-all shadow-lg">
             <Share2 className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Double-click hint */}
-        <div className="absolute bottom-20 right-6 z-10 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-xs">
-          Double-click untuk melihat foto besar
+        {/* Price Badge */}
+        <div className="absolute bottom-6 left-6 z-20">
+          <div className="bg-white bg-opacity-95 text-gray-800 px-4 py-2 rounded-lg shadow-lg">
+            <div className="text-sm text-gray-600">Mulai dari</div>
+            <div className="text-xl font-bold text-green-600">
+              {formatPrice(paketWisata.harga)}
+            </div>
+          </div>
         </div>
 
-        {/* Image Navigation Thumbnails */}
-        {images.length > 1 && (
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
-            {images.map((image, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveImageIndex(index)}
-                className={`relative w-16 h-12 rounded overflow-hidden border-2 transition-all bg-gray-200 ${
-                  activeImageIndex === index ? 'border-white' : 'border-transparent opacity-70'
-                }`}
-              >
-                {image?.startsWith('data:image') ? (
-                  <div 
-                    className="w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(${image})` }}
-                  />
-                ) : (
-                  <img
-                    src={`/uploads/${image}`}
-                    alt={`${paketWisata.namaPaket} - Thumbnail ${index + 1}`}
-                    className="object-cover w-full h-full"
-                    onError={(e) => {
-                      console.error('Thumbnail failed to load:', `/uploads/${image}`);
-                      const target = e.target as HTMLImageElement;
-                      target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA2NCA0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNDgiIGZpbGw9IiNlNWU3ZWIiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2Yjc5ODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5O3PC90ZXh0Pgo8L3N2Zz4K`;
-                    }}
-                  />
-                )}
-                {/* 360° indicator */}
-                {image === paketWisata.gambar360 && (
-                  <div className="absolute inset-0 bg-orange-500 bg-opacity-80 flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">360°</span>
-                  </div>
-                )}
-              </button>
-            ))}
+        {/* Image Indicator */}
+        {images.length > 0 && (
+          <div className="absolute bottom-6 right-6 z-20">
+            <div className="bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-xs backdrop-blur-sm">
+              {images.length} Foto Tersedia
+            </div>
           </div>
         )}
       </div>
@@ -367,6 +367,7 @@ export default function PaketWisataDetailPage() {
                 {images.map((image, index) => (
                   <div
                     key={index}
+                    data-gallery-index={index}
                     className="relative aspect-square overflow-hidden rounded-lg cursor-pointer group bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200"
                     onClick={() => {
                       if (image === paketWisata.gambar360) {
@@ -378,23 +379,23 @@ export default function PaketWisataDetailPage() {
                     }}
                   >
                     <Image
-                      src={`/uploads/${image}`}
+                      src={getImageSrc(image)}
                       alt={`${paketWisata.namaPaket} - Photo ${index + 1}`}
                       fill
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="object-cover transition-all duration-300 group-hover:scale-110"
+                      className="object-cover transition-all duration-300 group-hover:scale-110 z-10 relative"
                       placeholder="blur"
                       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                       priority={index < 2}
                       onError={(e) => {
-                        console.error('Image failed to load:', `/uploads/${image}`);
+                        console.error('Image failed to load:', getImageSrc(image));
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';
                         // Show fallback div
                         const parent = target.parentElement;
                         if (parent && !parent.querySelector('.fallback-content')) {
                           const fallback = document.createElement('div');
-                          fallback.className = 'fallback-content absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm';
+                          fallback.className = 'fallback-content absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm z-20';
                           fallback.innerHTML = `
                             <div class="text-center">
                               <div class="text-2xl mb-2">🖼️</div>
@@ -405,15 +406,23 @@ export default function PaketWisataDetailPage() {
                         }
                       }}
                       onLoadStart={() => {
-                        console.log('Loading image:', `/uploads/${image}`);
+                        console.log('Loading image:', getImageSrc(image));
+                        // Hide loading placeholder when image starts loading
+                        const parent = (document.querySelector(`[data-gallery-index="${index}"]`) as HTMLElement);
+                        const loadingDiv = parent?.querySelector('.loading-placeholder') as HTMLElement;
+                        if (loadingDiv) loadingDiv.style.display = 'none';
                       }}
                       onLoad={() => {
-                        console.log('Image loaded successfully:', `/uploads/${image}`);
+                        console.log('Image loaded successfully:', getImageSrc(image));
+                        // Hide loading placeholder when image loads
+                        const parent = (document.querySelector(`[data-gallery-index="${index}"]`) as HTMLElement);
+                        const loadingDiv = parent?.querySelector('.loading-placeholder') as HTMLElement;
+                        if (loadingDiv) loadingDiv.style.display = 'none';
                       }}
                     />
                     
                     {/* Loading placeholder while image loads */}
-                    <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-400">
+                    <div className="loading-placeholder absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-400 z-5">
                       <div className="animate-pulse">
                         <div className="text-2xl mb-2">📷</div>
                         <div className="text-xs">Loading...</div>
@@ -578,23 +587,23 @@ export default function PaketWisataDetailPage() {
           <div className="relative max-w-4xl max-h-full p-4">
             <button
               onClick={() => setShowGalleryModal(false)}
-              className="absolute top-4 right-4 z-10 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-colors"
+              className="absolute top-4 right-4 z-10 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-4 rounded-full transition-all shadow-lg group"
             >
-              <X className="w-6 h-6" />
+              <X className="w-8 h-8 group-hover:scale-110 transition-transform" />
             </button>
             
             {/* Navigation Buttons */}
             <button
               onClick={prevGalleryImage}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-colors"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-4 rounded-full transition-all shadow-lg group"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-8 h-8 group-hover:scale-110 transition-transform" />
             </button>
             <button
               onClick={nextGalleryImage}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-colors"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-4 rounded-full transition-all shadow-lg group"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-8 h-8 group-hover:scale-110 transition-transform" />
             </button>
 
             <div className="relative">
@@ -608,15 +617,15 @@ export default function PaketWisataDetailPage() {
                   }}
                 />
               ) : (
-                <img
-                  src={`/uploads/${images[galleryActiveIndex]}`}
-                  alt={`${paketWisata.namaPaket} - Gallery ${galleryActiveIndex + 1}`}
-                  className="object-contain max-h-[80vh] max-w-full"
-                  onError={(e) => {
-                    console.error('Gallery modal image failed to load:', `/uploads/${images[galleryActiveIndex]}`);
-                    const target = e.target as HTMLImageElement;
-                    target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNlNWU3ZWIiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM2Yjc5ODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=`;
-                  }}
+                  <img
+                    src={getImageSrc(images[galleryActiveIndex])}
+                    alt={`${paketWisata.namaPaket} - Gallery ${galleryActiveIndex + 1}`}
+                    className="object-contain max-h-[80vh] max-w-full"
+                    onError={(e) => {
+                      console.error('Gallery modal image failed to load:', getImageSrc(images[galleryActiveIndex]));
+                      const target = e.target as HTMLImageElement;
+                      target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNlNWU3ZWIiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM2Yjc5ODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=`;
+                    }}
                 />
               )}
               
@@ -643,11 +652,11 @@ export default function PaketWisataDetailPage() {
                     />
                   ) : (
                     <img
-                      src={`/uploads/${image}`}
+                      src={getImageSrc(image)}
                       alt={`${paketWisata.namaPaket} - Thumbnail ${index + 1}`}
                       className="object-cover w-full h-full"
                       onError={(e) => {
-                        console.error('Modal thumbnail failed to load:', `/uploads/${image}`);
+                        console.error('Modal thumbnail failed to load:', getImageSrc(image));
                         const target = e.target as HTMLImageElement;
                         target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA2NCA0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNDgiIGZpbGw9IiNlNWU3ZWIiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2Yjc5ODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5O3PC90ZXh0Pgo8L3N2Zz4K`;
                       }}
@@ -744,7 +753,7 @@ export default function PaketWisataDetailPage() {
                       imageRendering: 'auto'
                     }}
                     onError={() => {
-                      console.error('360° image failed to load:', `/uploads/${paketWisata.gambar360}`);
+                      console.error('360° image failed to load:', getImageSrc(paketWisata.gambar360));
                     }}
                   />
                 )}
