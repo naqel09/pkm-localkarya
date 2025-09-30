@@ -22,6 +22,7 @@ interface HotelFormData {
   namaHotel: string;
   alamatHotel: string;
   googleMapsHotel: string;
+  noWa: string;
   deskripsiHotel: string;
   fasilitas: string[];
   gambar1?: string;
@@ -38,6 +39,7 @@ const InputHotelPage = () => {
     namaHotel: "",
     alamatHotel: "",
     googleMapsHotel: "",
+    noWa: "",
     deskripsiHotel: "",
     fasilitas: [],
     gambar1: "",
@@ -440,6 +442,25 @@ const InputHotelPage = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="https://maps.google.com/..."
               />
+            </div>
+
+            {/* WhatsApp */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nomor WhatsApp (Opsional)
+              </label>
+              <input
+                type="tel"
+                name="noWa"
+                value={hotelData.noWa}
+                onChange={handleHotelChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="628xxxxxxxxxx (dimulai dengan 62)"
+                pattern="^62\d{9,13}$"
+              />
+              <p className="text-gray-500 text-xs mt-1">
+                Format: 628xxxxxxxxxx (dimulai dengan 62)
+              </p>
             </div>
 
             {/* Deskripsi */}

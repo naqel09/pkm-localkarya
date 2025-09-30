@@ -14,6 +14,9 @@ export class Hotel {
   @Column({ name: 'google_maps_hotel', nullable: true })
   googleMapsHotel?: string;
 
+  @Column({ name: 'no_wa', nullable: true })
+  noWa?: string;
+
   @Column({ name: 'deskripsi_hotel', type: 'text' })
   deskripsiHotel!: string;
 

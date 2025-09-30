@@ -56,7 +56,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const { id } = await params;
         const body = await request.json();
         
-        const { namaHotel, alamatHotel, googleMapsHotel, deskripsiHotel, fasilitas, gambar1, gambar2, gambar3, rooms } = body;
+        const { namaHotel, alamatHotel, googleMapsHotel, noWa, deskripsiHotel, fasilitas, gambar1, gambar2, gambar3, rooms } = body;
         
         if (!namaHotel || !alamatHotel || !deskripsiHotel || !fasilitas) {
             return NextResponse.json({
@@ -85,6 +85,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             namaHotel: namaHotel.trim(),
             alamatHotel: alamatHotel.trim(),
             googleMapsHotel: googleMapsHotel?.trim() || null,
+            noWa: noWa?.trim() || null,
             deskripsiHotel: deskripsiHotel.trim(),
             fasilitas: Array.isArray(fasilitas) ? fasilitas.map(f => f.trim()).filter(f => f) : [],
             gambar1: gambar1?.trim() || null,

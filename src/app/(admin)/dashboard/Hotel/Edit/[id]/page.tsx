@@ -8,6 +8,7 @@ interface HotelFormData {
   namaHotel: string;
   alamatHotel: string;
   googleMapsHotel: string;
+  noWa: string;
   deskripsiHotel: string;
   fasilitas: string[];
   gambar1: string | null;
@@ -54,6 +55,7 @@ const EditHotelPage = () => {
     namaHotel: '',
     alamatHotel: '',
     googleMapsHotel: '',
+    noWa: '',
     deskripsiHotel: '',
     fasilitas: [],
     gambar1: null,
@@ -121,6 +123,7 @@ const EditHotelPage = () => {
             namaHotel: hotel.namaHotel || '',
             alamatHotel: hotel.alamatHotel || '',
             googleMapsHotel: hotel.googleMapsHotel || '',
+            noWa: hotel.noWa || '',
             deskripsiHotel: hotel.deskripsiHotel || '',
             fasilitas: Array.isArray(hotel.fasilitas) ? hotel.fasilitas : [],
             gambar1: hotel.gambar1 || null,
@@ -537,6 +540,24 @@ const EditHotelPage = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="https://maps.google.com/..."
                 />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nomor WhatsApp (Opsional)
+                </label>
+                <input
+                  type="tel"
+                  name="noWa"
+                  value={hotelData.noWa}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="628xxxxxxxxxx (dimulai dengan 62)"
+                  pattern="^62\d{9,13}$"
+                />
+                <p className="text-gray-500 text-xs mt-1">
+                  Format: 628xxxxxxxxxx (dimulai dengan 62)
+                </p>
               </div>
 
               <div className="md:col-span-2">

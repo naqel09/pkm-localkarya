@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Star, Wifi, Car, Coffee, Users, Bed, ArrowRight, Calendar, Phone, Mail, X } from 'lucide-react';
+import { ArrowLeft, MapPin, Star, Wifi, Car, Coffee, Users, Bed, ArrowRight, Calendar, Phone, Mail, X, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import TourHeader from "@/components/TourHeader";
 
@@ -11,6 +11,7 @@ interface Hotel {
   namaHotel: string;
   alamatHotel: string;
   googleMapsHotel?: string;
+  noWa?: string;
   deskripsiHotel: string;
   fasilitas: string[];
   gambar1?: string;
@@ -43,6 +44,11 @@ const HotelDetailPage = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [showRoomModal, setShowRoomModal] = useState(false);
+  
+  // Booking form state
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
+  const [guestCount, setGuestCount] = useState('1');
 
   const facilityIcons: Record<string, any> = {
     'WiFi': Wifi,
@@ -385,9 +391,18 @@ const HotelDetailPage = () => {
                           Lihat Detail
                           <ArrowRight className="w-4 h-4" />
                         </button>
-                        <button className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition-colors">
-                          Pesan Sekarang
-                        </button>
+                        {hotel.noWa && (
+                          <button 
+                            onClick={() => {
+                              const message = encodeURIComponent(`Halo saya ingin menanyakan informasi mengenai kamar hotel ${room.jenisKamar}`);
+                              window.open(`https://wa.me/${hotel.noWa}?text=${message}`, '_blank');
+                            }}
+                            className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            WhatsApp
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -409,6 +424,8 @@ const HotelDetailPage = () => {
                     <div className="relative">
                       <input
                         type="date"
+                        value={checkInDate}
+                        onChange={(e) => setCheckInDate(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       <Calendar className="absolute right-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
@@ -422,6 +439,8 @@ const HotelDetailPage = () => {
                     <div className="relative">
                       <input
                         type="date"
+                        value={checkOutDate}
+                        onChange={(e) => setCheckOutDate(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       <Calendar className="absolute right-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" />
@@ -432,17 +451,46 @@ const HotelDetailPage = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Tamu
                     </label>
-                    <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <select 
+                      value={guestCount}
+                      onChange={(e) => setGuestCount(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
                       <option value="1">1 Tamu</option>
                       <option value="2">2 Tamu</option>
                       <option value="3">3 Tamu</option>
                       <option value="4">4 Tamu</option>
+                      <option value="5">5 Tamu</option>
+                      <option value="6">6+ Tamu</option>
                     </select>
                   </div>
                 </div>
                 
-                <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mt-6 font-medium">
-                  Cek Ketersediaan
+                <button 
+                  onClick={() => {
+                    if (!hotel?.noWa) {
+                      alert('Nomor WhatsApp hotel tidak tersedia');
+                      return;
+                    }
+                    
+                    const formatDate = (date: string) => {
+                      if (!date) return 'belum dipilih';
+                      return new Date(date).toLocaleDateString('id-ID', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      });
+                    };
+                    
+                    const message = `Halo, saya ingin menanyakan ketersediaan kamar di ${hotel.namaHotel}\n\nDetail booking:\n- Check-in: ${formatDate(checkInDate)}\n- Check-out: ${formatDate(checkOutDate)}\n- Jumlah tamu: ${guestCount} orang\n\nMohon informasi ketersediaan dan harga kamar. Terima kasih.`;
+                    
+                    window.open(`https://wa.me/${hotel.noWa}?text=${encodeURIComponent(message)}`, '_blank');
+                  }}
+                  className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors mt-6 font-medium flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Cek Ketersediaan via WhatsApp
                 </button>
               </div>
 
@@ -463,19 +511,37 @@ const HotelDetailPage = () => {
                     <MapPin className="w-5 h-5 text-blue-600 mt-0.5" />
                     <span className="text-gray-700">{hotel.alamatHotel}</span>
                   </div>
+                  {hotel.noWa && (
+                    <div className="flex items-center gap-3">
+                      <MessageCircle className="w-5 h-5 text-green-600" />
+                      <span className="text-gray-700">{hotel.noWa}</span>
+                    </div>
+                  )}
                 </div>
                 
-                {hotel.googleMapsHotel && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
+                  {hotel.noWa && (
+                    <button
+                      onClick={() => {
+                        const message = encodeURIComponent('Halo saya ingin menanyakan informasi mengenai hotel ini');
+                        window.open(`https://wa.me/${hotel.noWa}?text=${message}`, '_blank');
+                      }}
+                      className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      Tanya via WhatsApp
+                    </button>
+                  )}
+                  {hotel.googleMapsHotel && (
                     <button
                       onClick={() => window.open(hotel.googleMapsHotel, '_blank')}
-                      className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
                     >
                       <MapPin className="w-4 h-4" />
                       Lihat Lokasi di Maps
                     </button>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Hotel Stats */}
