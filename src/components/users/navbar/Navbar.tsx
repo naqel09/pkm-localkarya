@@ -49,6 +49,9 @@ function Navbar() {
                     <Link href="/Blog">Artikel</Link>
                 </li>
                 <li className="hover:text-blue-400">
+                    <Link href="/Vlog">Vlog</Link>
+                </li>
+                <li className="hover:text-blue-400">
                     <Link href="/About">Tentang Kami</Link>
                 </li>
             </ul>
@@ -104,6 +107,11 @@ function Navbar() {
                             <li>
                                 <Link href="/Blog" onClick={closeSidebar}>
                                     Artikel
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/Vlog" onClick={closeSidebar}>
+                                    Vlog
                                 </Link>
                             </li>
                             <li>

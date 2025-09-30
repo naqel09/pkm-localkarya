@@ -16,6 +16,7 @@ import {
     Settings,
     Map,
     Store,
+    Youtube,
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -64,6 +65,12 @@ const AdminSidebar = () => {
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <FileText size={20} /> Artikel
+                    </Link>
+                    <Link
+                        href="/dashboard/Vlog"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <Youtube size={20} /> Vlog
                     </Link>
 
                     <div className="mt-6 text-sm text-gray-400">Settings</div>
