@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { ProdukUmkm } from "./ProdukUmkm";
 
 @Entity("umkm")
 export class Umkm {
@@ -18,6 +17,9 @@ export class Umkm {
   @Column({ name: 'link_gmaps', type: 'text', nullable: true })
   linkGmaps?: string;
 
+  @Column({ name: 'nomor_whatsapp', nullable: true })
+  nomorWhatsapp?: string;
+
   @Column({ name: 'gambar', nullable: true })
   gambar?: string;
 
@@ -27,6 +29,6 @@ export class Umkm {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
 
-  @OneToMany(() => ProdukUmkm, produk => produk.umkm, { cascade: true })
-  produk!: ProdukUmkm[];
+  @OneToMany("ProdukUmkm", "umkm", { cascade: true })
+  produk!: any[];
 }

@@ -41,6 +41,9 @@ function Navbar() {
                 <li className="hover:text-blue-400">
                     <Link href="/Restaurant">Kuliner</Link>
                 </li>
+                <li className="hover:text-blue-400">
+                    <Link href="/UMKM">UMKM</Link>
+                </li>
                 
                 <li className="hover:text-blue-400">
                     <Link href="/Blog">Artikel</Link>
@@ -86,6 +89,11 @@ function Navbar() {
                             <li>
                                 <Link href="/Restaurant" onClick={closeSidebar}>
                                     Kuliner
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/UMKM" onClick={closeSidebar}>
+                                    UMKM
                                 </Link>
                             </li>
                             <li>

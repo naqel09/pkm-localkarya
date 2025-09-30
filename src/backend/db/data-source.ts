@@ -8,6 +8,8 @@ import { Restaurant } from "@/backend/entities/Restaurant";
 import { Menu } from "@/backend/entities/Menu";
 import { Artikel } from "../entities/Artikel";
 import { User } from "../entities/User";
+import { Umkm } from "../entities/Umkm";
+import { ProdukUmkm } from "../entities/ProdukUmkm";
 import { initializeAdmin } from "@/lib/init-admin";
 
 export const AppDataSource = new DataSource({
@@ -19,7 +21,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "Localkarya",
   synchronize: true, // jangan aktifkan di production
   logging: false,
-  entities: [Destination, PaketWisata, Hotel, Room, Restaurant, Menu, Artikel, User]
+  entities: [Destination, PaketWisata, Hotel, Room, Restaurant, Menu, Artikel, User, Umkm, ProdukUmkm]
 });
 
 // Initialize database connection hanya sekali

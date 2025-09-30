@@ -15,6 +15,7 @@ import {
     LogOut,
     Settings,
     Map,
+    Store,
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -51,6 +52,12 @@ const AdminSidebar = () => {
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Bed size={20} /> Penginapan
+                    </Link>
+                    <Link
+                        href="/dashboard/UMKM"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <Store size={20} /> UMKM
                     </Link>
                     <Link
                         href="/dashboard/Blog"

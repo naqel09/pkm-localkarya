@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { Umkm } from "./Umkm";
 
 @Entity("produk_umkm")
 export class ProdukUmkm {
@@ -33,7 +32,7 @@ export class ProdukUmkm {
   @Column({ name: 'umkm_id' })
   umkmId!: number;
 
-  @ManyToOne(() => Umkm, umkm => umkm.produk, { onDelete: "CASCADE" })
+  @ManyToOne("Umkm", "produk", { onDelete: "CASCADE" })
   @JoinColumn({ name: "umkm_id" })
-  umkm!: Umkm;
+  umkm!: any;
 }
