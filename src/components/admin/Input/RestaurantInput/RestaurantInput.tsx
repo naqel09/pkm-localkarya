@@ -15,6 +15,10 @@ interface RestaurantForm {
   namaRestaurant: string;
   alamatRestaurant: string;
   deskripsiRestaurant: string;
+  gmaps?: string;
+  noWa?: string;
+  operatingHours?: string;
+  capacity?: string;
   gambar1?: FileList;
   gambar2?: FileList;
   gambar3?: FileList;
@@ -43,6 +47,10 @@ export const RestaurantInput: React.FC<RestaurantInputProps> = ({
       namaRestaurant: initialData?.namaRestaurant || '',
       alamatRestaurant: initialData?.alamatRestaurant || '',
       deskripsiRestaurant: initialData?.deskripsiRestaurant || '',
+      gmaps: initialData?.gmaps || '',
+      noWa: initialData?.noWa || '',
+      operatingHours: initialData?.operatingHours || '',
+      capacity: initialData?.capacity || '',
       menus: initialData?.menus || []
     }
   });
@@ -176,6 +184,23 @@ export const RestaurantInput: React.FC<RestaurantInputProps> = ({
     formData.append('namaRestaurant', data.namaRestaurant.trim());
     formData.append('alamatRestaurant', data.alamatRestaurant.trim());
     formData.append('deskripsiRestaurant', data.deskripsiRestaurant.trim());
+    
+    // Add optional fields
+    if (data.gmaps && data.gmaps.trim()) {
+      formData.append('gmaps', data.gmaps.trim());
+    }
+    
+    if (data.noWa && data.noWa.trim()) {
+      formData.append('noWa', data.noWa.trim());
+    }
+
+    if (data.operatingHours && data.operatingHours.trim()) {
+      formData.append('operatingHours', data.operatingHours.trim());
+    }
+
+    if (data.capacity && data.capacity.trim()) {
+      formData.append('capacity', data.capacity.trim());
+    }
 
     // Add restaurant images from selectedFiles state
     const imageFields = ['gambar1', 'gambar2', 'gambar3', 'gambar4', 'gambar5', 'gambar6'];
@@ -369,6 +394,74 @@ export const RestaurantInput: React.FC<RestaurantInputProps> = ({
               />
               {errors.deskripsiRestaurant && (
                 <p className="text-red-500 text-sm mt-1">{errors.deskripsiRestaurant.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Link Google Maps
+              </label>
+              <input
+                {...register('gmaps')}
+                type="url"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="https://maps.google.com/..."
+              />
+              {errors.gmaps && (
+                <p className="text-red-500 text-sm mt-1">{errors.gmaps.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nomor WhatsApp
+              </label>
+              <input
+                {...register('noWa', {
+                  pattern: {
+                    value: /^62\d{9,13}$/,
+                    message: 'Nomor WhatsApp harus dimulai dengan 62 dan memiliki 11-15 digit'
+                  }
+                })}
+                type="tel"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="628xxxxxxxxxx"
+              />
+              {errors.noWa && (
+                <p className="text-red-500 text-sm mt-1">{errors.noWa.message}</p>
+              )}
+              <p className="text-gray-500 text-xs mt-1">
+                Format: 628xxxxxxxxxx (dimulai dengan 62)
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Jam Operasional
+              </label>
+              <input
+                {...register('operatingHours')}
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Contoh: 09:00 - 22:00"
+              />
+              {errors.operatingHours && (
+                <p className="text-red-500 text-sm mt-1">{errors.operatingHours.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Kapasitas
+              </label>
+              <input
+                {...register('capacity')}
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Contoh: 50-100 orang"
+              />
+              {errors.capacity && (
+                <p className="text-red-500 text-sm mt-1">{errors.capacity.message}</p>
               )}
             </div>
           </div>

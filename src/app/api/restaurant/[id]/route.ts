@@ -113,6 +113,10 @@ export async function PUT(
       namaRestaurant: formData.get('namaRestaurant') as string,
       alamatRestaurant: formData.get('alamatRestaurant') as string,
       deskripsiRestaurant: formData.get('deskripsiRestaurant') as string,
+      gmaps: formData.get('gmaps') as string || null,
+      noWa: formData.get('noWa') as string || null,
+      operatingHours: formData.get('operatingHours') as string || null,
+      capacity: formData.get('capacity') as string || null,
     };
 
     // Create uploads directory if it doesn't exist

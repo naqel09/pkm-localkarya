@@ -72,6 +72,14 @@ export class RestaurantService {
       errors.push('Deskripsi restaurant harus diisi');
     }
 
+    // Validate WhatsApp number if provided
+    if (data.noWa && data.noWa.trim() !== '') {
+      const waRegex = /^62\d{9,13}$/;
+      if (!waRegex.test(data.noWa.trim())) {
+        errors.push('Nomor WhatsApp harus dimulai dengan 62 dan memiliki 11-15 digit');
+      }
+    }
+
     return {
       isValid: errors.length === 0,
       errors

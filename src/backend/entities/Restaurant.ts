@@ -14,6 +14,18 @@ export class Restaurant {
   @Column({ name: 'deskripsi_restaurant', type: 'text' })
   deskripsiRestaurant!: string;
 
+  @Column({ name: 'gmaps', nullable: true })
+  gmaps?: string;
+
+  @Column({ name: 'no_wa', nullable: true })
+  noWa?: string;
+
+  @Column({ name: 'operating_hours', nullable: true })
+  operatingHours?: string;
+
+  @Column({ name: 'capacity', nullable: true })
+  capacity?: string;
+
   // 6 gambar restaurant
   @Column({ name: 'gambar1', nullable: true })
   gambar1?: string;

@@ -16,6 +16,8 @@ interface Restaurant {
   namaRestaurant: string;
   alamatRestaurant: string;
   deskripsiRestaurant: string;
+  gmaps?: string;
+  noWa?: string;
   gambar1?: string;
   gambar2?: string;
   gambar3?: string;

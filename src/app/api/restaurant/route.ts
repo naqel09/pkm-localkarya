@@ -85,6 +85,10 @@ export async function POST(request: NextRequest) {
       namaRestaurant: formData.get('namaRestaurant') as string,
       alamatRestaurant: formData.get('alamatRestaurant') as string,
       deskripsiRestaurant: formData.get('deskripsiRestaurant') as string,
+      gmaps: formData.get('gmaps') as string || null,
+      noWa: formData.get('noWa') as string || null,
+      operatingHours: formData.get('operatingHours') as string || null,
+      capacity: formData.get('capacity') as string || null,
     };
     
     console.log('🏢 Restaurant data extracted:', restaurantData);
@@ -274,6 +278,14 @@ export async function POST(request: NextRequest) {
       validationErrors.push('Deskripsi restaurant harus diisi');
     }
     
+    // Validate WhatsApp number if provided
+    if (restaurantData.noWa && restaurantData.noWa.trim() !== '') {
+      const waRegex = /^62\d{9,13}$/;
+      if (!waRegex.test(restaurantData.noWa.trim())) {
+        validationErrors.push('Nomor WhatsApp harus dimulai dengan 62 dan memiliki 11-15 digit');
+      }
+    }
+    
     if (validationErrors.length > 0) {
       console.log('❌ Validation failed:', validationErrors);
       return NextResponse.json(
@@ -300,6 +312,10 @@ export async function POST(request: NextRequest) {
       namaRestaurant: restaurantData.namaRestaurant.trim(),
       alamatRestaurant: restaurantData.alamatRestaurant.trim(),
       deskripsiRestaurant: restaurantData.deskripsiRestaurant.trim(),
+      gmaps: restaurantData.gmaps ? restaurantData.gmaps.trim() : null,
+      noWa: restaurantData.noWa ? restaurantData.noWa.trim() : null,
+      operatingHours: restaurantData.operatingHours ? restaurantData.operatingHours.trim() : null,
+      capacity: restaurantData.capacity ? restaurantData.capacity.trim() : null,
       ...Object.fromEntries(imageFields.map(field => [field, (restaurantData as any)[field] || null])),
       ...Object.fromEntries(menuPhotoFields.map(field => [field, (restaurantData as any)[field] || null]))
     });

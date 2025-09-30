@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import TourHeader from '@/components/TourHeader'
-import { MapPin, Phone, Clock, Users, Star, ChefHat, X } from 'lucide-react'
+import { MapPin, Phone, Clock, Users, Star, ChefHat, X, Map, MessageCircle } from 'lucide-react'
 
 interface Menu {
   id: number;
@@ -18,6 +18,10 @@ interface Restaurant {
   namaRestaurant: string;
   alamatRestaurant: string;
   deskripsiRestaurant: string;
+  gmaps?: string;
+  noWa?: string;
+  operatingHours?: string;
+  capacity?: string;
   gambar1?: string;
   gambar2?: string;
   gambar3?: string;
@@ -399,7 +403,7 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
                   <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
                   <div>
                     <p className="font-medium text-gray-800">Operating Hours</p>
-                    <p className="text-gray-600 text-sm">Daily: 09:00 - 22:00</p>
+                    <p className="text-gray-600 text-sm">{restaurant.operatingHours || 'Coming Soon'}</p>
                   </div>
                 </div>
                 
@@ -407,7 +411,7 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
                   <Users className="w-5 h-5 text-blue-600 mt-0.5" />
                   <div>
                     <p className="font-medium text-gray-800">Capacity</p>
-                    <p className="text-gray-600 text-sm">50-100 people</p>
+                    <p className="text-gray-600 text-sm">{restaurant.capacity || 'Please contact for details'}</p>
                   </div>
                 </div>
                 
@@ -420,11 +424,93 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
                 </div>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                  Contact Restaurant
-                </button>
-                <button className="w-full mt-2 border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+              {/* Google Maps Section */}
+              {restaurant.gmaps && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-medium text-gray-800 flex items-center space-x-2">
+                      <Map className="w-5 h-5 text-blue-600" />
+                      <span>Lokasi Restaurant</span>
+                    </h3>
+                    <a
+                      href={restaurant.gmaps}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                    >
+                      <Map className="w-4 h-4" />
+                      Buka di Maps
+                    </a>
+                  </div>
+                  
+                  {/* Embedded Google Maps */}
+                  <div className="relative h-48 rounded-lg overflow-hidden border border-gray-200">
+                    <iframe
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(restaurant.alamatRestaurant)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title={`Lokasi ${restaurant.namaRestaurant}`}
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2 text-center">
+                    Peta interaktif - Anda dapat zoom, drag, dan berinteraksi dengan peta
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
+                {/* WhatsApp Button */}
+                {restaurant.noWa && (
+                  <button 
+                    onClick={() => window.open(`https://wa.me/${restaurant.noWa}?text=Halo, saya ingin bertanya tentang ${restaurant.namaRestaurant}`, '_blank')}
+                    className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    <span>Chat WhatsApp</span>
+                  </button>
+                )}
+                
+                {/* Maps and Direction Buttons */}
+                {restaurant.gmaps && (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button 
+                      onClick={() => window.open(restaurant.gmaps, '_blank')}
+                      className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2 text-sm"
+                    >
+                      <Map className="w-4 h-4" />
+                      <span>Buka di Google Maps</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(restaurant.alamatRestaurant)}`;
+                        window.open(mapsUrl, '_blank');
+                      }}
+                      className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      Petunjuk Arah
+                    </button>
+                  </div>
+                )}
+                
+                {/* Call Button */}
+                {restaurant.noWa && (
+                  <button 
+                    onClick={() => window.open(`tel:+${restaurant.noWa}`, '_self')}
+                    className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center space-x-2"
+                  >
+                    <Phone className="w-5 h-5" />
+                    <span>Call Restaurant</span>
+                  </button>
+                )}
+                
+                <button className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                   Share Restaurant
                 </button>
               </div>
