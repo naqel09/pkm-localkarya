@@ -13,6 +13,9 @@ interface PaketWisata {
   alamat: string;
   deskripsi: string;
   harga: number;
+  yangTermasuk?: string[];
+  jadwal?: { waktu: string; kegiatan: string }[];
+  noWa?: string | null;
   gambar1: string;
   gambar2?: string | null;
   gambar3?: string | null;
@@ -65,6 +68,10 @@ export default function PaketWisataDetailPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [lastMouseX, setLastMouseX] = useState(0);
   const viewer360Ref = useRef<HTMLDivElement>(null);
+  
+  // Booking form state
+  const [bookingDate, setBookingDate] = useState('');
+  const [guestCount, setGuestCount] = useState('1 orang');
 
   // Enhanced 360° viewer with spherical mapping
   const handle360MouseDown = (e: React.MouseEvent) => {
@@ -132,6 +139,32 @@ export default function PaketWisataDetailPage() {
   const open360Viewer = () => {
     setShow360Viewer(true);
     setRotation360(0);
+  };
+
+  // Handle WhatsApp booking
+  const handleWhatsAppBooking = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!paketWisata) return;
+    
+    // Format the booking message
+    const message = `Halo! Saya ingin memesan paket wisata:
+
+📦 *${paketWisata.namaPaket}*
+📅 Tanggal: ${bookingDate || 'Belum dipilih'}
+👥 Jumlah Peserta: ${guestCount}
+💰 Harga: ${formatPrice(paketWisata.harga)}
+📍 Lokasi: ${paketWisata.alamat}
+
+Mohon informasi lebih lanjut untuk reservasi. Terima kasih!`;
+
+    // Get WhatsApp number or use default
+    const waNumber = paketWisata.noWa || '6281234567890';
+    const cleanNumber = waNumber.replace(/\D/g, '');
+    
+    // Open WhatsApp
+    const waUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+    window.open(waUrl, '_blank');
   };
 
   useEffect(() => {
@@ -454,55 +487,42 @@ export default function PaketWisataDetailPage() {
             </div>
 
             {/* Package Includes */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                Yang Termasuk dalam Paket
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  "Guide profesional",
-                  "Transportasi AC",
-                  "Makan siang",
-                  "Tiket masuk lokasi",
-                  "Dokumentasi",
-                  "Asuransi perjalanan",
-                  "Air mineral",
-                  "Souvenir"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-gray-700">{item}</span>
-                  </div>
-                ))}
+            {paketWisata.yangTermasuk && paketWisata.yangTermasuk.length > 0 && (
+              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                  Yang Termasuk dalam Paket
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {paketWisata.yangTermasuk.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span className="text-gray-700">{item}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Itinerary */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                Jadwal Perjalanan
-              </h2>
-              <div className="space-y-4">
-                {[
-                  { time: "08:00", activity: "Penjemputan di titik kumpul" },
-                  { time: "09:00", activity: "Tiba di lokasi wisata pertama" },
-                  { time: "12:00", activity: "Makan siang di restoran lokal" },
-                  { time: "14:00", activity: "Eksplorasi lokasi wisata kedua" },
-                  { time: "16:00", activity: "Sesi foto dan dokumentasi" },
-                  { time: "17:30", activity: "Perjalanan kembali" },
-                  { time: "18:30", activity: "Tiba di titik drop off" }
-                ].map((schedule, index) => (
-                  <div key={index} className="flex gap-4 pb-4 border-b border-gray-100 last:border-b-0">
-                    <div className="flex-shrink-0 w-16 text-sm font-medium text-blue-600">
-                      {schedule.time}
+            {paketWisata.jadwal && paketWisata.jadwal.length > 0 && (
+              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                  Jadwal Perjalanan
+                </h2>
+                <div className="space-y-4">
+                  {paketWisata.jadwal.map((schedule, index) => (
+                    <div key={index} className="flex gap-4 pb-4 border-b border-gray-100 last:border-b-0">
+                      <div className="flex-shrink-0 w-16 text-sm font-medium text-blue-600">
+                        {schedule.waktu}
+                      </div>
+                      <div className="flex-1 text-gray-700">
+                        {schedule.kegiatan}
+                      </div>
                     </div>
-                    <div className="flex-1 text-gray-700">
-                      {schedule.activity}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Right Column - Booking Sidebar */}
@@ -516,14 +536,17 @@ export default function PaketWisataDetailPage() {
               </div>
 
               {/* Booking Form */}
-              <form className="space-y-4">
+              <form onSubmit={handleWhatsAppBooking} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tanggal Keberangkatan
                   </label>
                   <input
                     type="date"
+                    value={bookingDate}
+                    onChange={(e) => setBookingDate(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
                   />
                 </div>
 
@@ -531,7 +554,11 @@ export default function PaketWisataDetailPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Jumlah Peserta
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <select 
+                    value={guestCount}
+                    onChange={(e) => setGuestCount(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
                     <option>1 orang</option>
                     <option>2 orang</option>
                     <option>3 orang</option>
@@ -542,7 +569,7 @@ export default function PaketWisataDetailPage() {
 
                 <div className="border-t pt-4">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-gray-600">Subtotal (1 orang)</span>
+                    <span className="text-gray-600">Subtotal ({guestCount})</span>
                     <span className="font-semibold">{formatPrice(paketWisata.harga)}</span>
                   </div>
                   <div className="flex justify-between items-center mb-4">
@@ -557,10 +584,12 @@ export default function PaketWisataDetailPage() {
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
-                  <CreditCard className="w-5 h-5" />
-                  Pesan Sekarang
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                  </svg>
+                  Pesan via WhatsApp
                 </button>
               </form>
 
@@ -569,12 +598,26 @@ export default function PaketWisataDetailPage() {
                 <p className="text-sm text-gray-600 mb-2">
                   Butuh bantuan? Hubungi kami
                 </p>
-                <a 
-                  href="tel:+6281234567890"
-                  className="text-blue-500 hover:text-blue-600 font-medium"
-                >
-                  +62 812-3456-7890
-                </a>
+                {paketWisata.noWa ? (
+                  <a 
+                    href={`https://wa.me/${paketWisata.noWa.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-500 hover:text-green-600 font-medium flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                    </svg>
+                    WhatsApp: +{paketWisata.noWa}
+                  </a>
+                ) : (
+                  <a 
+                    href="tel:+6281234567890"
+                    className="text-blue-500 hover:text-blue-600 font-medium"
+                  >
+                    +62 812-3456-7890
+                  </a>
+                )}
               </div>
             </div>
           </div>

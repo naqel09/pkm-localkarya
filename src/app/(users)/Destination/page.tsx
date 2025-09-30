@@ -65,11 +65,28 @@ const generateSlug = (name: string) => {
 export default function DestinationPage() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   
-  const filters = ["All", "Best Seller", "Nature", "City", "Seasonal"];
   const itemsPerPage = 6; // Menampilkan 6 destinasi per halaman
+
+  // Filter destinations berdasarkan search query
+  const filteredDestinations = destinations.filter(destination => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    return (
+      destination.namaLokasi.toLowerCase().includes(query) ||
+      destination.alamat.toLowerCase().includes(query) ||
+      destination.deskripsi.toLowerCase().includes(query)
+    );
+  });
+
+  // Get current page destinations
+  const currentDestinations = filteredDestinations.slice(
+    (currentPage - 1) * itemsPerPage, 
+    currentPage * itemsPerPage
+  );
 
   useEffect(() => {
     const fetchDestinations = async () => {
@@ -158,43 +175,69 @@ export default function DestinationPage() {
             DESTINASI POPULER
           </h2>
           
-          {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-2">
-            {filters.map((filter) => (
+          {/* Search Bar */}
+          <div className="relative max-w-md w-full md:w-auto">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Cari destinasi wisata..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset to first page when search changes
+              }}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+            {searchQuery && (
               <button
-                key={filter}
                 onClick={() => {
-                  setActiveFilter(filter);
-                  setCurrentPage(1); // Reset to first page when filter changes
+                  setSearchQuery("");
+                  setCurrentPage(1);
                 }}
-                className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                  activeFilter === filter
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-                }`}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
               >
-                {filter}
+                <svg className="w-4 h-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-            ))}
+            )}
           </div>
         </div>
 
+        {/* Results Info */}
+        <div className="mb-6 text-gray-600">
+          Menampilkan {currentDestinations.length} dari {filteredDestinations.length} destinasi
+          {searchQuery && (
+            <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
+              Hasil pencarian: &quot;{searchQuery}&quot;
+            </span>
+          )}
+        </div>
+
         {/* Destinations Grid */}
-        {destinations.length === 0 ? (
+        {filteredDestinations.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-500 text-lg">
-              Belum ada destinasi yang tersedia
+              {searchQuery.trim() 
+                ? `Tidak ada destinasi yang cocok dengan pencarian "${searchQuery}"`
+                : "Belum ada destinasi yang tersedia"
+              }
             </div>
             <p className="text-gray-400 mt-2">
-              Admin sedang menambahkan destinasi menarik untuk Anda
+              {searchQuery.trim() 
+                ? "Coba gunakan kata kunci yang berbeda"
+                : "Admin sedang menambahkan destinasi menarik untuk Anda"
+              }
             </p>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {destinations
-                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                .map((destination) => (
+              {currentDestinations.map((destination) => (
               <Link
                 key={destination.id}
                 href={`/Destination/${generateSlug(destination.namaLokasi)}-${destination.id}`}
@@ -262,7 +305,7 @@ export default function DestinationPage() {
             </div>
             
             {/* Pagination */}
-            {destinations.length > itemsPerPage && (
+            {filteredDestinations.length > itemsPerPage && (
               <div className="flex justify-center mt-12">
                 <div className="flex gap-2">
                   {/* Previous Button */}
@@ -280,7 +323,7 @@ export default function DestinationPage() {
                   
                   {/* Page Numbers */}
                   {(() => {
-                    const totalPages = Math.ceil(destinations.length / itemsPerPage);
+                    const totalPages = Math.ceil(filteredDestinations.length / itemsPerPage);
                     const pages = [];
                     
                     for (let i = 1; i <= totalPages; i++) {
@@ -319,10 +362,10 @@ export default function DestinationPage() {
                   
                   {/* Next Button */}
                   <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(destinations.length / itemsPerPage)))}
-                    disabled={currentPage === Math.ceil(destinations.length / itemsPerPage)}
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredDestinations.length / itemsPerPage)))}
+                    disabled={currentPage === Math.ceil(filteredDestinations.length / itemsPerPage)}
                     className={`px-4 py-2 border rounded-md ${
-                      currentPage === Math.ceil(destinations.length / itemsPerPage)
+                      currentPage === Math.ceil(filteredDestinations.length / itemsPerPage)
                         ? "border-gray-200 text-gray-400 cursor-not-allowed"
                         : "border-gray-300 text-gray-600 hover:bg-gray-50"
                     }`}

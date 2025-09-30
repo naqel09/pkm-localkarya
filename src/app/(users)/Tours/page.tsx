@@ -12,6 +12,9 @@ interface PaketWisata {
   alamat: string;
   deskripsi: string;
   harga: number;
+  yangTermasuk?: string[];
+  jadwal?: { waktu: string; kegiatan: string }[];
+  noWa?: string | null;
   gambar1: string;
   gambar2?: string | null;
   gambar3?: string | null;
@@ -78,10 +81,9 @@ const formatPrice = (price: number) => {
 export default function ToursPage() {
   const [paketWisata, setPaketWisata] = useState<PaketWisata[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   
-  const filters = ["All", "Best Seller", "Budget", "Premium", "Family"];
   const itemsPerPage = 6; // Menampilkan 6 paket per halaman
 
   useEffect(() => {
@@ -129,13 +131,16 @@ export default function ToursPage() {
     );
   }
 
-  // Filter paket wisata berdasarkan kategori
+  // Filter paket wisata berdasarkan search query
   const filteredPaket = paketWisata.filter(paket => {
-    if (activeFilter === "All") return true;
-    if (activeFilter === "Budget") return paket.harga < 100000;
-    if (activeFilter === "Premium") return paket.harga >= 500000;
-    if (activeFilter === "Family") return paket.harga >= 200000 && paket.harga < 500000;
-    return true; // Default untuk "Best Seller" dan lainnya
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    return (
+      paket.namaPaket.toLowerCase().includes(query) ||
+      paket.alamat.toLowerCase().includes(query) ||
+      paket.deskripsi.toLowerCase().includes(query)
+    );
   });
 
   // Pagination logic
@@ -187,33 +192,45 @@ export default function ToursPage() {
             PAKET WISATA TERPOPULER
           </h2>
           
-          {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-2">
-            {filters.map((filter) => (
+          {/* Search Bar */}
+          <div className="relative max-w-md w-full md:w-auto">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Cari paket wisata..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset to first page when search changes
+              }}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+            {searchQuery && (
               <button
-                key={filter}
                 onClick={() => {
-                  setActiveFilter(filter);
-                  setCurrentPage(1); // Reset to first page when filter changes
+                  setSearchQuery("");
+                  setCurrentPage(1);
                 }}
-                className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                  activeFilter === filter
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-                }`}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
               >
-                {filter}
+                <svg className="w-4 h-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-            ))}
+            )}
           </div>
         </div>
 
         {/* Results Info */}
         <div className="mb-6 text-gray-600">
           Menampilkan {currentPaket.length} dari {filteredPaket.length} paket wisata
-          {activeFilter !== "All" && (
-            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-              {activeFilter}
+          {searchQuery && (
+            <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
+              Hasil pencarian: &quot;{searchQuery}&quot;
             </span>
           )}
         </div>
@@ -298,8 +315,8 @@ export default function ToursPage() {
               Tidak ada paket wisata
             </h3>
             <p className="text-gray-400">
-              {activeFilter !== "All" 
-                ? `Tidak ada paket wisata dalam kategori "${activeFilter}"`
+              {searchQuery.trim() 
+                ? `Tidak ada paket wisata yang cocok dengan pencarian "${searchQuery}"`
                 : "Belum ada paket wisata yang tersedia"
               }
             </p>

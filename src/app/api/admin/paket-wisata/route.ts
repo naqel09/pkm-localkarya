@@ -37,7 +37,7 @@ export async function POST(request: Request){
     }
 
     const body = await request.json();
-    const { namaPaket, alamat, deskripsi, harga, gambar1, gambar2, gambar3, gambar4, gambar360 } = body;
+    const { namaPaket, alamat, deskripsi, harga, yangTermasuk, jadwal, noWa, gambar1, gambar2, gambar3, gambar4, gambar360 } = body;
 
     // Validate required fields
     if (!namaPaket || !alamat || !deskripsi || !harga || !gambar1) {
@@ -56,6 +56,9 @@ export async function POST(request: Request){
       alamat,
       deskripsi,
       harga: parseFloat(harga),
+      yangTermasuk: Array.isArray(yangTermasuk) ? yangTermasuk.filter(item => item && item.trim()) : [],
+      jadwal: Array.isArray(jadwal) ? jadwal.filter(item => item.waktu && item.kegiatan) : [],
+      noWa: noWa?.trim() || null,
       gambar1,
       gambar2: gambar2 || null,
       gambar3: gambar3 || null,

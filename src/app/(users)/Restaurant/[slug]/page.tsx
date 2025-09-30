@@ -42,6 +42,11 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [resolvedParams, setResolvedParams] = useState<{ slug: string } | null>(null);
+  
+  // Reservation form state
+  const [reservationDate, setReservationDate] = useState('');
+  const [reservationTime, setReservationTime] = useState('');
+  const [guestCount, setGuestCount] = useState('2');
 
   useEffect(() => {
     const resolveParams = async () => {
@@ -53,30 +58,28 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
 
   useEffect(() => {
     if (resolvedParams) {
+      const fetchRestaurant = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch(`/api/restaurant/${resolvedParams.slug}`);
+          const data = await response.json();
+          
+          if (data.success) {
+            setRestaurant(data.data);
+          } else {
+            setError('Restaurant not found');
+          }
+        } catch (err) {
+          setError('Error loading restaurant');
+          console.error('Error fetching restaurant:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      
       fetchRestaurant();
     }
   }, [resolvedParams]);
-
-  const fetchRestaurant = async () => {
-    if (!resolvedParams) return;
-    
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/restaurant/${resolvedParams.slug}`);
-      const data = await response.json();
-      
-      if (data.success) {
-        setRestaurant(data.data);
-      } else {
-        setError('Restaurant not found');
-      }
-    } catch (err) {
-      setError('Error loading restaurant');
-      console.error('Error fetching restaurant:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getImageUrl = (filename?: string) => {
     if (!filename) return '/images/artikel/artikel.jpg'; // Use existing image as placeholder
@@ -387,6 +390,105 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
 
           {/* Sidebar */}
           <div className='lg:col-span-1'>
+            {/* Reservation Form */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 sticky top-6">
+              <h3 className="text-xl font-bold mb-4 text-gray-800">Buat Reservasi</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tanggal Reservasi
+                  </label>
+                  <input
+                    type="date"
+                    value={reservationDate}
+                    onChange={(e) => setReservationDate(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Waktu
+                  </label>
+                  <select 
+                    value={reservationTime}
+                    onChange={(e) => setReservationTime(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Pilih waktu</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                    <option value="20:00">20:00</option>
+                    <option value="20:30">20:30</option>
+                    <option value="21:00">21:00</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Jumlah Tamu
+                  </label>
+                  <select 
+                    value={guestCount}
+                    onChange={(e) => setGuestCount(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="1">1 Orang</option>
+                    <option value="2">2 Orang</option>
+                    <option value="3">3 Orang</option>
+                    <option value="4">4 Orang</option>
+                    <option value="5">5 Orang</option>
+                    <option value="6">6 Orang</option>
+                    <option value="7">7 Orang</option>
+                    <option value="8">8 Orang</option>
+                    <option value="9">9 Orang</option>
+                    <option value="10">10+ Orang</option>
+                  </select>
+                </div>
+              </div>
+              
+              {/* WhatsApp Reservation Button */}
+              {restaurant.noWa && (
+                <button 
+                  onClick={() => {
+                    if (!restaurant.noWa) {
+                      alert('Nomor WhatsApp restaurant tidak tersedia');
+                      return;
+                    }
+                    
+                    const formatDate = (date: string) => {
+                      if (!date) return 'belum dipilih';
+                      return new Date(date).toLocaleDateString('id-ID', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      });
+                    };
+                    
+                    const message = `Halo, saya ingin membuat reservasi di ${restaurant.namaRestaurant}\n\nDetail reservasi:\n- Tanggal: ${formatDate(reservationDate)}\n- Waktu: ${reservationTime || 'belum dipilih'}\n- Jumlah tamu: ${guestCount} orang\n\nMohon konfirmasi ketersediaan meja. Terima kasih.`;
+                    
+                    window.open(`https://wa.me/${restaurant.noWa}?text=${encodeURIComponent(message)}`, '_blank');
+                  }}
+                  className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors mt-6 font-medium flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Pesan Sekarang via WhatsApp
+                </button>
+              )}
+            </div>
+            
             <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
               <h3 className="text-xl font-bold mb-4 text-gray-800">Quick Info</h3>
               
@@ -465,17 +567,6 @@ const RestaurantDetailPage = ({ params }: { params: Promise<{ slug: string }> })
 
               {/* Action Buttons */}
               <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
-                {/* WhatsApp Button */}
-                {restaurant.noWa && (
-                  <button 
-                    onClick={() => window.open(`https://wa.me/${restaurant.noWa}?text=Halo, saya ingin bertanya tentang ${restaurant.namaRestaurant}`, '_blank')}
-                    className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>Chat WhatsApp</span>
-                  </button>
-                )}
-                
                 {/* Maps and Direction Buttons */}
                 {restaurant.gmaps && (
                   <div className="flex flex-col sm:flex-row gap-3">

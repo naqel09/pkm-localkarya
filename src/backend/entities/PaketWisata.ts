@@ -17,6 +17,15 @@ export class PaketWisata {
   @Column({ name: "harga", type: "decimal", precision: 12, scale: 2 })
   harga!: number;
 
+  @Column({ name: "yang_termasuk", type: "json", nullable: true })
+  yangTermasuk?: string[];
+
+  @Column({ name: "jadwal", type: "json", nullable: true })
+  jadwal?: { waktu: string; kegiatan: string }[];
+
+  @Column({ name: "no_wa", nullable: true })
+  noWa?: string;
+
   // Gambar 1 - Required (main image)
   @Column({ name: "gambar_1", type: "text" })
   gambar1!: string;

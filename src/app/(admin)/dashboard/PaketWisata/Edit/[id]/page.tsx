@@ -26,6 +26,9 @@ const Page = () => {
         alamat: "",
         deskripsi: "",
         harga: "",
+        yangTermasuk: [] as string[],
+        jadwal: [] as { waktu: string; kegiatan: string }[],
+        noWa: "",
         gambar1: "",
         gambar2: "",
         gambar3: "",
@@ -50,6 +53,9 @@ const Page = () => {
                     alamat: data.alamat || "",
                     deskripsi: data.deskripsi || "",
                     harga: data.harga?.toString() || "",
+                    yangTermasuk: Array.isArray(data.yangTermasuk) ? data.yangTermasuk : [],
+                    jadwal: Array.isArray(data.jadwal) ? data.jadwal : [],
+                    noWa: data.noWa || "",
                     gambar1: data.gambar1 || "",
                     gambar2: data.gambar2 || "",
                     gambar3: data.gambar3 || "",
@@ -223,6 +229,137 @@ const Page = () => {
                                 onChange={handleDescriptionChange}
                                 placeholder="Masukkan deskripsi lengkap paket wisata..."
                             />
+                        </div>
+
+                        {/* Yang Termasuk dalam Paket */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Yang Termasuk dalam Paket (Opsional)
+                            </label>
+                            <div className="space-y-2">
+                                {formData.yangTermasuk.map((item, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <div className="flex items-center text-green-600">
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={item}
+                                            onChange={(e) => {
+                                                const newItems = [...formData.yangTermasuk];
+                                                newItems[index] = e.target.value;
+                                                setFormData({ ...formData, yangTermasuk: newItems });
+                                            }}
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Contoh: Guide profesional"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newItems = formData.yangTermasuk.filter((_, i) => i !== index);
+                                                setFormData({ ...formData, yangTermasuk: newItems });
+                                            }}
+                                            className="text-red-500 hover:text-red-700"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setFormData({ ...formData, yangTermasuk: [...formData.yangTermasuk, ""] });
+                                    }}
+                                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Tambah Item
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Jadwal Perjalanan */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Jadwal Perjalanan (Opsional)
+                            </label>
+                            <div className="space-y-3">
+                                {formData.jadwal.map((item, index) => (
+                                    <div key={index} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
+                                        <input
+                                            type="text"
+                                            value={item.waktu}
+                                            onChange={(e) => {
+                                                const newJadwal = [...formData.jadwal];
+                                                newJadwal[index].waktu = e.target.value;
+                                                setFormData({ ...formData, jadwal: newJadwal });
+                                            }}
+                                            className="w-20 px-2 py-1 text-center text-blue-600 font-medium border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="08:00"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={item.kegiatan}
+                                            onChange={(e) => {
+                                                const newJadwal = [...formData.jadwal];
+                                                newJadwal[index].kegiatan = e.target.value;
+                                                setFormData({ ...formData, jadwal: newJadwal });
+                                            }}
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Contoh: Penjemputan di titik kumpul"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newJadwal = formData.jadwal.filter((_, i) => i !== index);
+                                                setFormData({ ...formData, jadwal: newJadwal });
+                                            }}
+                                            className="text-red-500 hover:text-red-700"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setFormData({ ...formData, jadwal: [...formData.jadwal, { waktu: "", kegiatan: "" }] });
+                                    }}
+                                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Tambah Jadwal
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Nomor WhatsApp */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Nomor WhatsApp (Opsional)
+                            </label>
+                            <input
+                                type="tel"
+                                name="noWa"
+                                value={formData.noWa}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="628xxxxxxxxxx (dimulai dengan 62)"
+                                pattern="^62\d{9,13}$"
+                            />
+                            <p className="text-gray-500 text-xs mt-1">
+                                Format: 628xxxxxxxxxx (dimulai dengan 62)
+                            </p>
                         </div>
 
                         {/* Upload Images */}
