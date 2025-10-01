@@ -37,7 +37,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     const { id } = await params;
     const body = await req.json();
-    const { namaLokasi, alamat, deskripsi, gambar1, gambar2, gambar3 } = body;
+    const { namaLokasi, alamat, deskripsi, gambar1, gambar2, gambar3, jamOperasional, tiketMasuk, kontakPerson, linkGmaps } = body;
     const destinationId = parseInt(id);
 
     // Validate required fields
@@ -46,6 +46,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         message: "Missing required fields: namaLokasi, alamat, deskripsi, and gambar1 are required",
         status: 400
       }, { status: 400 });
+    }
+
+    // Validate WhatsApp number format if provided
+    if (kontakPerson && kontakPerson.trim() !== '') {
+      const waRegex = /^62\d{9,13}$/;
+      if (!waRegex.test(kontakPerson.trim())) {
+        return NextResponse.json({
+          message: 'Nomor WhatsApp harus dimulai dengan 62 dan memiliki 11-15 digit',
+          status: 400
+        }, { status: 400 });
+      }
     }
 
     const destinationRepository = AppDataSource.getRepository(Destination);
@@ -64,7 +75,11 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       deskripsi,
       gambar1,
       gambar2: gambar2 || null,
-      gambar3: gambar3 || null
+      gambar3: gambar3 || null,
+      jamOperasional: jamOperasional || destination.jamOperasional || "24 Jam",
+      tiketMasuk: tiketMasuk || null,
+      kontakPerson: kontakPerson ? kontakPerson.trim() : null,
+      linkGmaps: linkGmaps || destination.linkGmaps || ""
     });
 
     // Save updated destination

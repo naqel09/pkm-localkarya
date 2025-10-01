@@ -15,6 +15,10 @@ interface Destination {
     gambar1: string;
     gambar2?: string | null;
     gambar3?: string | null;
+    jamOperasional: string;
+    tiketMasuk?: string | null;
+    kontakPerson?: string | null;
+    linkGmaps: string;
     createdAt: string;
     updatedAt: string;
 }

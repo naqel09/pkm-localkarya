@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, MapPin, Calendar, Users, Star, Share2, Heart, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Users, Star, Share2, Heart, X, ChevronLeft, ChevronRight, Map } from "lucide-react";
 
 // Fungsi untuk mengecek dan membersihkan path gambar
 const getImageSrc = (imagePath: string | null | undefined, fallback: string = '/images/mountain2.jpg') => {
@@ -35,6 +35,10 @@ interface Destination {
   gambar1: string;
   gambar2?: string | null;
   gambar3?: string | null;
+  jamOperasional: string;
+  tiketMasuk?: string | null;
+  kontakPerson?: string | null;
+  linkGmaps: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -156,6 +160,25 @@ export default function DestinationDetailPage() {
     setShowImageModal(false);
   };
 
+  // Share function
+  const shareDestination = async () => {
+    if (navigator.share && destination) {
+      try {
+        await navigator.share({
+          title: destination.namaLokasi,
+          text: `Kunjungi ${destination.namaLokasi} - ${destination.alamat}`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link berhasil disalin!');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section - Image Independent Design */}
@@ -214,6 +237,13 @@ export default function DestinationDetailPage() {
               📷 Galeri ({images.length})
             </button>
           )}
+          <button 
+            onClick={shareDestination}
+            className="inline-flex items-center gap-2 bg-green-500 bg-opacity-90 text-white px-3 py-2 rounded-lg hover:bg-opacity-100 transition-all shadow-lg"
+          >
+            <Share2 className="w-4 h-4" />
+            Bagikan
+          </button>
           <button
             onClick={() => setIsLiked(!isLiked)}
             className={`p-2 rounded-full transition-all shadow-lg ${
@@ -397,56 +427,6 @@ export default function DestinationDetailPage() {
                   </div>
                 </div>
               )}
-
-              {/* Features */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                    Fasilitas
-                  </h3>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      Area parkir luas
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      Toilet dan mushola
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      Warung makan
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      Area foto instagramable
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                    Aktivitas
-                  </h3>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Trekking & hiking
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Photography
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Piknik keluarga
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Wisata budaya
-                    </li>
-                  </ul>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -460,11 +440,11 @@ export default function DestinationDetailPage() {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Jam Operasional</span>
-                  <span className="font-medium">24 Jam</span>
+                  <span className="font-medium">{destination.jamOperasional || "24 Jam"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tiket Masuk</span>
-                  <span className="font-medium text-green-600">Gratis</span>
+                  <span className="font-medium text-green-600">{destination.tiketMasuk || "Gratis"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Estimasi Waktu</span>
@@ -485,12 +465,68 @@ export default function DestinationDetailPage() {
                 Butuh Informasi Lebih?
               </h3>
               <p className="text-gray-600 text-sm mb-4">
-                Hubungi kami untuk informasi lebih detail tentang destinasi ini.
+                {destination.kontakPerson ? 
+                  `Hubungi ${destination.kontakPerson} untuk informasi lebih detail tentang destinasi ini.` :
+                  "Hubungi kami untuk informasi lebih detail tentang destinasi ini."
+                }
               </p>
-              <button className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors">
-                Hubungi Kami
-              </button>
+              {destination.kontakPerson ? (
+                <a 
+                  href={`https://wa.me/${destination.kontakPerson.replace(/[^0-9]/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  📱 Hubungi via WhatsApp
+                </a>
+              ) : (
+                <button className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+                  Hubungi Kami
+                </button>
+              )}
             </div>
+
+            {/* Location Card */}
+            {destination.linkGmaps && (
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-medium text-gray-800 flex items-center space-x-2">
+                    <Map className="w-5 h-5 text-blue-600" />
+                    <span>Lokasi Destinasi</span>
+                  </h3>
+                  <a
+                    href={destination.linkGmaps}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                  >
+                    <Map className="w-4 h-4" />
+                    Buka di Maps
+                  </a>
+                </div>
+                
+                {/* Embedded Google Maps */}
+                <div className="relative h-48 rounded-lg overflow-hidden border border-gray-200">
+                  <iframe
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(destination.alamat)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title={`Lokasi ${destination.namaLokasi}`}
+                    className="w-full h-full"
+                  />
+                </div>
+                <p className="text-sm text-gray-500 mt-2 text-center">
+                  Peta interaktif - Anda dapat zoom, drag, dan berinteraksi dengan peta
+                </p>
+                <p className="text-sm text-gray-600 mt-2">
+                  📍 {destination.alamat}
+                </p>
+              </div>
+            )}
 
             {/* Weather Card */}
             <div className="bg-white rounded-lg shadow-md p-6">

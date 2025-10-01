@@ -37,7 +37,7 @@ export async function POST(request: Request){
     }
 
     const body = await request.json();
-    const { namaLokasi, alamat, deskripsi, gambar1, gambar2, gambar3 } = body;
+    const { namaLokasi, alamat, deskripsi, gambar1, gambar2, gambar3, jamOperasional, tiketMasuk, kontakPerson, linkGmaps } = body;
 
     // Validate required fields
     if (!namaLokasi || !alamat || !deskripsi || !gambar1) {
@@ -45,6 +45,17 @@ export async function POST(request: Request){
         message: "Missing required fields: namaLokasi, alamat, deskripsi, and gambar1 are required",
         status: 400
       }, { status: 400 });
+    }
+
+    // Validate WhatsApp number format if provided
+    if (kontakPerson && kontakPerson.trim() !== '') {
+      const waRegex = /^62\d{9,13}$/;
+      if (!waRegex.test(kontakPerson.trim())) {
+        return NextResponse.json({
+          message: 'Nomor WhatsApp harus dimulai dengan 62 dan memiliki 11-15 digit',
+          status: 400
+        }, { status: 400 });
+      }
     }
 
     // Use TypeORM repository
@@ -57,7 +68,11 @@ export async function POST(request: Request){
       deskripsi,
       gambar1,
       gambar2: gambar2 || null,
-      gambar3: gambar3 || null
+      gambar3: gambar3 || null,
+      jamOperasional: jamOperasional || "24 Jam",
+      tiketMasuk: tiketMasuk || null,
+      kontakPerson: kontakPerson ? kontakPerson.trim() : null,
+      linkGmaps: linkGmaps || ""
     });
 
     // Save to database

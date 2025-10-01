@@ -26,6 +26,22 @@ export class Destination {
   @Column({ name: "gambar_3", type: "text", nullable: true })
   gambar3?: string;
 
+  // Jam Operasional - Required with default value
+  @Column({ name: "jam_operasional", type: "text", default: "24 Jam" })
+  jamOperasional!: string;
+
+  // Tiket Masuk - Optional
+  @Column({ name: "tiket_masuk", type: "text", nullable: true })
+  tiketMasuk?: string;
+
+  // Kontak Person - Optional
+  @Column({ name: "kontak_person", type: "text", nullable: true })
+  kontakPerson?: string;
+
+  // Link GMaps - Required with default value
+  @Column({ name: "link_gmaps", type: "text", default: "" })
+  linkGmaps!: string;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
 

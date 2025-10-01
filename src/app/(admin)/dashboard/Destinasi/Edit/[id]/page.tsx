@@ -45,7 +45,11 @@ const Page = () => {
         deskripsi: "",
         gambar1: "",
         gambar2: "",
-        gambar3: ""
+        gambar3: "",
+        jamOperasional: "",
+        tiketMasuk: "",
+        kontakPerson: "",
+        linkGmaps: ""
     });
 
     // Ambil data destinasi berdasarkan ID
@@ -69,7 +73,11 @@ const Page = () => {
                     deskripsi: destinationData.deskripsi || "",
                     gambar1: destinationData.gambar1 || "",
                     gambar2: destinationData.gambar2 || "",
-                    gambar3: destinationData.gambar3 || ""
+                    gambar3: destinationData.gambar3 || "",
+                    jamOperasional: destinationData.jamOperasional || "",
+                    tiketMasuk: destinationData.tiketMasuk || "",
+                    kontakPerson: destinationData.kontakPerson || "",
+                    linkGmaps: destinationData.linkGmaps || ""
                 });
 
                 setPreviews({
@@ -310,6 +318,72 @@ const Page = () => {
                             value={formData.deskripsi}
                             onChange={(val: string) => setFormData(prev => ({ ...prev, deskripsi: val }))}
                             placeholder="Tulis deskripsi lengkap tentang tempat wisata ini..."
+                        />
+                    </div>
+
+                    {/* Jam Operasional */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Jam Operasional *
+                        </label>
+                        <input
+                            type="text"
+                            name="jamOperasional"
+                            value={formData.jamOperasional}
+                            onChange={handleChange}
+                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Contoh: 08:00 - 17:00 WIB"
+                            required
+                        />
+                    </div>
+
+                    {/* Tiket Masuk */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Tiket Masuk
+                        </label>
+                        <input
+                            type="text"
+                            name="tiketMasuk"
+                            value={formData.tiketMasuk}
+                            onChange={handleChange}
+                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Contoh: Dewasa Rp 15.000, Anak Rp 10.000"
+                        />
+                    </div>
+
+                    {/* Kontak Person */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Kontak Person
+                        </label>
+                        <input
+                            type="tel"
+                            name="kontakPerson"
+                            value={formData.kontakPerson}
+                            onChange={handleChange}
+                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="628xxxxxxxxxx (dimulai dengan 62)"
+                            pattern="^62\d{9,13}$"
+                        />
+                        <p className="text-gray-500 text-xs mt-1">
+                            Format: 628xxxxxxxxxx (dimulai dengan 62)
+                        </p>
+                    </div>
+
+                    {/* Link GMaps */}
+                    <div>
+                        <label className="block font-medium mb-1">
+                            Link Google Maps *
+                        </label>
+                        <input
+                            type="url"
+                            name="linkGmaps"
+                            value={formData.linkGmaps}
+                            onChange={handleChange}
+                            className="w-full shadow-sm border border-gray-400 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="https://maps.google.com/..."
+                            required
                         />
                     </div>
                 </div>
