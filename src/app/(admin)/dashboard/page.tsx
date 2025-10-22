@@ -5,7 +5,8 @@ import {
   UserGroupIcon, 
   MapPinIcon, 
   BuildingOfficeIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  PhotoIcon
 } from '@heroicons/react/24/outline';
 
 export default function AdminDashboard() {
@@ -21,6 +22,7 @@ export default function AdminDashboard() {
     { title: 'Destinations', description: 'Manage tourist destinations and attractions', href: '/dashboard/destinations' },
     { title: 'Hotels', description: 'Hotel listings and room management', href: '/dashboard/hotels' },
     { title: 'Articles', description: 'Create and manage blog articles', href: '/dashboard/articles' },
+    { title: 'Carousel', description: 'Manage homepage carousel images and content', href: '/dashboard/carousel' },
     { title: 'Settings', description: 'System settings and configuration', href: '/dashboard/settings' },
   ];
 
@@ -121,6 +123,15 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-900">Hotel listing updated</p>
                 <p className="text-xs text-gray-500">6 hours ago</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="bg-orange-100 p-2 rounded-full">
+                <PhotoIcon className="h-4 w-4 text-orange-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">Carousel item updated</p>
+                <p className="text-xs text-gray-500">1 day ago</p>
               </div>
             </div>
           </div>

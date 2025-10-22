@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: pkm-localkarya-db-dev-fixed
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: Localkarya
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Zeronime09
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"  # Changed from 5432:5432 to 5433:5432 to avoid port conflict
+    volumes:
+      - postgres_dev_data_fixed:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - pkm-network-fixed
+
+  # Next.js Application (Development)
+  app:
+    build:
+      context: ../../
+      dockerfile: misc/docker/Dockerfile.dev
+    container_name: pkm-localkarya-app-dev-fixed
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - DB_PORT=5432  # Internal port stays the same
+      - DB_USER=postgres
+      - DB_PASSWORD=Zeronime09
+      - DB_NAME=Localkarya
+      - NEXT_TELEMETRY_DISABLED=1
+      - WATCHPACK_POLLING=true
+    ports:
+      - "3001:3000"  # Changed from 3000:3000 to 3001:3000 to avoid port conflict
+    volumes:
+      # Mount source code for hot reload
+      - ../../src:/app/src
+      - ../../public:/app/public
+      # Specific mount for uploads to ensure persistence
+      - ../../public/uploads:/app/public/uploads
+      - ../../package.json:/app/package.json
+      - ../../package-lock.json:/app/package-lock.json
+      - ../../next.config.ts:/app/next.config.ts
+      - ../../tsconfig.json:/app/tsconfig.json
+      - ../../eslint.config.mjs:/app/eslint.config.mjs
+      - ../../postcss.config.mjs:/app/postcss.config.mjs
+      # Use named volume for .next to avoid permission issues
+      - next_dev_cache_fixed:/app/.next
+      # Exclude node_modules to avoid conflicts
+      - /app/node_modules
+    depends_on:
+      - postgres
+    networks:
+      - pkm-network-fixed
+
+  # PostgreSQL Admin (Optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pkm-localkarya-pgadmin-dev-fixed
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@localkarya.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5051:80"  # Changed from 5050:80 to 5051:80 to avoid port conflict
+    volumes:
+      - pgadmin_dev_data_fixed:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - pkm-network-fixed
+
+volumes:
+  postgres_dev_data_fixed:
+    driver: local
+  pgadmin_dev_data_fixed:
+    driver: local
+  next_dev_cache_fixed:
+    driver: local
+
+networks:
+  pkm-network-fixed:
+    driver: bridge

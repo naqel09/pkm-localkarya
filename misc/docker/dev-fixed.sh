@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# PKM LocalKarya - Development Docker Management Script
-# Modified version to avoid container conflicts
-# Usage: ./dev.sh [command]
+# PKM LocalKarya - Development Docker Management Script (Fixed Version)
+# This version avoids conflicts with existing containers
+# Usage: ./dev-fixed.sh [command]
 
 set -e
 
-DOCKER_COMPOSE_FILE="docker-compose.dev.yml"
+DOCKER_COMPOSE_FILE="docker-compose.dev-fixed.yml"
 ENV_FILE=".env.dev"
-PROJECT_NAME="pkmlocalkarya-dev"  # Use a unique project name to avoid conflicts
+PROJECT_NAME="pkmlocalkarya-dev-fixed"  # Unique project name to avoid conflicts
 
 # Colors for output
 RED='\033[0;31m'
@@ -18,7 +18,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 print_usage() {
-    echo -e "${BLUE}PKM LocalKarya - Development Environment${NC}"
+    echo -e "${BLUE}PKM LocalKarya - Development Environment (Fixed Version)${NC}"
     echo ""
     echo "Usage: $0 [command]"
     echo ""
@@ -51,12 +51,12 @@ check_requirements() {
 
 case "$1" in
     up)
-        echo -e "${GREEN}Starting development environment...${NC}"
+        echo -e "${GREEN}Starting development environment (fixed version)...${NC}"
         docker-compose -f $DOCKER_COMPOSE_FILE -p $PROJECT_NAME up -d
         echo -e "${GREEN}Development environment started!${NC}"
-        echo -e "${YELLOW}App URL: http://localhost:3000${NC}"
-        echo -e "${YELLOW}pgAdmin URL: http://localhost:5050${NC}"
-        echo -e "${YELLOW}Database: localhost:5432${NC}"
+        echo -e "${YELLOW}App URL: http://localhost:3001${NC}"
+        echo -e "${YELLOW}pgAdmin URL: http://localhost:5051${NC}"
+        echo -e "${YELLOW}Database: localhost:5433${NC}"
         ;;
     down)
         echo -e "${YELLOW}Stopping development environment...${NC}"

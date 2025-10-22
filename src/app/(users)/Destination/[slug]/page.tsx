@@ -508,7 +508,7 @@ export default function DestinationDetailPage() {
                 {/* Embedded Google Maps */}
                 <div className="relative h-48 rounded-lg overflow-hidden border border-gray-200">
                   <iframe
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(destination.alamat)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(destination.alamat || destination.namaLokasi)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
@@ -522,9 +522,11 @@ export default function DestinationDetailPage() {
                 <p className="text-sm text-gray-500 mt-2 text-center">
                   Peta interaktif - Anda dapat zoom, drag, dan berinteraksi dengan peta
                 </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  📍 {destination.alamat}
-                </p>
+                {destination.linkGmaps && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    📍 {destination.linkGmaps}
+                  </p>
+                )}
               </div>
             )}
 
