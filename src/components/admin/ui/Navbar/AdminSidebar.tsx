@@ -18,6 +18,10 @@ import {
     Store,
     Youtube,
     Image,
+    Heart,
+    Star,
+    HelpCircle,
+    Mail,
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -78,6 +82,36 @@ const AdminSidebar = () => {
                         className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
                     >
                         <Image size={20} /> Carousel
+                    </Link>
+                    <Link
+                        href="/dashboard/PilihKami"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <Heart size={20} /> Pilih Kami
+                    </Link>
+                    <Link
+                        href="/dashboard/special-packages"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <Tag size={20} /> Special Packages
+                    </Link>
+                    <Link
+                        href="/dashboard/QualitySection"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <Star size={20} /> Quality Section
+                    </Link>
+                    <Link
+                        href="/dashboard/FAQ"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <HelpCircle size={20} /> FAQ Management
+                    </Link>
+                    <Link
+                        href="/dashboard/Newsletter"
+                        className="flex items-center gap-3 hover:text-black hover:bg-white py-2 rounded-md w-full px-3"
+                    >
+                        <Mail size={20} /> Newsletter
                     </Link>
 
                     <div className="mt-6 text-sm text-gray-400">Settings</div>

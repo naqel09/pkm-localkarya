@@ -36,7 +36,7 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
       - WATCHPACK_POLLING=true
     ports:
-      - "3001:3000"  # Changed from 3000:3000 to 3001:3000 to avoid port conflict
+      - "3123:3000"  # Changed from 3000:3000 to 3001:3000 to avoid port conflict
     volumes:
       # Mount source code for hot reload
       - ../../src:/app/src

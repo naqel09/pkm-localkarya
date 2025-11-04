@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, Upload } from "lucide-react";
 import Image from "next/image";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 
@@ -13,6 +13,14 @@ const Page = () => {
         gambar3: null as string | null,
         gambar4: null as string | null,
         gambar360: null as string | null
+    });
+    // Store actual File objects for upload
+    const [files, setFiles] = useState({
+        gambar1: null as File | null,
+        gambar2: null as File | null,
+        gambar3: null as File | null,
+        gambar4: null as File | null,
+        gambar360: null as File | null
     });
     const [formData, setFormData] = useState({
         namaPaket: "",
@@ -32,11 +40,14 @@ const Page = () => {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, imageType: 'gambar1' | 'gambar2' | 'gambar3' | 'gambar4' | 'gambar360') => {
         const file = e.target.files?.[0];
         if (file) {
+            // Store the actual file for upload
+            setFiles(prev => ({ ...prev, [imageType]: file }));
+            
+            // Generate preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageData = reader.result as string;
                 setPreviews(prev => ({ ...prev, [imageType]: imageData }));
-                setFormData(prev => ({ ...prev, [imageType]: imageData }));
             };
             reader.readAsDataURL(file);
         }
@@ -52,7 +63,7 @@ const Page = () => {
         e.preventDefault();
         
         // Validasi gambar utama wajib
-        if (!formData.gambar1) {
+        if (!files.gambar1) {
             alert("Gambar utama wajib diupload!");
             return;
         }
@@ -63,12 +74,30 @@ const Page = () => {
     const handleConfirm = async (answer: boolean) => {
         if (answer) {
             try {
+                // Create FormData for proper file upload
+                const formDataToSend = new FormData();
+                
+                // Add text fields
+                formDataToSend.append("namaPaket", formData.namaPaket);
+                formDataToSend.append("alamat", formData.alamat);
+                formDataToSend.append("deskripsi", formData.deskripsi);
+                formDataToSend.append("harga", formData.harga);
+                formDataToSend.append("noWa", formData.noWa);
+                
+                // Add arrays as JSON strings
+                formDataToSend.append("yangTermasuk", JSON.stringify(formData.yangTermasuk));
+                formDataToSend.append("jadwal", JSON.stringify(formData.jadwal));
+                
+                // Add image files
+                if (files.gambar1) formDataToSend.append("gambar1", files.gambar1);
+                if (files.gambar2) formDataToSend.append("gambar2", files.gambar2);
+                if (files.gambar3) formDataToSend.append("gambar3", files.gambar3);
+                if (files.gambar4) formDataToSend.append("gambar4", files.gambar4);
+                if (files.gambar360) formDataToSend.append("gambar360", files.gambar360);
+                
                 const res = await fetch("/api/admin/paket-wisata", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
+                    body: formDataToSend, // Send FormData instead of JSON
                 });
                 
                 if (res.ok) {
@@ -313,7 +342,7 @@ const Page = () => {
                                         Gambar Utama *
                                     </label>
                                     <div className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                                        !formData.gambar1 ? 'border-red-300 hover:border-red-500' : 'border-green-300 hover:border-green-500'
+                                        !files.gambar1 ? 'border-red-300 hover:border-red-500' : 'border-green-300 hover:border-green-500'
                                     }`}>
                                         {previews.gambar1 ? (
                                             <div className="relative">
@@ -328,7 +357,7 @@ const Page = () => {
                                                     type="button"
                                                     onClick={() => {
                                                         setPreviews(prev => ({ ...prev, gambar1: null }));
-                                                        setFormData(prev => ({ ...prev, gambar1: "" }));
+                                                        setFiles(prev => ({ ...prev, gambar1: null }));
                                                     }}
                                                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                                                 >
@@ -344,14 +373,18 @@ const Page = () => {
                                                 <p className="text-xs text-gray-500">
                                                     Klik untuk upload
                                                 </p>
+                                                <label className="mt-2 flex items-center justify-center px-3 py-1 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 text-sm">
+                                                    <Upload size={14} className="mr-1" />
+                                                    Pilih File
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => handleImageChange(e, 'gambar1')}
+                                                        className="hidden"
+                                                    />
+                                                </label>
                                             </div>
                                         )}
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleImageChange(e, 'gambar1')}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
                                     </div>
                                 </div>
 
@@ -374,7 +407,7 @@ const Page = () => {
                                                     type="button"
                                                     onClick={() => {
                                                         setPreviews(prev => ({ ...prev, gambar2: null }));
-                                                        setFormData(prev => ({ ...prev, gambar2: "" }));
+                                                        setFiles(prev => ({ ...prev, gambar2: null }));
                                                     }}
                                                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                                                 >
@@ -387,14 +420,18 @@ const Page = () => {
                                                 <p className="mt-2 text-sm text-gray-600">
                                                     Klik untuk upload
                                                 </p>
+                                                <label className="mt-2 flex items-center justify-center px-3 py-1 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 text-sm">
+                                                    <Upload size={14} className="mr-1" />
+                                                    Pilih File
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => handleImageChange(e, 'gambar2')}
+                                                        className="hidden"
+                                                    />
+                                                </label>
                                             </div>
                                         )}
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleImageChange(e, 'gambar2')}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
                                     </div>
                                 </div>
 
@@ -417,7 +454,7 @@ const Page = () => {
                                                     type="button"
                                                     onClick={() => {
                                                         setPreviews(prev => ({ ...prev, gambar3: null }));
-                                                        setFormData(prev => ({ ...prev, gambar3: "" }));
+                                                        setFiles(prev => ({ ...prev, gambar3: null }));
                                                     }}
                                                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                                                 >
@@ -430,14 +467,18 @@ const Page = () => {
                                                 <p className="mt-2 text-sm text-gray-600">
                                                     Klik untuk upload
                                                 </p>
+                                                <label className="mt-2 flex items-center justify-center px-3 py-1 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 text-sm">
+                                                    <Upload size={14} className="mr-1" />
+                                                    Pilih File
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => handleImageChange(e, 'gambar3')}
+                                                        className="hidden"
+                                                    />
+                                                </label>
                                             </div>
                                         )}
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleImageChange(e, 'gambar3')}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
                                     </div>
                                 </div>
 
@@ -460,7 +501,7 @@ const Page = () => {
                                                     type="button"
                                                     onClick={() => {
                                                         setPreviews(prev => ({ ...prev, gambar4: null }));
-                                                        setFormData(prev => ({ ...prev, gambar4: "" }));
+                                                        setFiles(prev => ({ ...prev, gambar4: null }));
                                                     }}
                                                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                                                 >
@@ -473,14 +514,18 @@ const Page = () => {
                                                 <p className="mt-2 text-sm text-gray-600">
                                                     Klik untuk upload
                                                 </p>
+                                                <label className="mt-2 flex items-center justify-center px-3 py-1 bg-blue-600 text-white rounded-md cursor-pointer hover:bg-blue-700 text-sm">
+                                                    <Upload size={14} className="mr-1" />
+                                                    Pilih File
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => handleImageChange(e, 'gambar4')}
+                                                        className="hidden"
+                                                    />
+                                                </label>
                                             </div>
                                         )}
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleImageChange(e, 'gambar4')}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
                                     </div>
                                 </div>
 
@@ -506,7 +551,7 @@ const Page = () => {
                                                     type="button"
                                                     onClick={() => {
                                                         setPreviews(prev => ({ ...prev, gambar360: null }));
-                                                        setFormData(prev => ({ ...prev, gambar360: "" }));
+                                                        setFiles(prev => ({ ...prev, gambar360: null }));
                                                     }}
                                                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
                                                 >
@@ -519,14 +564,18 @@ const Page = () => {
                                                 <p className="mt-2 text-sm text-orange-600">
                                                     Upload foto 360°
                                                 </p>
+                                                <label className="mt-2 flex items-center justify-center px-3 py-1 bg-orange-600 text-white rounded-md cursor-pointer hover:bg-orange-700 text-sm">
+                                                    <Upload size={14} className="mr-1" />
+                                                    Pilih File
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => handleImageChange(e, 'gambar360')}
+                                                        className="hidden"
+                                                    />
+                                                </label>
                                             </div>
                                         )}
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleImageChange(e, 'gambar360')}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
                                     </div>
                                 </div>
                             </div>

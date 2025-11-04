@@ -6,7 +6,8 @@ import {
   MapPinIcon, 
   BuildingOfficeIcon,
   DocumentTextIcon,
-  PhotoIcon
+  PhotoIcon,
+  HeartIcon
 } from '@heroicons/react/24/outline';
 
 export default function AdminDashboard() {
@@ -23,6 +24,11 @@ export default function AdminDashboard() {
     { title: 'Hotels', description: 'Hotel listings and room management', href: '/dashboard/hotels' },
     { title: 'Articles', description: 'Create and manage blog articles', href: '/dashboard/articles' },
     { title: 'Carousel', description: 'Manage homepage carousel images and content', href: '/dashboard/carousel' },
+    { title: 'Pilih Kami', description: 'Manage why choose us features', href: '/dashboard/PilihKami' },
+    { title: 'Special Packages', description: 'Manage special package displays', href: '/dashboard/special-packages' },
+    { title: 'Quality Section', description: 'Manage quality section content', href: '/dashboard/QualitySection' },
+    { title: 'FAQ Management', description: 'Manage frequently asked questions', href: '/dashboard/FAQ' },
+    { title: 'Newsletter', description: 'Manage newsletter section', href: '/dashboard/Newsletter' },
     { title: 'Settings', description: 'System settings and configuration', href: '/dashboard/settings' },
   ];
 
@@ -132,6 +138,24 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-900">Carousel item updated</p>
                 <p className="text-xs text-gray-500">1 day ago</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="bg-red-100 p-2 rounded-full">
+                <HeartIcon className="h-4 w-4 text-red-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">Pilih Kami feature updated</p>
+                <p className="text-xs text-gray-500">2 days ago</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="bg-purple-100 p-2 rounded-full">
+                <MapPinIcon className="h-4 w-4 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">Special Packages updated</p>
+                <p className="text-xs text-gray-500">3 days ago</p>
               </div>
             </div>
           </div>

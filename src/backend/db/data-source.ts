@@ -12,6 +12,11 @@ import { Umkm } from "../entities/Umkm";
 import { ProdukUmkm } from "../entities/ProdukUmkm";
 import { Vlog } from "../entities/Vlog";
 import { Carousel } from "../entities/Carousel";
+import { PilihKamiFeature } from "../entities/PilihKami";
+import { SpecialPackage } from "../entities/SpecialPackage";
+import { QualitySection } from "../entities/QualitySection";
+import { Faq } from "../entities/Faq";
+import { Newsletter } from "../entities/Newsletter";
 import { initializeAdmin } from "@/lib/init-admin";
 
 export const AppDataSource = new DataSource({
@@ -23,7 +28,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "Localkarya",
   synchronize: true, // jangan aktifkan di production
   logging: false,
-  entities: [Destination, PaketWisata, Hotel, Room, Restaurant, Menu, Artikel, User, Umkm, ProdukUmkm, Vlog, Carousel]
+  entities: [Destination, PaketWisata, Hotel, Room, Restaurant, Menu, Artikel, User, Umkm, ProdukUmkm, Vlog, Carousel, PilihKamiFeature, SpecialPackage, QualitySection, Faq, Newsletter]
 });
 
 // Initialize database connection hanya sekali
