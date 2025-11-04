@@ -358,10 +358,6 @@ Mohon informasi lebih lanjut untuk reservasi. Terima kasih!`;
                   <MapPin className="w-4 h-4" />
                   <span>{paketWisata.alamat}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  <span>4.8 (124 ulasan)</span>
-                </div>
               </div>
 
               <div className="flex items-center gap-6 text-sm text-gray-600">

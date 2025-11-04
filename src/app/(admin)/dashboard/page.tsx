@@ -29,6 +29,7 @@ export default function AdminDashboard() {
     { title: 'Quality Section', description: 'Manage quality section content', href: '/dashboard/QualitySection' },
     { title: 'FAQ Management', description: 'Manage frequently asked questions', href: '/dashboard/FAQ' },
     { title: 'Newsletter', description: 'Manage newsletter section', href: '/dashboard/Newsletter' },
+    { title: 'About Page', description: 'Manage about page content', href: '/dashboard/AboutPage' },
     { title: 'Settings', description: 'System settings and configuration', href: '/dashboard/settings' },
   ];
 

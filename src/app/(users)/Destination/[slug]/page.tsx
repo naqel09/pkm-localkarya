@@ -257,16 +257,7 @@ export default function DestinationDetailPage() {
           </button>
         </div>
 
-        {/* Rating Badge */}
-        <div className="absolute bottom-6 left-6 z-20">
-          <div className="bg-white bg-opacity-95 text-gray-800 px-4 py-2 rounded-lg shadow-lg">
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 text-yellow-400 fill-current" />
-              <span className="font-bold">4.{Math.floor(Math.random() * 5) + 5}</span>
-              <span className="text-sm text-gray-600">({Math.floor(Math.random() * 200) + 50} ulasan)</span>
-            </div>
-          </div>
-        </div>
+
 
         {/* Image Indicator */}
         {images.length > 0 && (
@@ -299,15 +290,6 @@ export default function DestinationDetailPage() {
                       <Calendar className="w-4 h-4" />
                       <span>Tersedia sepanjang tahun</span>
                     </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                    <span className="text-lg font-semibold">4.{Math.floor(Math.random() * 5) + 5}</span>
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    ({Math.floor(Math.random() * 200) + 50} reviews)
                   </div>
                 </div>
               </div>

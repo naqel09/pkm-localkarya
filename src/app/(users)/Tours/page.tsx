@@ -289,10 +289,6 @@ export default function ToursPage() {
                       <Clock className="w-4 h-4 mr-1" />
                       <span>1 Hari</span>
                     </div>
-                    <div className="flex items-center">
-                      <Star className="w-4 h-4 mr-1 text-yellow-400" />
-                      <span>4.8</span>
-                    </div>
                   </div>
 
                   {/* Action Button */}

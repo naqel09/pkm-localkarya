@@ -264,11 +264,7 @@ export default function DestinationPage() {
                       </span>
                     </div>
                     
-                    {/* Rating Badge */}
-                    <div className="absolute top-3 right-3 bg-white bg-opacity-90 rounded-full px-2 py-1 flex items-center gap-1">
-                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                      <span className="text-xs font-medium">4.{Math.floor(Math.random() * 5) + 5}</span>
-                    </div>
+
                   </div>
 
                   {/* Content */}
@@ -290,10 +286,6 @@ export default function DestinationPage() {
                     
                     {/* Footer */}
                     <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center text-gray-500">
-                        <Users className="w-4 h-4 mr-1" />
-                        <span>{Math.floor(Math.random() * 500) + 100}+ Pengunjung</span>
-                      </div>
                       <span className="text-blue-500 font-medium group-hover:text-blue-700">
                         Lihat Detail →
                       </span>
