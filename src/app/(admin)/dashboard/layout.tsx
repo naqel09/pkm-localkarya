@@ -3,6 +3,7 @@ import {Metadata} from "next";
 import "@/app/globals.css";
 import AdminSidebar from "@/components/admin/ui/Navbar/AdminSidebar";
 import AdminNavbar from "@/components/admin/ui/Navbar/AdminNavbar";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 
 export const metadata: Metadata = {
     title: "Admin",
@@ -23,13 +24,15 @@ export default function AdminLayout({
     return (
         <html lang="en">
             <body className={`${oswald.variable}antialiased`}>
-                <AdminNavbar />
-                <div className="flex flex-1">
-                    <AdminSidebar />
-                    <main className="flex-1 p-6 bg-white overflow-y-auto">
-                        {children}
-                    </main>
-                </div>
+                <AuthProvider>
+                    <AdminNavbar />
+                    <div className="flex flex-1">
+                        <AdminSidebar />
+                        <main className="flex-1 p-6 bg-white overflow-y-auto">
+                            {children}
+                        </main>
+                    </div>
+                </AuthProvider>
             </body>
         </html>
     );

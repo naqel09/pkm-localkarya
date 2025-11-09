@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "@/backend/db/data-source";
 
@@ -35,9 +35,8 @@ export async function POST(request: Request) {
 
         const user = users[0];
 
-        // Verifikasi password dengan crypto hash
-        const hashedInputPassword = crypto.createHash('sha256').update(password + 'localkarya-salt').digest('hex');
-        const isPasswordValid = hashedInputPassword === user.password;
+        // Verifikasi password dengan bcrypt
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         
         if (!isPasswordValid) {
             return NextResponse.json(

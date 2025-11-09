@@ -83,7 +83,7 @@ export default function AdminLoginPage() {
             {/* Username field */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Email or username
+                Username
               </label>
               <input
                 id="username"
@@ -92,7 +92,7 @@ export default function AdminLoginPage() {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                placeholder="Enter your email or username"
+                placeholder="Enter your username"
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
               />
             </div>
@@ -125,23 +125,6 @@ export default function AdminLoginPage() {
                   )}
                 </button>
               </div>
-            </div>
-
-            {/* Remember me and forgot password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="remember"
-                  checked={formData.remember}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
-                Forgot password?
-              </a>
             </div>
 
             {/* Submit button */}

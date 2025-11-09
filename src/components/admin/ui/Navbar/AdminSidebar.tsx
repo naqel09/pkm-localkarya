@@ -43,25 +43,25 @@ const AdminSidebar = () => {
                 { href: "/dashboard/UMKM", label: "UMKM", icon: Store },
                 { href: "/dashboard/Blog", label: "Artikel", icon: FileText },
                 { href: "/dashboard/Vlog", label: "Vlog", icon: Youtube },
-                { href: "/dashboard/Carousel", label: "Carousel", icon: Image },
                 { href: "/dashboard/AboutPage", label: "About Page", icon: BookOpen },
             ]
         },
         {
             title: "Homepage Sections",
             items: [
+                { href: "/dashboard/Carousel", label: "Carousel", icon: Image },
                 { href: "/dashboard/PilihKami", label: "Pilih Kami", icon: Heart },
                 { href: "/dashboard/special-packages", label: "Special Packages", icon: Tag },
                 { href: "/dashboard/QualitySection", label: "Quality Section", icon: Star },
                 { href: "/dashboard/FAQ", label: "FAQ Management", icon: HelpCircle },
-                { href: "/dashboard/Newsletter", label: "Newsletter", icon: Mail },
+                { href: "/dashboard/Newsletter", label: "Newsletter", icon: Mail },    
+                { href: "/dashboard/testimonials", label: "Testimonials", icon: RefreshCcw },
             ]
         },
         {
             title: "System",
             items: [
-                { href: "/dashboard/users", label: "Manage Users", icon: ClipboardList },
-                { href: "/dashboard/settings", label: "Settings", icon: Settings },
+                { href: "/dashboard/Users", label: "Manage Users", icon: ClipboardList },
             ]
         }
     ];

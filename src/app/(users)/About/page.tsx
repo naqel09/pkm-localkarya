@@ -16,6 +16,7 @@ interface AboutPageData {
   whatsappNumber: string;
   googleMapsUrl: string;
   backgroundImageUrl: string | null;
+  logoUrl: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -51,6 +52,7 @@ const AboutPage = () => {
           facebookUrl: null,
           tiktokUrl: null,
           backgroundImageUrl: "/bgImage.jpg",
+          logoUrl: null,
           isActive: true,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
@@ -91,6 +93,7 @@ const AboutPage = () => {
         halaman="Home"
         bagian="Tentang"
         image={data.backgroundImageUrl || "/bgImage.jpg"}
+        logo={data.logoUrl}
       />
       <div className="py-16 px-4 text-center">
         <div className="flex justify-center mb-6">

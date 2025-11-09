@@ -86,8 +86,9 @@ export async function PUT(request: NextRequest) {
     const facebookUrl = formData.get("facebookUrl") as string | null;
     const tiktokUrl = formData.get("tiktokUrl") as string | null;
     
-    // Image
+    // Images
     const image = formData.get("image") as File | null;
+    const logo = formData.get("logo") as File | null;
 
     // Update fields
     aboutPage.title = title || aboutPage.title;
@@ -133,6 +134,37 @@ export async function PUT(request: NextRequest) {
       }
       
       aboutPage.backgroundImageUrl = `/uploads/${fileName}`;
+    }
+
+    // Handle logo upload if provided
+    if (logo && logo.size > 0) {
+      const fileName = `logo-${Date.now()}-${logo.name}`;
+      const arrayBuffer = await logo.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      
+      // Save logo to public/uploads directory
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      
+      // Create upload directory if it doesn't exist
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, buffer);
+      
+      // Delete old logo if it exists and it's an uploaded file (not a static asset)
+      if (aboutPage.logoUrl) {
+        // Only delete if it's an uploaded file (starts with /uploads/)
+        if (aboutPage.logoUrl.startsWith('/uploads/')) {
+          const oldFilePath = path.join(process.cwd(), "public", aboutPage.logoUrl.replace('/uploads/', ''));
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        }
+      }
+      
+      aboutPage.logoUrl = `/uploads/${fileName}`;
     }
 
     const updatedAboutPage = await aboutPageRepository.save(aboutPage);

@@ -18,6 +18,19 @@ interface Destination {
   updatedAt: string;
 }
 
+// Type definition untuk Carousel
+interface CarouselItem {
+  id: number;
+  title: string;
+  subtitle?: string;
+  description: string;
+  imageUrl: string;
+  orderIndex: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Fungsi untuk membersihkan HTML tags dari rich text
 const stripHtmlTags = (html: string) => {
   if (!html) return "";
@@ -67,8 +80,31 @@ export default function DestinationPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [carouselImage, setCarouselImage] = useState<string>("/nyaba1.jpg"); // Default carousel image
   
   const itemsPerPage = 6; // Menampilkan 6 destinasi per halaman
+
+  // Fetch carousel images
+  useEffect(() => {
+    const fetchCarouselImages = async () => {
+      try {
+        const res = await fetch("/api/carousel");
+        if (!res.ok) throw new Error("Failed to fetch carousel images");
+        const response = await res.json();
+        const carousels = response.data || [];
+        
+        // Use the first carousel image if available
+        if (carousels.length > 0) {
+          setCarouselImage(carousels[0].imageUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching carousel images:", error);
+        // Keep default image if fetch fails
+      }
+    };
+
+    fetchCarouselImages();
+  }, []);
 
   // Filter destinations berdasarkan search query
   const filteredDestinations = destinations.filter(destination => {
@@ -136,14 +172,16 @@ export default function DestinationPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-96 overflow-hidden bg-gradient-to-br from-lime-400 via-green-500 to-emerald-600">
-        {/* Decorative Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-20 h-20 bg-white/20 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-16 h-16 bg-white/15 rounded-full animate-bounce"></div>
-          <div className="absolute top-32 right-32 w-12 h-12 bg-white/25 rounded-full animate-ping"></div>
-          <div className="absolute bottom-32 left-32 w-8 h-8 bg-white/30 rounded-full animate-pulse"></div>
-        </div>
+      <div className="relative h-96 overflow-hidden">
+        <Image
+          src={carouselImage}
+          alt="Destinasi Background"
+          fill
+          className="object-cover object-center absolute z-0"
+          priority
+        />
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/30 z-10" />
         
         {/* Content */}
         <div className="absolute inset-0 flex items-center justify-center z-10">

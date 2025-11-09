@@ -12,7 +12,7 @@ interface AboutPageData {
   email: string;
   whatsappNumber: string;
   googleMapsUrl: string;
-  backgroundImageUrl: string | null;
+  logoUrl: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -34,7 +34,7 @@ const AboutPageForm: React.FC = () => {
     email: "",
     whatsappNumber: "",
     googleMapsUrl: "",
-    backgroundImageUrl: null,
+    logoUrl: null,
     isActive: true,
     createdAt: "",
     updatedAt: "",
@@ -42,7 +42,7 @@ const AboutPageForm: React.FC = () => {
     facebookUrl: null,
     tiktokUrl: null
   });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAboutPage = async () => {
@@ -51,8 +51,8 @@ const AboutPageForm: React.FC = () => {
         if (!res.ok) throw new Error("Failed to fetch about page data");
         const response = await res.json();
         setData(response.data);
-        if (response.data.backgroundImageUrl) {
-          setImagePreview(response.data.backgroundImageUrl);
+        if (response.data.logoUrl) {
+          setLogoPreview(response.data.logoUrl);
         }
       } catch (error) {
         console.error("Error fetching about page:", error);
@@ -87,10 +87,10 @@ const AboutPageForm: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
-      // Create preview
+      // Create logo preview
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -117,10 +117,10 @@ const AboutPageForm: React.FC = () => {
       if (data.facebookUrl) formData.append("facebookUrl", data.facebookUrl);
       if (data.tiktokUrl) formData.append("tiktokUrl", data.tiktokUrl);
       
-      // Append image if selected
-      const imageInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-      if (imageInput && imageInput.files && imageInput.files[0]) {
-        formData.append("image", imageInput.files[0]);
+      // Append logo if selected
+      const logoInput = document.querySelector('input[name="logo"]') as HTMLInputElement;
+      if (logoInput && logoInput.files && logoInput.files[0]) {
+        formData.append("logo", logoInput.files[0]);
       }
 
       const res = await fetch("/api/admin/about-page", {
@@ -135,8 +135,8 @@ const AboutPageForm: React.FC = () => {
       
       // Update the data with the response
       setData(response.data);
-      if (response.data.backgroundImageUrl) {
-        setImagePreview(response.data.backgroundImageUrl);
+      if (response.data.logoUrl) {
+        setLogoPreview(response.data.logoUrl);
       }
     } catch (error) {
       console.error("Error updating about page:", error);
@@ -164,23 +164,24 @@ const AboutPageForm: React.FC = () => {
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit About Page</h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Background Image */}
+        {/* Logo Image */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Background Image
+            Logo
           </label>
           <input
             type="file"
+            name="logo"
             accept="image/*"
             onChange={handleImageChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {imagePreview && (
+          {logoPreview && (
             <div className="mt-2">
               <img 
-                src={imagePreview} 
-                alt="Preview" 
-                className="w-64 h-48 object-cover rounded"
+                src={logoPreview} 
+                alt="Logo Preview" 
+                className="w-32 h-32 object-contain rounded"
               />
             </div>
           )}

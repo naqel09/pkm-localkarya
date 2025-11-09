@@ -40,6 +40,10 @@ export class AboutPage {
   @Column({ name: "background_image_url", type: "varchar", length: 500, nullable: true })
   backgroundImageUrl!: string | null;
 
+  // Logo field for header, admin header, and footer
+  @Column({ name: "logo_url", type: "varchar", length: 500, nullable: true })
+  logoUrl!: string | null;
+
   @Column({ name: "is_active", type: "boolean", default: true })
   isActive!: boolean;
 

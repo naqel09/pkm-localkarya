@@ -24,6 +24,19 @@ interface PaketWisata {
   updatedAt: string;
 }
 
+// Type definition untuk Carousel
+interface CarouselItem {
+  id: number;
+  title: string;
+  subtitle?: string;
+  description: string;
+  imageUrl: string;
+  orderIndex: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Fungsi untuk membersihkan HTML tags dari rich text
 const stripHtmlTags = (html: string) => {
   if (!html) return "";
@@ -83,8 +96,33 @@ export default function ToursPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [carouselImage, setCarouselImage] = useState<string>("/nyaba2.jpg"); // Default carousel image for tours
   
   const itemsPerPage = 6; // Menampilkan 6 paket per halaman
+
+  // Fetch carousel images
+  useEffect(() => {
+    const fetchCarouselImages = async () => {
+      try {
+        const res = await fetch("/api/carousel");
+        if (!res.ok) throw new Error("Failed to fetch carousel images");
+        const response = await res.json();
+        const carousels = response.data || [];
+        
+        // Use the second carousel image if available, or first if only one exists
+        if (carousels.length > 1) {
+          setCarouselImage(carousels[1].imageUrl);
+        } else if (carousels.length > 0) {
+          setCarouselImage(carousels[0].imageUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching carousel images:", error);
+        // Keep default image if fetch fails
+      }
+    };
+
+    fetchCarouselImages();
+  }, []);
 
   useEffect(() => {
     const fetchPaketWisata = async () => {
@@ -152,14 +190,16 @@ export default function ToursPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-96 overflow-hidden bg-gradient-to-br from-green-600 via-emerald-700 to-green-900">
-        {/* Decorative Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-20 h-20 bg-white/20 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-16 h-16 bg-white/15 rounded-full animate-bounce"></div>
-          <div className="absolute top-32 right-32 w-12 h-12 bg-white/25 rounded-full animate-ping"></div>
-          <div className="absolute bottom-32 left-32 w-8 h-8 bg-white/30 rounded-full animate-pulse"></div>
-        </div>
+      <div className="relative h-96 overflow-hidden">
+        <Image
+          src={carouselImage}
+          alt="Paket Wisata Background"
+          fill
+          className="object-cover object-center absolute z-0"
+          priority
+        />
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/30 z-10" />
         
         {/* Content */}
         <div className="absolute inset-0 flex items-center justify-center z-10">

@@ -36,10 +36,8 @@ export default function AdminLoginPage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      // Pilih API endpoint berdasarkan environment
-      const apiEndpoint = process.env.NODE_ENV === 'production' 
-        ? '/api/auth/login-production'
-        : '/api/auth/login-simple';
+      // Use the database login endpoint for all environments
+      const apiEndpoint = '/api/auth/login';
       
       console.log(`📤 Sending login request to ${apiEndpoint}`);
       
@@ -108,7 +106,7 @@ export default function AdminLoginPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Sign in</h1>
             <p className="text-gray-600">Welcome back! Please sign in to your account</p>
             <div className="mt-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full inline-block">
-              Development Mode - Fast Login
+              Database Authentication Mode
             </div>
           </div>
 
@@ -137,7 +135,7 @@ export default function AdminLoginPage() {
           )}            {/* Username field */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Email or username
+                Username
               </label>
               <input
                 id="username"
@@ -146,7 +144,7 @@ export default function AdminLoginPage() {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                placeholder="Enter your email or username"
+                placeholder="Enter your username"
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
               />
             </div>
@@ -181,23 +179,7 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Remember me and forgot password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="remember"
-                  checked={formData.remember}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
-                Forgot password?
-              </a>
-            </div>
-
+            
             {/* Submit button */}
             <button
               type="submit"

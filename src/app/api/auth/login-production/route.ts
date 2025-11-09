@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 // Dynamic import untuk production
@@ -49,9 +49,8 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            // Verifikasi password dengan crypto hash
-            const hashedInputPassword = crypto.createHash('sha256').update(password + 'localkarya-salt').digest('hex');
-            const isPasswordValid = hashedInputPassword === user.password;
+            // Verifikasi password dengan bcrypt
+            const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 console.log(`❌ [LOGIN] Invalid password for user: ${username}`);
                 return NextResponse.json(
@@ -127,7 +126,7 @@ export async function POST(request: NextRequest) {
 
                 response.cookies.set("auth-token", token, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
+                    secure: true,
                     sameSite: "lax",
                     maxAge: 60 * 60 * 24 * 7, // 7 days
                     path: "/",

@@ -16,6 +16,7 @@ interface AboutPageData {
   whatsappNumber: string;
   googleMapsUrl: string;
   backgroundImageUrl: string | null;
+  logoUrl: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -70,6 +71,18 @@ function Footer() {
               <p>Desa Karyawangi</p>
               <p>Kecamatan Parongpong</p>
               <p>Bandung Barat</p>
+              {/* Logo di bawah alamat jika tersedia */}
+              {aboutData?.logoUrl && (
+                <div className="mt-2">
+                  <Image
+                    src={aboutData.logoUrl}
+                    alt="Logo"
+                    width={80}
+                    height={40}
+                    className="object-contain"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -156,7 +169,7 @@ function Footer() {
           <div className="mt-6 p-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-lg border border-gray-600">
             <div className="flex items-center gap-2 mb-3">
               <FaUniversity className="text-yellow-400" size={16} />
-              <span className="text-sm font-semibold text-yellow-400">Website ini merupakan Hasil Program Pengabdian Masyarakat</span>
+              <span className="text-sm font-semibold text-yellow-400">Hasil Program Pengabdian Masyarakat Universitas Widyatama dan didanai oleh Kemendiktisaintek</span>
             </div>
             <div className="flex items-center justify-center gap-6">
               <Link 
