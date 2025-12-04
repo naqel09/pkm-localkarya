@@ -27,7 +27,7 @@ export const AppDataSource = new DataSource({
   port: Number(process.env.DB_PORT) || 5432,
   username: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "Zeronime09",
-  database: process.env.DB_NAME || "Localkarya",
+  database: process.env.DB_NAME || "localkarya_prod",
   synchronize: true, // jangan aktifkan di production
   logging: false,
   entities: [Destination, PaketWisata, Hotel, Room, Restaurant, Menu, Artikel, User, Umkm, ProdukUmkm, Vlog, Carousel, PilihKamiFeature, SpecialPackage, QualitySection, Faq, Newsletter, AboutPage, Testimonial]

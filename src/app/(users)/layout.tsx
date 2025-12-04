@@ -6,8 +6,8 @@ import Footer from "../../components/users/navbar/Footer";
 import Newsletter from "../../components/users/newsletter/Newsletter";
 
 export const metadata: Metadata = {
-  title: "Homepage",
-  description: "menampilkan halaman homepage",
+  title: "Wisata Desa Karyawangi",
+  description: "Aplikasi wisata desa karyawangi",
   icons: {
     icon: "/api/about-page/logo",
   },

@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { ProdukUmkm } from "./ProdukUmkm";
 
 @Entity("umkm")
 export class Umkm {
@@ -29,6 +30,6 @@ export class Umkm {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
 
-  @OneToMany("ProdukUmkm", "umkm", { cascade: true })
+  @OneToMany(() => ProdukUmkm, "umkm", { cascade: true })
   produk!: any[];
 }
